@@ -1,0 +1,22 @@
+# Fichiers système Windows
+Thumbs.db
+desktop.ini
+*.lnk
+
+# Fichiers système Mac/Linux
+.DS_Store
+
+# Logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.temp
+~$*
+
+# Dossiers d'éditeurs
+.vscode/
+.idea/
+
+# Node.js (si utilisé plus tard)
+node_modules/
