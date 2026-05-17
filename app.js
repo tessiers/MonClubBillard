@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error("Le SDK Supabase n'est pas chargé. Vérifiez votre connexion internet.");
         }
 
-        const SUPABASE_URL = "https://dazjtwhasphwyhkpvpwt.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhemp0d2hhc3Bod3loa3B2cHd0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMDM3OTEsImV4cCI6MjA4OTY3OTc5MX0.vem-iV7RZv9GQm-CArVdA_7LBOhTn3biawVTfVCRFv4";
+        const SUPABASE_URL = "https://iwtuwtvgrocmxfkmidlk.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3dHV3dHZncm9jbXhma21pZGxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTM5NzUsImV4cCI6MjA5MzkyOTk3NX0.ISCfQxrD4dAnygL-teYon-KoJWrzDuTEHFZpe9tslmY";
         
         supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log("Client Supabase initialisé.");
