@@ -556,6 +556,34 @@ let editingSubTypeId = null;
       }
     }
 
+    async function uploadToSupabase(file) {
+      if (!supabaseClient) return null;
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `drink_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+        const filePath = `drinks/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage
+          .from('images')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error("Erreur d'upload Supabase:", uploadError.message);
+          alert("Erreur d'envoi. Allez dans votre console Supabase -> section Storage, créez un Bucket nommé 'images' et configurez-le en PUBLIC.");
+          return null;
+        }
+
+        const { data } = supabaseClient.storage
+          .from('images')
+          .getPublicUrl(filePath);
+
+        return data?.publicUrl || null;
+      } catch (err) {
+        console.error("Erreur uploadToSupabase:", err);
+        return null;
+      }
+    }
+
     // Drink CRUD
     document.getElementById('add-drink-btn').addEventListener('click', () => {
       editingDrinkId = null;
