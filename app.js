@@ -611,7 +611,7 @@ let editingSubTypeId = null;
       lucide.createIcons();
     }
 
-    document.getElementById('save-drink-btn').addEventListener('click', async () => {
+    document.getElementById('save-drink-btn').addEventListener('click', async () => { try {
       const name = document.getElementById('drink-name').value;
       const price = document.getElementById('drink-price').value;
       const icon = document.getElementById('drink-icon').value;
@@ -642,7 +642,7 @@ let editingSubTypeId = null;
         loadAppData();
         loadAdminData();
       }
-    });
+      } catch (err) { hide('loading'); alert("Erreur générale: " + err.message); } });
 
     async function deleteDrink(id) {
       if (!confirm("Supprimer cette boisson ?")) return;
