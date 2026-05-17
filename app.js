@@ -579,7 +579,7 @@ let editingSubTypeId = null;
 
         return data?.publicUrl || null;
       } catch (err) {
-        console.error("Erreur uploadToSupabase:", err);
+        console.error("Erreur uploadToSupabase:", err); alert("Erreur technique d'envoi : " + err.message);
         return null;
       }
     }
@@ -636,7 +636,7 @@ let editingSubTypeId = null;
       }
 
       hide('loading');
-      if (res.error) alert("Erreur: " + res.error.message);
+      if (res && res.error) alert("Erreur de sauvegarde: " + res.error.message);
       else {
         closeModal('drink-modal');
         loadAppData();
