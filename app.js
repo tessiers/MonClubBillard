@@ -569,7 +569,7 @@ let editingSubTypeId = null;
 
         if (uploadError) {
           console.error("Erreur d'upload Supabase:", uploadError.message);
-          alert("Erreur d'envoi. Allez dans votre console Supabase -> section Storage, créez un Bucket nommé 'images' et configurez-le en PUBLIC.");
+          alert("Erreur d'envoi Supabase : " + uploadError.message + "\n\n(Vérifiez que le bucket 'images' est bien PUBLIC et que les règles RLS autorisent l'upload).");
           return null;
         }
 
