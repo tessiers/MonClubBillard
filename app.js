@@ -113,6 +113,19 @@ function handleSignOut() {
 
 // --- NAVIGATION ---
 function initNavigation() {
+    // Bouton de déconnexion
+    const logoutBtn = document.getElementById('btn-logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                toggleLoading(true);
+                const { error } = await supabaseClient.auth.signOut();
+                toggleLoading(false);
+                if (error) alert("Erreur lors de la déconnexion : " + error.message);
+            }
+        });
+    }
+
     const navItems = document.querySelectorAll('.nav-menu li');
     navItems.forEach(item => {
         item.addEventListener('click', () => {
