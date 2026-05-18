@@ -322,6 +322,52 @@ function closeModal(id) { hide(id); }
 let editingDrinkId = null;
 let editingSubTypeId = null;
 
+    // Fonction globale pour ouvrir le modal d'abonnement pré-rempli pour un membre existant
+    async function openSubscriptionFor(fullName, email) {
+      if (!email) {
+        alert("Impossible de modifier l'abonnement de ce membre car il n'a pas d'adresse e-mail renseignée.");
+        return;
+      }
+      
+      // 1. Charger les types d'abonnements si non présents en cache
+      if (!window.cachedSubTypes || window.cachedSubTypes.length === 0) {
+        const { data: types } = await supabaseClient.from('subscription_types').select('*');
+        window.cachedSubTypes = types || [];
+      }
+      
+      const select = document.getElementById('manual-mem-type');
+      select.innerHTML = window.cachedSubTypes.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+
+      // 2. Pré-remplir les champs dans la modale
+      document.getElementById('manual-mem-name').value = fullName;
+      document.getElementById('manual-mem-email').value = email;
+
+      // 3. Charger le dossier d'abonnement importé existant
+      show('loading');
+      try {
+        const { data: existing } = await supabaseClient
+          .from('imported_members')
+          .select('*')
+          .eq('email', email.trim().toLowerCase())
+          .maybeSingle();
+        window.existingMemberRecord = existing || null;
+        
+        // 4. Calculer dynamiquement la date de fin et afficher
+        updateCalculatedEndDate();
+        
+        // Personnaliser le titre du modal pour indiquer l'édition
+        document.querySelector('#member-modal h3').textContent = "Prolonger / Modifier l'Abonnement";
+        
+        show('member-modal');
+      } catch (err) {
+        console.error("Erreur lors du chargement des données d'abonnement:", err);
+        alert("Erreur lors de la récupération des données.");
+      } finally {
+        hide('loading');
+      }
+    }
+    window.openSubscriptionFor = openSubscriptionFor;
+
     async function loadAdminData() {
       const todayStr = new Date().toISOString().split('T')[0];
 
@@ -342,15 +388,26 @@ let editingSubTypeId = null;
         const isJ4 = lastSub && lastSub.end_date === j4Str;
 
         const row = document.createElement('tr');
+        const safeName = m.full_name.replace(/'/g, "\\'");
+        const safeEmail = (m.email || '').replace(/'/g, "\\'");
+
         row.innerHTML = `
-          <td>
+          <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             ${m.full_name}
             ${m.role === 'admin' ? '<br><span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem;">ADMIN</span>' : ''}
           </td>
-          <td style="font-size: 0.85rem;">${m.email || '<span class="text-muted">(non renseigné)</span>'}</td>
-          <td><span class="badge badge-active" style="font-size: 0.7rem;">Inscrit</span></td>
-          <td>${lastSub ? lastSub.subscription_types.name : '<span class="text-muted">Aucun</span>'}</td>
-          <td class="${isExpired ? 'text-danger font-bold' : (isJ4 ? 'text-warning font-bold' : 'text-success font-bold')}">${lastSub ? new Date(lastSub.end_date).toLocaleDateString() : '-'}</td>
+          <td class="clickable-cell" title="Modifier l'abonnement" style="font-size: 0.85rem;" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
+            ${m.email || '<span class="text-muted">(non renseigné)</span>'}
+          </td>
+          <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
+            <span class="badge badge-active" style="font-size: 0.7rem;">Inscrit</span>
+          </td>
+          <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
+            ${lastSub ? lastSub.subscription_types.name : '<span class="text-muted">Aucun</span>'}
+          </td>
+          <td class="clickable-cell ${isExpired ? 'text-danger font-bold' : (isJ4 ? 'text-warning font-bold' : 'text-success font-bold')}" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
+            ${lastSub ? new Date(lastSub.end_date).toLocaleDateString() : '-'}
+          </td>
           <td class="${balance > 0 ? 'text-danger font-bold' : ''}">${balance.toFixed(2)}€</td>
           <td>
             <div style="display: flex; gap: 0.5rem;">
@@ -383,12 +440,19 @@ let editingSubTypeId = null;
         const isJ4 = p.subscription_end_date && p.subscription_end_date === j4Str;
 
         const row = document.createElement('tr');
+        const safeName = p.full_name.replace(/'/g, "\\'");
+        const safeEmail = p.email.replace(/'/g, "\\'");
+
         row.innerHTML = `
-          <td>${p.full_name}</td>
-          <td style="font-size: 0.85rem;">${p.email}</td>
-          <td><span class="badge badge-expired" style="font-size: 0.7rem;">En attente</span></td>
-          <td>${p.subscription_types?.name || 'Inconnu'}</td>
-          <td class="${isExpired ? 'text-danger font-bold' : (isJ4 ? 'text-warning font-bold' : 'text-success font-bold')}">
+          <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">${p.full_name}</td>
+          <td class="clickable-cell" title="Modifier l'abonnement" style="font-size: 0.85rem;" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">${p.email}</td>
+          <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
+            <span class="badge badge-expired" style="font-size: 0.7rem;">En attente</span>
+          </td>
+          <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
+            ${p.subscription_types?.name || 'Inconnu'}
+          </td>
+          <td class="clickable-cell ${isExpired ? 'text-danger font-bold' : (isJ4 ? 'text-warning font-bold' : 'text-success font-bold')}" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             ${p.subscription_end_date ? new Date(p.subscription_end_date).toLocaleDateString() : '-'}
           </td>
           <td>0.00€</td>
@@ -618,6 +682,10 @@ let editingSubTypeId = null;
       document.getElementById('manual-mem-name').value = '';
       document.getElementById('manual-mem-email').value = '';
       window.existingMemberRecord = null;
+
+      // Réinitialiser le titre par défaut du modal
+      const modalTitle = document.querySelector('#member-modal h3');
+      if (modalTitle) modalTitle.textContent = "Ajouter un Membre Manuellement";
 
       updateCalculatedEndDate();
       show('member-modal');

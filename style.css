@@ -2100,3 +2100,13 @@ body.mode-cartesien .status-pill {
 .text-warning { color: var(--chakra-yellow) !important; }
 .text-success { color: var(--chakra-green) !important; }
 .font-bold { font-weight: bold !important; }
+
+/* Clickable Table Cells for Administration */
+.clickable-cell {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.clickable-cell:hover {
+    color: var(--accent) !important;
+    text-decoration: underline;
+}
