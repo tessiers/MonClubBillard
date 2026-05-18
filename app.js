@@ -401,6 +401,33 @@ let editingSubTypeId = null;
         body.appendChild(row);
       });
 
+      // Remplir la liste d'autocomplétion des membres uniques (Nom - Email)
+      const allMembersMap = new Map();
+      pending?.forEach(p => {
+        if (p.email && p.full_name) {
+          allMembersMap.set(p.email.toLowerCase().trim(), {
+            full_name: p.full_name,
+            email: p.email
+          });
+        }
+      });
+      mems?.forEach(m => {
+        if (m.email && m.full_name) {
+          allMembersMap.set(m.email.toLowerCase().trim(), {
+            full_name: m.full_name,
+            email: m.email
+          });
+        }
+      });
+      window.allMembersList = Array.from(allMembersMap.values()).sort((a, b) => a.full_name.localeCompare(b.full_name));
+
+      const datalist = document.getElementById('members-datalist');
+      if (datalist) {
+        datalist.innerHTML = window.allMembersList.map(m => 
+          `<option value="${m.full_name}">${m.email}</option>`
+        ).join('');
+      }
+
       // 3. Charger le reste (boissons, types d'abonnements)
       const dBody = document.getElementById('admin-drink-list');
       dBody.innerHTML = '';
@@ -486,7 +513,7 @@ let editingSubTypeId = null;
       const typeId = document.getElementById('manual-mem-type').value;
       if (!typeId || !window.cachedSubTypes || window.cachedSubTypes.length === 0) return;
       
-      const selectedType = window.cachedSubTypes.find(t => t.id === typeId);
+      const selectedType = window.cachedSubTypes.find(t => t.id.toString() === typeId.toString());
       if (!selectedType) return;
       
       const duration = parseInt(selectedType.duration_days) || 365;
@@ -526,6 +553,34 @@ let editingSubTypeId = null;
         document.getElementById('save-manual-member-btn').textContent = "Pré-enregistrer";
       }
     }
+
+    // Écouteur sur la saisie du nom pour l'autocomplétion intelligente
+    document.getElementById('manual-mem-name').addEventListener('input', async (e) => {
+      const name = e.target.value.trim();
+      if (name && window.allMembersList) {
+        // Recherche insensible à la casse d'un membre existant
+        const match = window.allMembersList.find(m => m.full_name.trim().toLowerCase() === name.toLowerCase());
+        if (match && match.email) {
+          document.getElementById('manual-mem-email').value = match.email;
+          
+          // Récupère immédiatement son dossier d'abonnement importé
+          show('loading');
+          try {
+            const { data: existing } = await supabaseClient
+              .from('imported_members')
+              .select('*')
+              .eq('email', match.email.trim().toLowerCase())
+              .maybeSingle();
+            window.existingMemberRecord = existing || null;
+            updateCalculatedEndDate();
+          } catch (err) {
+            console.error("Erreur lors de la récupération du membre:", err);
+          } finally {
+            hide('loading');
+          }
+        }
+      }
+    });
 
     // Écouteurs sur la saisie de l'email et le choix du type
     document.getElementById('manual-mem-email').addEventListener('blur', async () => {
