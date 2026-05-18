@@ -355,6 +355,9 @@ let editingSubTypeId = null;
           <td>
             <div style="display: flex; gap: 0.5rem;">
               ${balance > 0 ? `<button class="btn btn-outline" title="Encaisser" onclick="clearMemberBalance('${m.id}')"><i data-lucide="check-circle"></i></button>` : ''}
+              <button class="btn btn-outline" title="${m.role === 'admin' ? 'Rétrograder en membre simple' : 'Promouvoir Admin'}" onclick="toggleAdminRole('${m.id}', '${m.role}')">
+                <i data-lucide="${m.role === 'admin' ? 'shield-off' : 'shield'}" style="width: 16px; height: 16px;"></i>
+              </button>
               <button class="btn btn-outline btn-danger" title="Supprimer le profil" onclick="deleteProfile('${m.id}')"><i data-lucide="user-minus"></i></button>
             </div>
           </td>
@@ -453,6 +456,26 @@ let editingSubTypeId = null;
       const { error } = await supabaseClient.from('profiles').delete().eq('id', id);
       if (error) alert("Erreur: " + error.message);
       else loadAdminData();
+    }
+
+    async function toggleAdminRole(profileId, currentRole) {
+      const newRole = currentRole === 'admin' ? 'member' : 'admin';
+      const actionText = newRole === 'admin' ? 'promouvoir ce membre comme Administrateur' : 'rétrograder cet administrateur en membre simple';
+      
+      if (!confirm(`Voulez-vous vraiment ${actionText} ?`)) return;
+      
+      show('loading');
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', profileId);
+      
+      hide('loading');
+      if (error) alert("Erreur: " + error.message);
+      else {
+        alert("Rôle mis à jour avec succès !");
+        loadAdminData();
+      }
     }
 
     // --- NOUVEAU MEMBRE & PROLONGATION ---
