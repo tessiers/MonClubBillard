@@ -455,25 +455,98 @@ let editingSubTypeId = null;
       else loadAdminData();
     }
 
+    // --- NOUVEAU MEMBRE & PROLONGATION ---
+    window.cachedSubTypes = [];
+    window.existingMemberRecord = null;
+
+    function updateCalculatedEndDate() {
+      const typeId = document.getElementById('manual-mem-type').value;
+      if (!typeId || !window.cachedSubTypes || window.cachedSubTypes.length === 0) return;
+      
+      const selectedType = window.cachedSubTypes.find(t => t.id === typeId);
+      if (!selectedType) return;
+      
+      const duration = parseInt(selectedType.duration_days) || 365;
+      
+      let baseDate = new Date();
+      let isProlongation = false;
+      
+      if (window.existingMemberRecord && window.existingMemberRecord.subscription_end_date) {
+        const currentEnd = new Date(window.existingMemberRecord.subscription_end_date);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        currentEnd.setHours(0,0,0,0);
+        
+        if (currentEnd >= today) {
+          baseDate = new Date(window.existingMemberRecord.subscription_end_date);
+          isProlongation = true;
+        }
+      }
+      
+      // Ajouter la durée de l'abonnement choisi
+      baseDate.setDate(baseDate.getDate() + duration);
+      
+      // Formater en YYYY-MM-DD
+      document.getElementById('manual-mem-end-date').value = baseDate.toISOString().split('T')[0];
+      
+      // Mettre à jour l'aide textuelle dans la modale
+      const helpEl = document.querySelector('#member-modal .help');
+      if (window.existingMemberRecord) {
+        if (isProlongation) {
+          helpEl.innerHTML = `⚠️ <strong style="color:#ef4444;">Membre existant détecté !</strong> Son abonnement actuel se termine le <strong>${new Date(window.existingMemberRecord.subscription_end_date).toLocaleDateString()}</strong>. La prolongation démarrera le lendemain et ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+        } else {
+          helpEl.innerHTML = `⚠️ <strong style="color:#ef4444;">Membre existant détecté !</strong> Son abonnement est expiré. Le nouvel abonnement démarrera aujourd'hui et ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+        }
+        document.getElementById('save-manual-member-btn').textContent = "Prolonger / Mettre à jour";
+      } else {
+        helpEl.innerHTML = `Ce membre n'aura pas encore de compte utilisateur complet tant qu'il ne se sera pas inscrit avec ce même e-mail. L'abonnement ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+        document.getElementById('save-manual-member-btn').textContent = "Pré-enregistrer";
+      }
+    }
+
+    // Écouteurs sur la saisie de l'email et le choix du type
+    document.getElementById('manual-mem-email').addEventListener('blur', async () => {
+      const email = document.getElementById('manual-mem-email').value.trim().toLowerCase();
+      if (email) {
+        const { data: existing } = await supabaseClient
+          .from('imported_members')
+          .select('*')
+          .eq('email', email)
+          .maybeSingle();
+        window.existingMemberRecord = existing || null;
+        if (existing) {
+          if (!document.getElementById('manual-mem-name').value) {
+            document.getElementById('manual-mem-name').value = existing.full_name || '';
+          }
+        }
+      } else {
+        window.existingMemberRecord = null;
+      }
+      updateCalculatedEndDate();
+    });
+
+    document.getElementById('manual-mem-type').addEventListener('change', () => {
+      updateCalculatedEndDate();
+    });
+
     // Modal Nouveau Membre
     document.getElementById('add-member-btn').addEventListener('click', async () => {
       const { data: types } = await supabaseClient.from('subscription_types').select('*');
+      window.cachedSubTypes = types || [];
+      
       const select = document.getElementById('manual-mem-type');
       select.innerHTML = types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
       document.getElementById('manual-mem-name').value = '';
       document.getElementById('manual-mem-email').value = '';
+      window.existingMemberRecord = null;
 
-      // Set default end date to +1 year
-      const nextYear = new Date();
-      nextYear.setFullYear(nextYear.getFullYear() + 1);
-      document.getElementById('manual-mem-end-date').value = nextYear.toISOString().split('T')[0];
-
+      updateCalculatedEndDate();
       show('member-modal');
     });
 
     document.getElementById('save-manual-member-btn').addEventListener('click', async () => {
-      const name = document.getElementById('manual-mem-name').value;
+      const name = document.getElementById('manual-mem-name').value.trim();
       const email = document.getElementById('manual-mem-email').value.trim().toLowerCase();
       const typeId = document.getElementById('manual-mem-type').value;
       const endDate = document.getElementById('manual-mem-end-date').value;
@@ -482,19 +555,42 @@ let editingSubTypeId = null;
 
       show('loading');
 
-      // Enregistrer dans imported_members (staging) pour faire le lien avec le futur compte
+      // Double-check de l'existence par précaution
+      const { data: existing } = await supabaseClient
+        .from('imported_members')
+        .select('*')
+        .eq('email', email)
+        .maybeSingle();
+
+      let isNew = !existing;
+      let startDateStr = new Date().toISOString().split('T')[0];
+
+      if (existing) {
+        if (existing.subscription_end_date) {
+          const currentEnd = new Date(existing.subscription_end_date);
+          const today = new Date();
+          today.setHours(0,0,0,0);
+          currentEnd.setHours(0,0,0,0);
+          
+          if (currentEnd >= today) {
+            const nextDay = new Date(existing.subscription_end_date);
+            nextDay.setDate(nextDay.getDate() + 1);
+            startDateStr = nextDay.toISOString().split('T')[0];
+          }
+        }
+      }
+
       const record = {
         full_name: name,
         email: email,
         subscription_type_id: typeId,
         subscription_end_date: endDate,
-        subscription_start_date: new Date().toISOString().split('T')[0]
+        subscription_start_date: startDateStr
       };
 
       const { error } = await supabaseClient.from('imported_members').upsert(record, { onConflict: 'email' });
 
       if (!error) {
-        // --- Synchronisation immédiate pour les membres déjà inscrits ---
         const { data: profile } = await supabaseClient
           .from('profiles')
           .select('id')
@@ -502,34 +598,23 @@ let editingSubTypeId = null;
           .maybeSingle();
 
         if (profile) {
-          const { data: subs } = await supabaseClient
-            .from('subscriptions')
-            .select('*')
-            .eq('member_id', profile.id)
-            .order('end_date', { ascending: false })
-            .limit(1);
-
-          const latestSub = subs && subs.length > 0 ? subs[0] : null;
-
-          if (!latestSub || latestSub.type_id !== typeId || latestSub.end_date !== endDate) {
-            if (latestSub && latestSub.type_id === typeId) {
-              await supabaseClient.from('subscriptions').update({ end_date: endDate }).eq('id', latestSub.id);
-            } else {
-              await supabaseClient.from('subscriptions').insert({
-                member_id: profile.id,
-                type_id: typeId,
-                start_date: record.subscription_start_date,
-                end_date: endDate
-              });
-            }
-          }
+          await supabaseClient.from('subscriptions').insert({
+            member_id: profile.id,
+            type_id: typeId,
+            start_date: startDateStr,
+            end_date: endDate
+          });
         }
       }
 
       hide('loading');
       if (error) alert("Erreur: " + error.message);
       else {
-        alert("Membre pré-enregistré ! Il pourra récupérer ses droits dès qu'il créera son compte avec cet email.");
+        if (isNew) {
+          alert("Nouveau membre pré-enregistré avec succès !");
+        } else {
+          alert("Abonnement prolongé / mis à jour avec succès !");
+        }
         closeModal('member-modal');
         loadAdminData();
       }
