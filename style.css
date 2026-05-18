@@ -111,6 +111,15 @@
     padding: 3rem;
 }
 
+.auth-card h2 {
+    margin-bottom: 0.75rem;
+}
+
+.auth-card .card-subtitle {
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
 .logo-circle.large {
     width: 160px;
     height: 160px;
