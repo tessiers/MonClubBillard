@@ -189,16 +189,32 @@ document.addEventListener('DOMContentLoaded', () => {
             return { mode: 'local' };
         }
 
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (window.supabaseClient) {
+            supabaseClient = window.supabaseClient;
+        } else {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                auth: {
+                    storage: window.sessionStorage,
+                    persistSession: true
+                }
+            });
+            window.supabaseClient = supabaseClient;
+        }
 
-        const { error } = await supabaseClient
-            .from('app_settings')
-            .select('setting_key')
-            .limit(1);
+        try {
+            const { error } = await supabaseClient
+                .from('app_settings')
+                .select('setting_key')
+                .limit(1);
 
-        if (error) {
+            if (error) {
+                supabaseActive = false;
+                console.error('Supabase joignable mais schéma non prêt ou accès refusé:', error.message);
+                return { mode: 'local' };
+            }
+        } catch (err) {
             supabaseActive = false;
-            console.error('Supabase joignable mais schéma non prêt ou accès refusé:', error.message);
+            console.error('Supabase connection failed:', err);
             return { mode: 'local' };
         }
 
@@ -1265,6 +1281,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fonction: chargerJoueurs - rôle métier documenté pour faciliter la maintenance.
     async function chargerJoueurs() {
         const brut = localStorage.getItem(STORAGE_KEY_PLAYERS);
+        let localPlayers = [];
+        try {
+            if (brut) {
+                const parses = JSON.parse(brut);
+                if (Array.isArray(parses)) {
+                    localPlayers = parses
+                        .map((joueur) => {
+                            if (typeof joueur === 'string') {
+                                return creerFicheJoueur(joueur, ['amateur']);
+                            }
+                            return creerFicheJoueur(joueur?.nom, joueur?.categories, joueur?.photo);
+                        })
+                        .filter((joueur) => getNomJoueur(joueur));
+                }
+            }
+        } catch (_) {}
 
         if (supabaseActive) {
             try {
@@ -1274,6 +1306,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         .map((joueur) => creerFicheJoueur(joueur?.name, joueur?.categories, joueur?.photo))
                         .filter((joueur) => getNomJoueur(joueur));
                     localStorage.setItem(STORAGE_KEY_PLAYERS, JSON.stringify(joueurs));
+                    return;
+                } else if (localPlayers.length) {
+                    // Auto-guérison : si la base distante est vide mais qu'on a un cache local, on téléverse vers Supabase
+                    joueurs = localPlayers;
+                    console.log("Self-healing : Envoi du cache local des joueurs vers Supabase vide...");
+                    await saveRemotePlayers(joueurs);
                     return;
                 }
             } catch (error) {
@@ -1287,18 +1325,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        try {
-            const parses = JSON.parse(brut);
-            if (!Array.isArray(parses)) throw new Error('Format invalide');
-            joueurs = parses
-                .map((joueur) => {
-                    if (typeof joueur === 'string') {
-                        return creerFicheJoueur(joueur, ['amateur']);
-                    }
-                    return creerFicheJoueur(joueur?.nom, joueur?.categories, joueur?.photo);
-                })
-                .filter((joueur) => getNomJoueur(joueur));
-        } catch {
+        if (localPlayers.length) {
+            joueurs = localPlayers;
+        } else {
             joueurs = lireJoueursDepuisDatalist();
             sauvegarderJoueurs();
         }

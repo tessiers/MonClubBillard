@@ -161,6 +161,12 @@
     box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
 }
 
+.auth-footer a:hover {
+    color: var(--white) !important;
+    text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    text-decoration: underline !important;
+}
+
 body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--bg-main);
@@ -2118,4 +2124,44 @@ body.mode-cartesien .status-pill {
 .clickable-cell:hover {
     color: var(--accent) !important;
     text-decoration: underline;
+}
+
+/* Sidebar Facebook Link style */
+.sidebar-fb-link:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+    color: #1877f2 !important;
+    text-shadow: 0 0 10px rgba(24, 119, 242, 0.4);
+}
+
+/* Outstanding Slate row highlight */
+.unpaid-slate-row {
+    background: rgba(239, 68, 68, 0.04) !important;
+    border-left: 3px solid #ef4444 !important;
+}
+.unpaid-slate-row:hover {
+    background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* Red slate highlight text */
+.slate-due-high {
+    color: #ef4444 !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 8px rgba(239, 68, 68, 0.15);
+}
+
+/* Consumption columns styling */
+.consumption-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+@media (max-width: 768px) {
+    .consumption-columns {
+        grid-template-columns: 1fr;
+    }
+}
+.consumption-col {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }

@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 persistSession: true
             }
         });
+        window.supabaseClient = supabaseClient;
         console.log("Client Supabase initialisé.");
 
         await initAuth();
@@ -76,14 +77,20 @@ async function initAuth() {
         toggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
             isLogin = !isLogin;
+            const pseudoGroup = document.querySelector('.id-pseudo-group');
+            const pseudoInput = document.getElementById('login-pseudo');
             if (isLogin) {
                 toggleText.textContent = "Pas encore de compte ?";
                 toggleBtn.textContent = "S'inscrire";
                 submitBtn.innerHTML = `Se Connecter <i data-lucide="arrow-right"></i>`;
+                if (pseudoGroup) pseudoGroup.classList.add('hidden');
+                if (pseudoInput) pseudoInput.removeAttribute('required');
             } else {
                 toggleText.textContent = "Déjà un compte ?";
                 toggleBtn.textContent = "Se connecter";
                 submitBtn.innerHTML = `Créer un compte <i data-lucide="user-plus"></i>`;
+                if (pseudoGroup) pseudoGroup.classList.remove('hidden');
+                if (pseudoInput) pseudoInput.setAttribute('required', 'required');
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });
@@ -93,15 +100,46 @@ async function initAuth() {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
+        const pseudoInput = document.getElementById('login-pseudo');
+        const pseudo = pseudoInput ? pseudoInput.value.trim() : "";
 
         toggleLoading(true);
         if (isLogin) {
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) alert("Erreur : " + error.message);
         } else {
-            const { error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) alert("Erreur d'inscription : " + error.message);
-            else alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+            if (!pseudo) {
+                toggleLoading(false);
+                return alert("Veuillez saisir un pseudo.");
+            }
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: pseudo
+                    }
+                }
+            });
+            if (error) {
+                alert("Erreur d'inscription : " + error.message);
+            } else {
+                if (data?.user) {
+                    try {
+                        await supabaseClient
+                            .from('profiles')
+                            .upsert({
+                                id: data.user.id,
+                                email: email,
+                                full_name: pseudo,
+                                role: 'member'
+                            });
+                    } catch (err) {
+                        console.warn("Échec de l'upsert direct du profil (géré par trigger Supabase) :", err);
+                    }
+                }
+                alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+            }
         }
         toggleLoading(false);
     });
@@ -250,6 +288,34 @@ async function loadAppData() {
             currentUser.profile = profile;
         }
 
+        // Vérification de validité de l'abonnement pour les membres simples
+        const role = currentUser.profile?.role || 'member';
+        const subs = currentUser.profile?.subscriptions || [];
+        const activeSub = subs.sort((a, b) => new Date(b.end_date) - new Date(a.end_date))[0];
+        const todayStr = new Date().toISOString().split('T')[0];
+        const isExpired = !activeSub || activeSub.end_date < todayStr;
+
+        if (role !== 'admin' && isExpired) {
+            document.getElementById('section-expired-interception').style.display = 'flex';
+            document.getElementById('expired-sub-name').textContent = activeSub ? `Abonnement expiré : ${activeSub.subscription_types?.name || 'Standard'}` : "Aucun abonnement actif";
+            document.getElementById('expired-sub-date').textContent = activeSub ? new Date(activeSub.end_date).toLocaleDateString() : 'Non renseignée';
+            
+            const expiredLogoutBtn = document.getElementById('btn-logout-expired');
+            if (expiredLogoutBtn) {
+                expiredLogoutBtn.onclick = async () => {
+                    toggleLoading(true);
+                    await supabaseClient.auth.signOut();
+                    document.getElementById('section-expired-interception').style.display = 'none';
+                    toggleLoading(false);
+                };
+            }
+            toggleLoading(false);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            return; // Bloque le reste du chargement
+        } else {
+            document.getElementById('section-expired-interception').style.display = 'none';
+        }
+
         // 2. Ardoise (Consommations non payées)
         const { data: consumptions, error: consError } = await supabaseClient
             .from('consumptions')
@@ -292,16 +358,19 @@ function renderManagementUI() {
     
     const subTypeEl = document.getElementById('mem-sub-type');
     const subBadgeEl = document.getElementById('mem-sub-badge');
+    const subEndDateEl = document.getElementById('mem-sub-end-date');
 
     if (activeSub) {
         subTypeEl.textContent = activeSub.subscription_types?.name || 'Standard';
         const isExpired = new Date(activeSub.end_date) < new Date();
         subBadgeEl.textContent = isExpired ? 'Expiré' : 'Actif';
         subBadgeEl.className = isExpired ? 'value danger' : 'value success';
+        if (subEndDateEl) subEndDateEl.textContent = new Date(activeSub.end_date).toLocaleDateString();
     } else {
         subTypeEl.textContent = 'Aucun';
         subBadgeEl.textContent = 'Inactif';
         subBadgeEl.className = 'value danger';
+        if (subEndDateEl) subEndDateEl.textContent = 'Expiré';
     }
 
     // Drinks List
@@ -445,6 +514,72 @@ let editingSubTypeId = null;
 
       // 1. Unified Members Fetch
       const { data: mems } = await supabaseClient.from('profiles').select('*, subscriptions(*, subscription_types(*)), consumptions(*)').order('full_name');
+      
+      // Remplir l'onglet Consommations / Ardoises
+      const consBody = document.getElementById('admin-consumption-list');
+      if (consBody) {
+        consBody.innerHTML = '';
+        mems?.forEach(m => {
+          const unpaidCons = m.consumptions?.filter(c => !c.is_paid) || [];
+          const balance = unpaidCons.reduce((acc, c) => acc + (c.price_at_time * (c.quantity || 1)), 0);
+          const lastSub = m.subscriptions?.sort((a, b) => new Date(b.end_date) - new Date(a.end_date))[0];
+          
+          let subStatus = '<span class="badge badge-expired" style="font-size:0.7rem;">Aucun</span>';
+          if (lastSub) {
+            const isExpired = new Date(lastSub.end_date) < new Date();
+            subStatus = isExpired 
+              ? `<span class="badge badge-expired" style="font-size:0.7rem;">Expiré (${new Date(lastSub.end_date).toLocaleDateString()})</span>`
+              : `<span class="badge badge-active" style="font-size:0.7rem;">Actif (${new Date(lastSub.end_date).toLocaleDateString()})</span>`;
+          }
+
+          const row = document.createElement('tr');
+          if (balance > 0) {
+            row.className = 'unpaid-slate-row';
+          }
+          
+          const safeName = m.full_name.replace(/'/g, "\\'");
+          
+          row.innerHTML = `
+            <td>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:32px; height:32px; border-radius:50%; background:rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display:flex; align-items:center; justify-content:center; font-weight:bold; color:#22c55e;">
+                  ${m.full_name.charAt(0).toUpperCase()}
+                </div>
+                <span>${m.full_name}</span>
+              </div>
+            </td>
+            <td style="font-size: 0.85rem;">${m.email || '<span class="text-muted">(non renseigné)</span>'}</td>
+            <td>${subStatus}</td>
+            <td class="${balance > 0 ? 'slate-due-high' : ''}">${balance.toFixed(2)}€</td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;" title="Historique & Détails" onclick="openMemberConsumptionDetails('${m.id}', '${safeName}')">
+                  <i data-lucide="eye" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;"></i> Détails
+                </button>
+                ${balance > 0 ? `<button class="btn btn-outline" style="border-color:#22c55e; color:#22c55e; padding:4px 8px; font-size:0.8rem;" title="Encaisser l'ardoise" onclick="clearMemberBalance('${m.id}')"><i data-lucide="check-circle" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;"></i> Encaisser</button>` : ''}
+              </div>
+            </td>
+          `;
+          consBody.appendChild(row);
+        });
+      }
+
+      // Connecter le filtrage de recherche pour les consommations
+      const searchInput = document.getElementById('consumption-search-input');
+      if (searchInput) {
+        const newSearchInput = searchInput.cloneNode(true);
+        searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+        
+        newSearchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          const rows = document.querySelectorAll('#admin-consumption-list tr');
+          rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+          });
+        });
+      }
+
       const body = document.getElementById('admin-member-list');
       body.innerHTML = '';
       mems?.forEach(m => {
@@ -465,8 +600,13 @@ let editingSubTypeId = null;
 
         row.innerHTML = `
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
-            ${m.full_name}
-            ${m.role === 'admin' ? '<br><span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem;">ADMIN</span>' : ''}
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-weight:600;">${m.full_name}</span>
+              <button class="btn btn-outline" style="padding:2px 6px; font-size:0.75rem; border:none; background:transparent;" title="Modifier le pseudo" onclick="event.stopPropagation(); editMemberPseudo('${m.id}', '${safeName}')">
+                <i data-lucide="pencil" style="width:12px; height:12px;"></i>
+              </button>
+            </div>
+            ${m.role === 'admin' ? '<span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem; margin-top:2px; display:inline-block;">ADMIN</span>' : ''}
           </td>
           <td class="clickable-cell" title="Modifier l'abonnement" style="font-size: 0.85rem;" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             ${m.email || '<span class="text-muted">(non renseigné)</span>'}
@@ -640,6 +780,28 @@ let editingSubTypeId = null;
         loadAdminData();
       }
     }
+
+    async function editMemberPseudo(profileId, currentPseudo) {
+      const newPseudo = prompt("Modifier le pseudo du membre :", currentPseudo);
+      if (newPseudo === null) return;
+      const trimmed = newPseudo.trim();
+      if (!trimmed) return alert("Le pseudo ne peut pas être vide.");
+
+      show('loading');
+      const { error } = await supabaseClient
+        .from('profiles')
+        .update({ full_name: trimmed })
+        .eq('id', profileId);
+
+      hide('loading');
+      if (error) {
+        alert("Erreur lors de la modification du pseudo : " + error.message);
+      } else {
+        alert("Pseudo mis à jour avec succès !");
+        loadAdminData();
+      }
+    }
+    window.editMemberPseudo = editMemberPseudo;
 
     // --- NOUVEAU MEMBRE & PROLONGATION ---
     window.cachedSubTypes = [];
@@ -860,6 +1022,75 @@ let editingSubTypeId = null;
         if (memberId === currentUser.id) loadAppData(true);
       }
     }
+
+    async function openMemberConsumptionDetails(memberId, memberName) {
+      show('loading');
+      try {
+        const { data: consumptions, error } = await supabaseClient
+          .from('consumptions')
+          .select('*, drinks(name)')
+          .eq('member_id', memberId)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const unpaidList = consumptions?.filter(c => !c.is_paid) || [];
+        const paidList = consumptions?.filter(c => c.is_paid) || [];
+
+        const totalDue = unpaidList.reduce((acc, c) => acc + (c.price_at_time * (c.quantity || 1)), 0);
+
+        document.getElementById('consumption-detail-title').innerHTML = `<i data-lucide="coffee" style="width:20px;height:20px;vertical-align:middle;margin-right:6px;"></i> Consommations de <strong>${memberName}</strong>`;
+        document.getElementById('detail-total-due').textContent = `${totalDue.toFixed(2)}€`;
+
+        const unpaidBody = document.getElementById('detail-unpaid-list');
+        if (unpaidList.length === 0) {
+          unpaidBody.innerHTML = `<tr><td colspan="3" class="text-muted" style="text-align:center;">Aucune boisson en ardoise.</td></tr>`;
+        } else {
+          unpaidBody.innerHTML = unpaidList.map(c => `
+            <tr>
+              <td>${new Date(c.created_at).toLocaleDateString()}</td>
+              <td>${c.drinks?.name || 'Article'}</td>
+              <td class="text-danger" style="font-weight:600;">${c.price_at_time.toFixed(2)}€</td>
+            </tr>
+          `).join('');
+        }
+
+        const paidBody = document.getElementById('detail-paid-list');
+        if (paidList.length === 0) {
+          paidBody.innerHTML = `<tr><td colspan="3" class="text-muted" style="text-align:center;">Aucun historique de règlement.</td></tr>`;
+        } else {
+          paidBody.innerHTML = paidList.map(c => `
+            <tr>
+              <td>${new Date(c.created_at).toLocaleDateString()}</td>
+              <td>${c.drinks?.name || 'Article'}</td>
+              <td class="text-success" style="font-weight:600;">${c.price_at_time.toFixed(2)}€</td>
+            </tr>
+          `).join('');
+        }
+
+        const collectBtn = document.getElementById('btn-collect-tab');
+        if (totalDue > 0) {
+          collectBtn.style.display = '';
+          collectBtn.onclick = async () => {
+            document.getElementById('consumption-detail-modal').classList.add('hidden');
+            await clearMemberBalance(memberId);
+            openMemberConsumptionDetails(memberId, memberName);
+          };
+        } else {
+          collectBtn.style.display = 'none';
+        }
+
+        hide('loading');
+        document.getElementById('consumption-detail-modal').classList.remove('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      } catch (err) {
+        console.error("Erreur lors du chargement des détails de consommation :", err);
+        alert("Erreur technique : " + err.message);
+        hide('loading');
+      }
+    }
+    window.openMemberConsumptionDetails = openMemberConsumptionDetails;
 
     async function uploadToSupabase(file) {
       if (!supabaseClient) return null;
