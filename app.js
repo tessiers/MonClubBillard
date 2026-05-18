@@ -605,16 +605,18 @@ let editingSubTypeId = null;
       
       // Mettre à jour l'aide textuelle dans la modale
       const helpEl = document.querySelector('#member-modal .help');
-      if (window.existingMemberRecord) {
-        if (isProlongation) {
-          helpEl.innerHTML = `⚠️ <strong style="color:#ef4444;">Membre existant détecté !</strong> Son abonnement actuel se termine le <strong>${new Date(window.existingMemberRecord.subscription_end_date).toLocaleDateString()}</strong>. La prolongation démarrera le lendemain et ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+      if (helpEl) {
+        if (window.existingMemberRecord) {
+          if (isProlongation) {
+            helpEl.innerHTML = `⚠️ <strong style="color:#ef4444;">Membre existant détecté !</strong> Son abonnement actuel se termine le <strong>${new Date(window.existingMemberRecord.subscription_end_date).toLocaleDateString()}</strong>. La prolongation démarrera le lendemain et ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+          } else {
+            helpEl.innerHTML = `⚠️ <strong style="color:#ef4444;">Membre existant détecté !</strong> Son abonnement est expiré. Le nouvel abonnement démarrera aujourd'hui et ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+          }
+          document.getElementById('save-manual-member-btn').textContent = "Prolonger / Mettre à jour";
         } else {
-          helpEl.innerHTML = `⚠️ <strong style="color:#ef4444;">Membre existant détecté !</strong> Son abonnement est expiré. Le nouvel abonnement démarrera aujourd'hui et ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+          helpEl.innerHTML = `Ce membre n'aura pas encore de compte utilisateur complet tant qu'il ne se sera pas inscrit avec ce même e-mail. L'abonnement ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
+          document.getElementById('save-manual-member-btn').textContent = "Pré-enregistrer";
         }
-        document.getElementById('save-manual-member-btn').textContent = "Prolonger / Mettre à jour";
-      } else {
-        helpEl.innerHTML = `Ce membre n'aura pas encore de compte utilisateur complet tant qu'il ne se sera pas inscrit avec ce même e-mail. L'abonnement ira jusqu'au <strong>${baseDate.toLocaleDateString()}</strong>.`;
-        document.getElementById('save-manual-member-btn').textContent = "Pré-enregistrer";
       }
     }
 
