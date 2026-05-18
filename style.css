@@ -1,13 +1,13 @@
 :root {
-    /* Modern Dark Glassmorphism Theme */
-    --bg-main: #0b1120;
-    /* Fond principal très sombre */
-    --bg-sidebar: rgba(15, 23, 42, 0.65);
-    /* Sidebar vitrée sombre */
-    --text-main: #f8fafc;
-    /* Texte principal presque blanc */
-    --text-muted: #94a3b8;
-    /* Texte secondaire gris ardoise */
+    /* Modern Dark Glassmorphism Theme with Enhanced Contrast */
+    --bg-main: #0f172a;
+    /* Fond principal ardoise un peu plus clair pour plus de contraste */
+    --bg-sidebar: rgba(15, 23, 42, 0.85);
+    /* Sidebar plus opaque et contrastée */
+    --text-main: #ffffff;
+    /* Texte principal blanc pur */
+    --text-muted: #cbd5e1;
+    /* Texte secondaire gris clair très lisible */
     --accent-gold: #10b981;
     /* Remplacé par Vert Néon (Gagnant) */
     --accent-green: #10b981;
@@ -19,23 +19,23 @@
     --wood: #8b5cf6;
     /* Remplacé par Violet Néon */
     --white: #ffffff;
-    --glass-light: rgba(255, 255, 255, 0.03);
-    /* Blanc translucide pour les cartes */
-    --border: rgba(255, 255, 255, 0.08);
-    /* Bordures vitrées très fines */
-    --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    /* Ombre profonde */
+    --glass-light: rgba(255, 255, 255, 0.08);
+    /* Blanc translucide plus visible pour les cartes */
+    --border: rgba(255, 255, 255, 0.18);
+    /* Bordures vitrées plus nettes et contrastées */
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    /* Ombre profonde plus marquée */
     --radius: 16px;
 
     /* Variables de compatibilité Tournois (mappées sur le thème Moderne) */
     --bg: var(--bg-main);
-    --bg-glass: rgba(15, 23, 42, 0.7);
-    --bg-deep: #020617;
-    --panel: rgba(30, 41, 59, 0.4);
-    --panel-soft: rgba(30, 41, 59, 0.2);
+    --bg-glass: rgba(15, 23, 42, 0.88);
+    --bg-deep: #090d16;
+    --panel: rgba(30, 41, 59, 0.75);
+    --panel-soft: rgba(30, 41, 59, 0.45);
     --accent: var(--accent-green);
     --accent-rgb: 16, 185, 129;
-    --accent-glow: rgba(16, 185, 129, 0.25);
+    --accent-glow: rgba(16, 185, 129, 0.35);
     --accent-deep: #059669;
     --danger: #ef4444;
     --text: var(--text-main);
@@ -112,8 +112,8 @@
 }
 
 .logo-circle.large {
-    width: 120px;
-    height: 120px;
+    width: 160px;
+    height: 160px;
     margin: 0 auto 1.5rem;
 }
 
@@ -202,9 +202,9 @@ h3 {
 }
 
 .logo-circle {
-    width: 80px;
+    width: 110px;
     /* Plus grand */
-    height: 80px;
+    height: 110px;
     background: var(--accent-gold);
     border-radius: 50%;
     display: flex;
