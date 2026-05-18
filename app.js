@@ -6,6 +6,7 @@ let currentUser = null;
 let drinks = [];
 let settings = {};
 let isLogin = true;
+let inactivityTimeout = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("DOM chargé, initialisation...");
@@ -17,11 +18,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const SUPABASE_URL = "https://iwtuwtvgrocmxfkmidlk.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3dHV3dHZncm9jbXhma21pZGxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTM5NzUsImV4cCI6MjA5MzkyOTk3NX0.ISCfQxrD4dAnygL-teYon-KoJWrzDuTEHFZpe9tslmY";
         
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                storage: window.sessionStorage,
+                persistSession: true
+            }
+        });
         console.log("Client Supabase initialisé.");
 
         await initAuth();
         initNavigation();
+        initInactivityTracker();
         
         if (typeof lucide !== 'undefined') lucide.createIcons();
     } catch (err) {
@@ -108,7 +115,68 @@ function handleSignIn(user) {
 
 function handleSignOut() {
     currentUser = null;
+    if (inactivityTimeout) {
+        clearTimeout(inactivityTimeout);
+    }
     showView('login-view');
+}
+
+// --- CONTROLE D'ACCES PAR ROLE & VERROUILLAGE D'INACTIVITE ---
+function applyRoleAccessControl() {
+    const role = currentUser?.profile?.role || 'member';
+    
+    const navHome = document.querySelector('.nav-menu li[data-section="home"]');
+    const navTournaments = document.querySelector('.nav-menu li[data-section="tournaments"]');
+    const navAdmin = document.querySelector('.nav-menu li[data-section="admin"]');
+    
+    if (role === 'admin') {
+        if (navHome) navHome.style.display = '';
+        if (navTournaments) navTournaments.style.display = '';
+        if (navAdmin) navAdmin.style.display = '';
+        
+        switchSection('home');
+    } else {
+        if (navHome) navHome.style.display = 'none';
+        if (navTournaments) navTournaments.style.display = 'none';
+        if (navAdmin) navAdmin.style.display = 'none';
+        
+        // Les membres normaux sont strictement redirigés vers Gestion Club
+        switchSection('management');
+    }
+}
+
+function resetInactivityTimer() {
+    if (inactivityTimeout) {
+        clearTimeout(inactivityTimeout);
+    }
+    
+    // Si aucun utilisateur n'est connecté, ou s'il s'agit d'un admin, aucun compte à rebours
+    if (!currentUser || currentUser.profile?.role === 'admin') {
+        return;
+    }
+    
+    // Compte à rebours de 1 minute (60 000 ms) sans activité
+    inactivityTimeout = setTimeout(async () => {
+        console.log("Aucune activité depuis 1 minute. Déconnexion automatique de la session membre...");
+        if (currentUser) {
+            toggleLoading(true);
+            try {
+                await supabaseClient.auth.signOut();
+                alert("Votre session a été verrouillée automatiquement après 1 minute d'inactivité.");
+            } catch (err) {
+                console.error("Erreur déconnexion inactivité :", err);
+            } finally {
+                toggleLoading(false);
+            }
+        }
+    }, 60000);
+}
+
+function initInactivityTracker() {
+    const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart', 'click'];
+    events.forEach(event => {
+        document.addEventListener(event, resetInactivityTimer, { passive: true });
+    });
 }
 
 // --- NAVIGATION ---
@@ -199,6 +267,10 @@ async function loadAppData() {
 
         // 4. Rendu de l'interface
         renderManagementUI();
+        
+        // 5. Appliquer les droits d'accès par rôle & démarrer le verrouillage d'inactivité
+        applyRoleAccessControl();
+        resetInactivityTimer();
         
     } catch (err) {
         console.error("Erreur critique loadAppData:", err);
