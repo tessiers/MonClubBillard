@@ -853,6 +853,32 @@ tr:hover td {
     box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.22);
 }
 
+.chakra-input {
+    width: 100%;
+    max-width: 120px;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(var(--accent-rgb), 0.45);
+    background: linear-gradient(120deg, var(--panel-soft), color-mix(in srgb, var(--accent) 10%, var(--panel-soft)));
+    color: var(--text);
+    font-family: inherit;
+    outline: none;
+    font-weight: 600;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+/* If inline style has grid-template-columns, display as grid */
+.inline[style*="grid-template-columns"] {
+    display: grid;
+}
+
 .chakra-label {
     display: inline-flex;
     align-items: center;
