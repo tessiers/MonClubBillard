@@ -86,6 +86,52 @@
     display: none !important;
 }
 
+/* Modals styling - Premium Overlay */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 17, 32, 0.85); /* Modern deep dark backdrop */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 999; /* Float over all standard elements but under loading overlay if needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+.modal-content {
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 100%;
+    animation: modalScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+
+
 /* Auth View */
 .auth-view {
     height: 100vh;
