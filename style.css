@@ -2461,5 +2461,29 @@ body.mode-cartesien .status-pill {
     /* Search bar width adapted */
     .search-bar {
         width: 100%;
-    }
+}
+
+/* Admin Panel Tabs - Dynamic Underline Styling */
+.admin-tabs .btn-tab {
+    background: none !important;
+    border: none !important;
+    color: var(--text-muted) !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    padding: 0.5rem 1rem !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    transition: all 0.2s ease !important;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.admin-tabs .btn-tab:hover {
+    color: var(--text-main) !important;
+}
+
+.admin-tabs .btn-tab.active {
+    color: var(--text-main) !important;
+    border-bottom: 2px solid var(--accent-green) !important;
+    background: none !important;
 }
