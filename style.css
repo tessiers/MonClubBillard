@@ -176,6 +176,22 @@ body {
     background-attachment: fixed;
     color: var(--text-main);
     overflow: hidden;
+    position: relative;
+}
+
+/* Background watermark logo styling */
+body.logo-en-fond::before {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    background-image: var(--logo-bg-image);
+    background-size: var(--logo-bg-size, min(45vmin, 400px));
+    background-position: var(--logo-bg-position, right 40px bottom 40px);
+    background-repeat: no-repeat;
+    opacity: 0.08; /* Extremely subtle watermark */
+    pointer-events: none;
+    inset: 0;
+    transition: opacity 0.3s ease;
 }
 
 h1,
