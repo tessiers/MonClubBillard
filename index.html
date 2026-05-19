@@ -8,7 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Portail Club - Billard & Équitation</title>
-    <link rel="stylesheet" href="style.css?v=2.2.4">
+    <link rel="stylesheet" href="style.css?v=2.2.5">
     <link rel="stylesheet" href="tournament_hero.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -311,13 +311,10 @@
                                         </div>
                                         <div style="flex: 1;">
                                             <label class="help" style="margin-bottom: 4px;">Tableau final</label>
-                                            <select id="structure-finale-poules" class="chakra-select">
-                                                <option value="croise">Croisement dirigé (1er vs 2ème...)</option>
-                                                <option value="auto">Tirage au sort (Aléatoire)</option>
-                                            </select>
-                                            <p class="help" style="margin-top:5px; font-size: 0.8rem;">Le croisement
-                                                dirigé fait jouer
-                                                les 1ers contre les derniers qualifiés.</p>
+                                            <div style="padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); color: var(--text-main); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <i data-lucide="shuffle" style="width: 16px; height: 16px; color: var(--accent-green);"></i> Tirage au sort (Aléatoire)
+                                            </div>
+                                            <input type="hidden" id="structure-finale-poules" value="auto">
                                         </div>
                                     </div>
                                 </div>
@@ -1105,8 +1102,8 @@
     <script async defer crossorigin="anonymous"
         src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v17.0"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-    <script src="tournaments.js?v=2.2.4" defer></script>
-    <script src="app.js?v=2.2.4" defer></script>
+    <script src="tournaments.js?v=2.2.5" defer></script>
+    <script src="app.js?v=2.2.5" defer></script>
     <script>
         // Initialisation des icônes Lucide
         lucide.createIcons();
