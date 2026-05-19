@@ -714,30 +714,19 @@
 
                     <!-- Modal de départage -->
                     <div id="dept-overlay" class="dept-overlay hidden"
-                        style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-                        <div class="dept-box"
-                            style="background: white; padding: 30px; border-radius: 12px; width: 400px; text-align: center;">
-                            <h3>⚖️ Égalité non résolue</h3>
+                        style="position: fixed; inset: 0; background: rgba(5, 8, 22, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                        <div class="dept-box" style="text-align: center; max-width: 420px; width: 100%;">
+                            <h3>⚖️ Tirage au sort automatique</h3>
                             <p class="help" id="dept-desc">Ces joueurs sont à égalité parfaite.</p>
-                            <div class="dept-joueurs" id="dept-joueurs-list" style="margin: 15px 0;"></div>
-                            <div class="dept-choix-actions" id="dept-choix-actions"
-                                style="display: flex; gap: 10px; justify-content: center;">
-                                <button type="button" id="dept-btn-tirage" class="btn-main">🎲 Tirage au sort</button>
-                                <button type="button" id="dept-btn-partage" class="btn-alt">🏆 Jeu de partage</button>
-                            </div>
-                            <div id="dept-tirage-section" class="hidden">
+                            <div class="dept-joueurs" id="dept-joueurs-list" style="margin: 15px 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;"></div>
+                            
+                            <div id="dept-tirage-section">
                                 <div id="dept-roulette-display" class="dept-roulette-display"
-                                    style="font-size: 24px; font-weight: bold; margin: 20px 0;">—</div>
-                                <button type="button" id="dept-btn-lancer" class="btn-main" style="margin-top:10px;">▶
-                                    Lancer le tirage</button>
+                                    style="font-size: 24px; font-weight: bold; margin: 20px 0; color: var(--accent-green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);">—</div>
                                 <button type="button" id="dept-btn-confirmer-tirage" class="btn-main hidden"
-                                    style="margin-top:8px;">✅ Confirmer ce résultat</button>
+                                    style="margin-top:8px; width: 100%; justify-content: center; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600;">✅ Confirmer ce résultat</button>
                             </div>
-                            <div id="dept-partage-section" class="hidden">
-                                <p class="help">Qui a remporté le jeu de partage&nbsp;?</p>
-                                <div class="dept-partage-choix" id="dept-partage-choix-list"
-                                    style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
-                            </div>
+                            
                             <button type="button" id="dept-btn-fermer" class="btn-alt"
                                 style="margin-top: 20px; width: 100%;">✕ Annuler</button>
                         </div>

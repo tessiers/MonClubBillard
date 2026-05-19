@@ -2041,7 +2041,6 @@ document.addEventListener('DOMContentLoaded', () => {
             && document.getElementById('dept-desc')
             && document.getElementById('dept-joueurs-list')
             && document.getElementById('dept-tirage-section')
-            && document.getElementById('dept-partage-section')
             && document.getElementById('dept-btn-confirmer-tirage')
             && document.getElementById('dept-roulette-display')
         );
@@ -2058,15 +2057,21 @@ document.addEventListener('DOMContentLoaded', () => {
         tirageTempResult = null;
 
         document.getElementById('dept-desc').textContent =
-            `Ces ${groupe.length} joueurs sont à égalité parfaite et ne peuvent pas être départagés automatiquement.`;
+            `Ces ${groupe.length} joueurs sont à égalité parfaite. Un tirage au sort automatique va déterminer le vainqueur.`;
         document.getElementById('dept-joueurs-list').innerHTML =
             groupe.map(j => `<span class="dept-joueur-chip">${texteSecurise(j)}</span>`).join('');
-        document.getElementById('dept-tirage-section').classList.add('hidden');
-        document.getElementById('dept-partage-section').classList.add('hidden');
-        document.getElementById('dept-btn-confirmer-tirage').classList.add('hidden');
+        
+        const confirmerBtn = document.getElementById('dept-btn-confirmer-tirage');
+        if (confirmerBtn) confirmerBtn.classList.add('hidden');
+        
         const r = document.getElementById('dept-roulette-display');
         if (r) { r.textContent = '—'; r.className = 'dept-roulette-display'; }
         document.getElementById('dept-overlay').classList.remove('hidden');
+
+        // Lancement automatique du tirage au sort après un très court délai de courtoisie
+        setTimeout(() => {
+            if (departageGroupeEnCours) lancerTirageAnimation(departageGroupeEnCours);
+        }, 800);
     }
 
     function fermerModalDepartage() {
@@ -2086,14 +2091,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function lancerTirageAnimation(joueurs) {
         const roulette = document.getElementById('dept-roulette-display');
-        const lancerBtn = document.getElementById('dept-btn-lancer');
         const confirmerBtn = document.getElementById('dept-btn-confirmer-tirage');
         if (!roulette || !joueurs.length) return;
 
         const vainqueur = joueurs[Math.floor(Math.random() * joueurs.length)];
         tirageTempResult = vainqueur;
-        lancerBtn.disabled = true;
-        confirmerBtn.classList.add('hidden');
+        
+        if (confirmerBtn) confirmerBtn.classList.add('hidden');
         roulette.className = 'dept-roulette-display spinning';
 
         const totalSteps = 38;
@@ -2106,8 +2110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (step >= seq.length) {
                 roulette.textContent = '🏆 ' + vainqueur;
                 roulette.className = 'dept-roulette-display winner-glow';
-                confirmerBtn.classList.remove('hidden');
-                lancerBtn.disabled = false;
+                if (confirmerBtn) confirmerBtn.classList.remove('hidden');
                 return;
             }
             roulette.textContent = seq[step];
@@ -2121,32 +2124,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function initModalDepartage() {
         if (departageModalInitialise) return;
 
-        const btnTirage = document.getElementById('dept-btn-tirage');
-        const btnPartage = document.getElementById('dept-btn-partage');
-        const btnLancer = document.getElementById('dept-btn-lancer');
         const btnConfirmer = document.getElementById('dept-btn-confirmer-tirage');
         const btnFermer = document.getElementById('dept-btn-fermer');
 
         // Le modal est défini après le script; on attend le DOM complet.
-        if (!btnTirage || !btnPartage || !btnLancer || !btnConfirmer || !btnFermer) return;
+        if (!btnConfirmer || !btnFermer) return;
 
         departageModalInitialise = true;
 
-        btnTirage.addEventListener('click', () => {
-            document.getElementById('dept-tirage-section').classList.remove('hidden');
-            document.getElementById('dept-partage-section').classList.add('hidden');
-        });
-        btnPartage.addEventListener('click', () => {
-            document.getElementById('dept-partage-section').classList.remove('hidden');
-            document.getElementById('dept-tirage-section').classList.add('hidden');
-            document.getElementById('dept-partage-choix-list').innerHTML =
-                (departageGroupeEnCours || []).map(j =>
-                    `<button type="button" class="dept-btn-partage-joueur" onclick="enregistrerVainqueurDepartage(${JSON.stringify(j)})">🏆 ${texteSecurise(j)}</button>`
-                ).join('');
-        });
-        btnLancer.addEventListener('click', () => {
-            if (departageGroupeEnCours) lancerTirageAnimation(departageGroupeEnCours);
-        });
         btnConfirmer.addEventListener('click', () => {
             if (tirageTempResult) enregistrerVainqueurDepartage(tirageTempResult);
         });
