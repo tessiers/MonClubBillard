@@ -495,6 +495,18 @@ async function loadAppData() {
                 
                 toggleLoading(true);
                 try {
+                    // 0. S'assurer que le profil existe (cas où il aurait été supprimé manuellement)
+                    const { data: profCheck } = await supabaseClient.from('profiles').select('id').eq('id', currentUser.id).maybeSingle();
+                    if (!profCheck) {
+                        const { error: profCreateErr } = await supabaseClient.from('profiles').insert({
+                            id: currentUser.id,
+                            email: currentUser.email,
+                            full_name: currentUser.profile?.full_name || currentUser.email.split('@')[0],
+                            role: 'member'
+                        });
+                        if (profCreateErr) throw new Error("Impossible de recréer votre profil : " + profCreateErr.message);
+                    }
+
                     // 1. Ajouter à la consommation (ardoise)
                     const { error: consError } = await supabaseClient.from('consumptions').insert({
                         member_id: currentUser.id,
