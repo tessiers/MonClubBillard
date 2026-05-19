@@ -1048,6 +1048,9 @@ let editingSubTypeId = null;
         `;
         sBody.appendChild(row);
       });
+      const { data: sLogs } = await supabaseClient.from('stock_logs').select('*').order('created_at', { ascending: false }).limit(100);
+      stockLogs = sLogs || [];
+      
       renderStockDashboard();
       lucide.createIcons();
     }
@@ -1862,75 +1865,49 @@ let editingSubTypeId = null;
 // --- GESTION DES STOCKS & CAISSE LIAISON ---
 // ==========================================
 
-let stockLogs = JSON.parse(localStorage.getItem('stock_logs') || '[]');
+let stockLogs = [];
 
 function initDrinkStocks() {
-    if (stockLogs.length === 0) {
-        stockLogs.push({
-            id: 'init',
-            timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
-            drink_id: null,
-            drink_name: 'Initialisation Système',
-            type: 'Initialisation',
-            qty: 0,
-            source: 'Système',
-            detail: 'Initialisation de la gestion du stock'
-        });
-        localStorage.setItem('stock_logs', JSON.stringify(stockLogs));
-    }
-
     drinks.forEach(d => {
-        if (d.stock !== undefined && d.stock !== null) {
-            return;
+        if (d.stock === undefined || d.stock === null) {
+            d.stock = 0;
         }
-        
-        const localStockKey = `stock_drink_${d.id}`;
-        let localStock = localStorage.getItem(localStockKey);
-        if (localStock === null) {
-            localStock = 0;
-            localStorage.setItem(localStockKey, localStock);
-            logStockMovement(d.id, d.name, 'Ajustement (Inventaire)', 0, 'Système', 'Création de la boisson (stock initialisé à 0)');
-        }
-        d.stock = parseInt(localStock);
     });
 }
 
-function logStockMovement(drinkId, drinkName, type, qty, source, detail) {
-    const newLog = {
-        id: 'log_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
-        timestamp: new Date().toISOString(),
-        drink_id: drinkId,
-        drink_name: drinkName,
-        type: type,
-        qty: qty,
-        source: source,
-        detail: detail
-    };
-    stockLogs.unshift(newLog);
-    localStorage.setItem('stock_logs', JSON.stringify(stockLogs));
+async function logStockMovement(drinkId, drinkName, type, qty, source, detail) {
+    if (!supabaseClient) return;
+    try {
+        await supabaseClient.from('stock_logs').insert({
+            drink_id: drinkId,
+            drink_name: drinkName,
+            type: type,
+            qty: qty,
+            source: source,
+            detail: detail
+        });
+    } catch(err) {
+        console.warn("Erreur logStockMovement:", err);
+    }
 }
 
 async function updateDrinkStock(drinkId, newQty, type, changeQty, source, detail) {
     const drink = drinks.find(d => d.id === drinkId);
     if (!drink) return false;
 
-    let dbSuccess = false;
     try {
         const { error } = await supabaseClient
             .from('drinks')
             .update({ stock: newQty })
             .eq('id', drinkId);
-        if (!error) {
-            dbSuccess = true;
-        }
+        if (error) throw error;
     } catch (e) {
-        // En cas d'erreur de colonne inexistante
+        console.warn("Erreur mise à jour stock Supabase:", e);
+        return false;
     }
 
-    localStorage.setItem(`stock_drink_${drinkId}`, newQty);
     drink.stock = newQty;
-
-    logStockMovement(drinkId, drink.name, type, changeQty, source, detail);
+    await logStockMovement(drinkId, drink.name, type, changeQty, source, detail);
     return true;
 }
 
@@ -2056,7 +2033,7 @@ function renderStockDashboard() {
 
             return `
                 <tr>
-                    <td style="font-size: 0.8rem; color: var(--text-muted);">${new Date(l.timestamp).toLocaleString()}</td>
+                    <td style="font-size: 0.8rem; color: var(--text-muted);">${new Date(l.created_at).toLocaleString()}</td>
                     <td style="font-weight: 500;">${l.drink_name || 'N/A'}</td>
                     <td>${movementLabel}</td>
                     <td>${Math.abs(l.qty)} pcs</td>
