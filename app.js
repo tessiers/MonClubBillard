@@ -123,6 +123,24 @@ async function initAuth() {
                 toggleLoading(false);
                 return alert("Veuillez saisir un pseudo.");
             }
+
+            // Vérification que le membre est bien "en attente d'inscription"
+            const { data: importedMember, error: importCheckError } = await supabaseClient
+                .from('imported_members')
+                .select('email')
+                .eq('email', email.trim().toLowerCase())
+                .maybeSingle();
+
+            if (importCheckError) {
+                toggleLoading(false);
+                return alert("Erreur lors de la vérification de votre éligibilité : " + importCheckError.message);
+            }
+
+            if (!importedMember) {
+                toggleLoading(false);
+                return alert("Création de compte refusée : Votre e-mail n'est pas en attente d'inscription dans la liste des membres. Veuillez demander à un administrateur de vous ajouter au préalable.");
+            }
+
             const { data, error } = await supabaseClient.auth.signUp({
                 email,
                 password,
@@ -449,6 +467,71 @@ async function loadAppData() {
                     toggleLoading(false);
                 };
             }
+
+            // Affichage des adhésions disponibles
+            const { data: allDrinks } = await supabaseClient.from('drinks').select('*');
+            const { data: subTypes } = await supabaseClient.from('subscription_types').select('*');
+            
+            const memberships = allDrinks?.filter(d => d.name.toLowerCase().includes('adhésion') || d.name.toLowerCase().includes('adhesion') || d.name.toLowerCase().includes('abonnement')) || [];
+            
+            const membershipsList = document.getElementById('expired-memberships-list');
+            if (membershipsList) {
+                membershipsList.innerHTML = memberships.map(d => {
+                    return `
+                    <button class="btn btn-outline" onclick="purchaseMembership(${d.id}, '${d.name.replace(/'/g, "\\'")}', ${d.price})" style="justify-content: space-between; padding: 1rem; border-radius: 10px; background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: white;">
+                        <div style="display:flex; align-items:center; gap: 0.5rem;">
+                            <i data-lucide="${d.icon || 'check-circle'}" style="color: #22c55e;"></i>
+                            <span style="font-weight: 600;">${d.name}</span>
+                        </div>
+                        <span style="font-weight: bold; color: #22c55e;">${d.price}€</span>
+                    </button>
+                    `;
+                }).join('');
+            }
+            
+            // Fonction globale pour acheter l'adhésion
+            window.purchaseMembership = async (drinkId, name, price) => {
+                if (!confirm(`Souscrire à "${name}" pour ${price}€ ? Le montant sera ajouté à votre ardoise.`)) return;
+                
+                toggleLoading(true);
+                try {
+                    // 1. Ajouter à la consommation (ardoise)
+                    const { error: consError } = await supabaseClient.from('consumptions').insert({
+                        member_id: currentUser.id,
+                        drink_id: drinkId,
+                        price_at_time: price
+                    });
+                    if (consError) throw consError;
+
+                    // 2. Trouver le type d'abonnement correspondant (par le prix ou le nom)
+                    const matchedType = subTypes?.find(t => t.price === price || name.toLowerCase().includes(t.name.toLowerCase()));
+                    
+                    if (matchedType) {
+                        const startDate = new Date();
+                        const endDate = new Date();
+                        endDate.setDate(startDate.getDate() + (matchedType.duration_days || 30));
+                        
+                        const { error: subError } = await supabaseClient.from('subscriptions').insert({
+                            member_id: currentUser.id,
+                            type_id: matchedType.id,
+                            start_date: startDate.toISOString().split('T')[0],
+                            end_date: endDate.toISOString().split('T')[0]
+                        });
+                        
+                        if (subError) throw subError;
+                        
+                        alert("Adhésion validée ! Vous pouvez maintenant accéder au portail.");
+                        document.getElementById('section-expired-interception').style.display = 'none';
+                        loadAppData(); // Recharge l'app avec les nouveaux droits
+                    } else {
+                        throw new Error("Type d'abonnement correspondant non trouvé. L'admin devra vous débloquer manuellement.");
+                    }
+                } catch(err) {
+                    alert("Erreur lors de la souscription : " + err.message);
+                    toggleLoading(false);
+                }
+            };
+
             toggleLoading(false);
             if (typeof lucide !== 'undefined') lucide.createIcons();
             return; // Bloque le reste du chargement
@@ -498,6 +581,16 @@ function renderManagementUI() {
     const dropRole = document.getElementById('dropdown-user-role');
     if (dropName) dropName.textContent = currentUser.profile?.full_name || 'Membre';
     if (dropRole) dropRole.textContent = currentUser.profile?.role === 'admin' ? 'Administrateur' : 'Membre';
+    
+    // Mettre à jour l'avatar de la top-bar
+    const avatarContainer = document.querySelector('.user-profile .avatar');
+    if (avatarContainer) {
+        if (currentUser.profile?.avatar_url) {
+            avatarContainer.innerHTML = `<img src="${currentUser.profile.avatar_url}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+        } else {
+            avatarContainer.innerHTML = `<i data-lucide="user"></i>`;
+        }
+    }
     
     document.getElementById('mem-balance').textContent = `${currentUser.balance.toFixed(2)}€`;
     
@@ -659,6 +752,10 @@ let editingSubTypeId = null;
       // 2. Pré-remplir les champs dans la modale
       document.getElementById('manual-mem-name').value = fullName;
       document.getElementById('manual-mem-email').value = email;
+      const avatarUrlInput = document.getElementById('manual-mem-avatar-url');
+      const avatarFileInput = document.getElementById('manual-mem-avatar-file');
+      if (avatarUrlInput) avatarUrlInput.value = '';
+      if (avatarFileInput) avatarFileInput.value = '';
 
       // 3. Charger le dossier d'abonnement importé existant
       show('loading');
@@ -669,6 +766,16 @@ let editingSubTypeId = null;
           .eq('email', email.trim().toLowerCase())
           .maybeSingle();
         window.existingMemberRecord = existing || null;
+
+        const { data: profile } = await supabaseClient
+          .from('profiles')
+          .select('avatar_url')
+          .eq('email', email.trim().toLowerCase())
+          .maybeSingle();
+        
+        if (profile && profile.avatar_url && avatarUrlInput) {
+            avatarUrlInput.value = profile.avatar_url;
+        }
         
         // 4. Calculer dynamiquement la date de fin et afficher
         updateCalculatedEndDate();
@@ -775,15 +882,24 @@ let editingSubTypeId = null;
         const safeName = m.full_name.replace(/'/g, "\\'");
         const safeEmail = (m.email || '').replace(/'/g, "\\'");
 
+        const avatarHtml = m.avatar_url ? 
+          `<img src="${m.avatar_url}" style="width:64px; height:64px; border-radius:50%; object-fit:cover; border: 1px solid rgba(255,255,255,0.2);">` : 
+          `<div style="width:64px; height:64px; border-radius:50%; background:rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display:flex; align-items:center; justify-content:center; font-weight:bold; color:#22c55e; font-size:1.5rem;">${m.full_name.charAt(0).toUpperCase()}</div>`;
+
         row.innerHTML = `
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span style="font-weight:600;">${m.full_name}</span>
-              <button class="btn btn-outline" style="padding:2px 6px; font-size:0.75rem; border:none; background:transparent;" title="Modifier le pseudo" onclick="event.stopPropagation(); editMemberPseudo('${m.id}', '${safeName}')">
-                <i data-lucide="pencil" style="width:12px; height:12px;"></i>
-              </button>
+            <div style="display:flex; align-items:center; gap:8px;">
+              ${avatarHtml}
+              <div style="display:flex; flex-direction:column;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="font-weight:600;">${m.full_name}</span>
+                  <button class="btn btn-outline" style="padding:2px 6px; font-size:0.75rem; border:none; background:transparent;" title="Modifier le pseudo" onclick="event.stopPropagation(); editMemberPseudo('${m.id}', '${safeName}')">
+                    <i data-lucide="pencil" style="width:12px; height:12px;"></i>
+                  </button>
+                </div>
+                ${m.role === 'admin' ? '<span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem; margin-top:2px; align-self:flex-start;">ADMIN</span>' : ''}
+              </div>
             </div>
-            ${m.role === 'admin' ? '<span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem; margin-top:2px; display:inline-block;">ADMIN</span>' : ''}
           </td>
           <td class="clickable-cell" title="Modifier l'abonnement" style="font-size: 0.85rem;" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             ${m.email || '<span class="text-muted">(non renseigné)</span>'}
@@ -1109,10 +1225,17 @@ let editingSubTypeId = null;
       const email = document.getElementById('manual-mem-email').value.trim().toLowerCase();
       const typeId = document.getElementById('manual-mem-type').value;
       const endDate = document.getElementById('manual-mem-end-date').value;
+      let avatarUrl = document.getElementById('manual-mem-avatar-url') ? document.getElementById('manual-mem-avatar-url').value : '';
+      const avatarFile = document.getElementById('manual-mem-avatar-file') ? document.getElementById('manual-mem-avatar-file').files[0] : null;
 
       if (!name || !email || !endDate) return alert("Tous les champs sont requis.");
 
       show('loading');
+
+      if (avatarFile) {
+        const uploadedUrl = await uploadToSupabase(avatarFile);
+        if (uploadedUrl) avatarUrl = uploadedUrl;
+      }
 
       // Double-check de l'existence par précaution
       const { data: existing } = await supabaseClient
@@ -1157,6 +1280,14 @@ let editingSubTypeId = null;
           .maybeSingle();
 
         if (profile) {
+          if (typeof avatarUrl !== 'undefined' && (avatarUrl || avatarUrl === '')) {
+             try {
+                 await supabaseClient.from('profiles').update({ avatar_url: avatarUrl }).eq('id', profile.id);
+             } catch(err) {
+                 console.warn("Erreur MAJ avatar", err);
+             }
+          }
+
           await supabaseClient.from('subscriptions').insert({
             member_id: profile.id,
             type_id: typeId,

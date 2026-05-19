@@ -17,11 +17,20 @@
         const isExpired = lastSub && lastSub.end_date < todayStr;
         const isJ4 = lastSub && lastSub.end_date === j4Str;
 
+        const avatarHtml = m.avatar_url ? 
+          `<img src="${m.avatar_url}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border: 1px solid rgba(255,255,255,0.2); vertical-align: middle; margin-right: 8px;">` : 
+          `<div style="width:32px; height:32px; border-radius:50%; background:rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display:inline-flex; align-items:center; justify-content:center; font-weight:bold; color:#22c55e; vertical-align: middle; margin-right: 8px;">${m.full_name.charAt(0).toUpperCase()}</div>`;
+
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>
-            ${m.full_name}
-            ${m.role === 'admin' ? '<br><span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem;">ADMIN</span>' : ''}
+            <div style="display:flex; align-items:center;">
+              ${avatarHtml}
+              <div>
+                ${m.full_name}
+                ${m.role === 'admin' ? '<br><span class="badge badge-active" style="font-size:0.6rem; padding: 0.1rem 0.3rem;">ADMIN</span>' : ''}
+              </div>
+            </div>
           </td>
           <td style="font-size: 0.85rem;">${m.email || '<span class="text-muted">(non renseigné)</span>'}</td>
           <td><span class="badge badge-active" style="font-size: 0.7rem;">Inscrit</span></td>
@@ -153,10 +162,17 @@
       const email = document.getElementById('manual-mem-email').value.trim().toLowerCase();
       const typeId = document.getElementById('manual-mem-type').value;
       const endDate = document.getElementById('manual-mem-end-date').value;
+      let avatarUrl = document.getElementById('manual-mem-avatar-url') ? document.getElementById('manual-mem-avatar-url').value : '';
+      const avatarFile = document.getElementById('manual-mem-avatar-file') ? document.getElementById('manual-mem-avatar-file').files[0] : null;
 
-      if (!name || !email || !endDate) return alert("Tous les champs sont requis.");
+      if (!name || !email || !endDate) return alert("Tous les champs (Nom, Email, Date) sont requis.");
 
       show('loading');
+
+      if (avatarFile) {
+        const uploadedUrl = await uploadToSupabase(avatarFile);
+        if (uploadedUrl) avatarUrl = uploadedUrl;
+      }
 
       // Enregistrer dans imported_members (staging) pour faire le lien avec le futur compte
       const record = {
@@ -178,6 +194,15 @@
           .maybeSingle();
 
         if (profile) {
+          // Mise à jour de la photo de profil s'il y a un changement
+          if (avatarUrl || avatarUrl === '') {
+             try {
+                 await supabaseClient.from('profiles').update({ avatar_url: avatarUrl }).eq('id', profile.id);
+             } catch(err) {
+                 console.warn("Erreur MAJ avatar (colonne avatar_url peut-être manquante)", err);
+             }
+          }
+
           const { data: subs } = await supabaseClient
             .from('subscriptions')
             .select('*')
