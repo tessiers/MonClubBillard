@@ -45,6 +45,9 @@
                 <div class="input-group">
                     <label>Mot de passe</label>
                     <input type="password" id="login-password" required placeholder="••••••••">
+                    <div style="text-align: right; margin-top: 0.4rem;">
+                        <a href="#" id="btn-forgot-password" style="font-size: 0.8rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s;">Mot de passe oublié ?</a>
+                    </div>
                 </div>
                 <button type="submit" id="auth-submit-btn" class="btn btn-primary"
                     style="width: 100%; justify-content: center; margin-bottom: 1.5rem;">
@@ -106,9 +109,33 @@
             <!-- Header avec rappel du thème Billard -->
             <header class="top-bar">
 
-                <div class="user-profile">
+                <!-- Version Mobile du Header (visible uniquement sur smartphone) -->
+                <div class="mobile-logo-header">
+                    <div class="logo-circle-mini">
+                        <img src="Logo.jpg" alt="BC41" onerror="this.style.display='none'">
+                    </div>
+                    <span class="mobile-title">Billard Club 41</span>
+                </div>
+
+                <div class="user-profile" id="user-profile-menu-trigger">
                     <span id="user-name">Chargement...</span>
                     <div class="avatar"><i data-lucide="user"></i></div>
+                    
+                    <!-- Menu déroulant profil -->
+                    <div id="profile-dropdown" class="profile-dropdown hidden">
+                        <div class="dropdown-header">
+                            <span id="dropdown-user-name" style="font-weight: 600;">Chargement...</span>
+                            <span id="dropdown-user-role" style="font-size: 0.75rem; color: var(--text-muted);">Membre</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" id="dropdown-btn-change-password" class="dropdown-item">
+                            <i data-lucide="key" style="width: 14px; height: 14px;"></i> Changer mot de passe
+                        </button>
+                        <div class="dropdown-divider"></div>
+                        <button type="button" id="dropdown-btn-logout" class="dropdown-item danger">
+                            <i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Se déconnecter
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -1029,6 +1056,52 @@
                         <button id="btn-logout-expired" class="btn btn-outline" style="border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; justify-content: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.05); padding: 0.8rem; font-weight: 600; border-radius: 10px;">
                             <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Se déconnecter
                         </button>
+                    </div>
+                </div>
+
+                <!-- Modal de Changement de Mot de Passe -->
+                <div id="change-password-modal" class="modal hidden">
+                    <div class="modal-content card"
+                        style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
+                        <h3>Modifier mon mot de passe</h3>
+                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre nouveau mot de passe ci-dessous.</p>
+                        
+                        <form id="change-password-form">
+                            <div class="input-group">
+                                <label>Nouveau mot de passe</label>
+                                <input type="password" id="new-password" required minlength="6" placeholder="Au moins 6 caractères">
+                            </div>
+                            <div class="input-group">
+                                <label>Confirmer le nouveau mot de passe</label>
+                                <input type="password" id="confirm-password" required minlength="6" placeholder="••••••••">
+                            </div>
+                            
+                            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                                <button type="button" class="btn btn-outline" id="cancel-change-password" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
+                                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Mettre à jour</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal de Récupération de Mot de Passe -->
+                <div id="forgot-password-modal" class="modal hidden">
+                    <div class="modal-content card"
+                        style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
+                        <h3>Mot de passe oublié ?</h3>
+                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre adresse e-mail. Un e-mail contenant un lien de réinitialisation vous sera envoyé.</p>
+                        
+                        <form id="forgot-password-form">
+                            <div class="input-group">
+                                <label>Adresse E-mail</label>
+                                <input type="email" id="forgot-email" required placeholder="votre@email.com">
+                            </div>
+                            
+                            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                                <button type="button" class="btn btn-outline" id="cancel-forgot-password" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
+                                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Envoyer le lien</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

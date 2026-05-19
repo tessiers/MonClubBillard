@@ -58,6 +58,17 @@ async function initAuth() {
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
         console.log("Auth State Change :", event);
+        if (event === 'PASSWORD_RECOVERY' && session) {
+            currentUser = session.user;
+            showView('app-shell');
+            // Ouvrir directement le modal de changement de mot de passe
+            const changePassModal = document.getElementById('change-password-modal');
+            if (changePassModal) {
+                changePassModal.classList.remove('hidden');
+                alert("🔑 Session de récupération activée. Veuillez saisir votre nouveau mot de passe ci-dessous pour réinitialiser votre accès.");
+            }
+            return;
+        }
         if (event === 'SIGNED_IN' && session && !currentUser) {
             handleSignIn(session.user);
         }
@@ -251,6 +262,135 @@ function initNavigation() {
             document.getElementById(paneId).classList.add('active');
         });
     });
+
+    // Toggle Dropdown Profile Menu
+    const profileTrigger = document.getElementById('user-profile-menu-trigger');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    if (profileTrigger && profileDropdown) {
+        profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
+        
+        // Fermer le dropdown en cliquant n'importe où
+        document.addEventListener('click', () => {
+            profileDropdown.classList.add('hidden');
+        });
+    }
+    
+    // Bind Profile Dropdown Buttons
+    const btnChangePass = document.getElementById('dropdown-btn-change-password');
+    if (btnChangePass) {
+        btnChangePass.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.add('hidden');
+            document.getElementById('change-password-modal').classList.remove('hidden');
+        });
+    }
+    
+    const btnLogoutDropdown = document.getElementById('dropdown-btn-logout');
+    if (btnLogoutDropdown) {
+        btnLogoutDropdown.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.add('hidden');
+            if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                toggleLoading(true);
+                const { error } = await supabaseClient.auth.signOut();
+                toggleLoading(false);
+                if (error) alert("Erreur lors de la déconnexion : " + error.message);
+            }
+        });
+    }
+
+    // Modal Changement de Mot de Passe
+    const cancelChangePassBtn = document.getElementById('cancel-change-password');
+    const changePassModal = document.getElementById('change-password-modal');
+    const changePassForm = document.getElementById('change-password-form');
+    
+    if (cancelChangePassBtn && changePassModal) {
+        cancelChangePassBtn.addEventListener('click', () => {
+            changePassModal.classList.add('hidden');
+            if (changePassForm) changePassForm.reset();
+        });
+    }
+    
+    if (changePassForm) {
+        changePassForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                return alert("❌ Les mots de passe ne correspondent pas.");
+            }
+            
+            if (newPassword.length < 6) {
+                return alert("❌ Le mot de passe doit contenir au moins 6 caractères.");
+            }
+            
+            toggleLoading(true);
+            try {
+                const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+                if (error) {
+                    alert("❌ Erreur : " + error.message);
+                } else {
+                    alert("✅ Votre mot de passe a été mis à jour avec succès !");
+                    changePassModal.classList.add('hidden');
+                    changePassForm.reset();
+                }
+            } catch (err) {
+                alert("❌ Une erreur inattendue est survenue : " + err.message);
+            } finally {
+                toggleLoading(false);
+            }
+        });
+    }
+
+    // Modal Mot de passe oublié (Demande par E-mail)
+    const forgotPassLink = document.getElementById('btn-forgot-password');
+    const forgotPassModal = document.getElementById('forgot-password-modal');
+    const cancelForgotPassBtn = document.getElementById('cancel-forgot-password');
+    const forgotPassForm = document.getElementById('forgot-password-form');
+    
+    if (forgotPassLink && forgotPassModal) {
+        forgotPassLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            forgotPassModal.classList.remove('hidden');
+        });
+    }
+    
+    if (cancelForgotPassBtn && forgotPassModal) {
+        cancelForgotPassBtn.addEventListener('click', () => {
+            forgotPassModal.classList.add('hidden');
+            if (forgotPassForm) forgotPassForm.reset();
+        });
+    }
+    
+    if (forgotPassForm) {
+        forgotPassForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value;
+            
+            toggleLoading(true);
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: 'https://tessiers.github.io/MonClubBillard/'
+                });
+                
+                if (error) {
+                    alert("❌ Erreur : " + error.message);
+                } else {
+                    alert("📩 Un e-mail de réinitialisation a été envoyé ! Veuillez vérifier votre boîte de réception.");
+                    forgotPassModal.classList.add('hidden');
+                    forgotPassForm.reset();
+                }
+            } catch (err) {
+                alert("❌ Une erreur est survenue : " + err.message);
+            } finally {
+                toggleLoading(false);
+            }
+        });
+    }
 }
 
 function switchSection(name) {
@@ -351,6 +491,13 @@ function renderManagementUI() {
     if (!currentUser) return;
     
     document.getElementById('user-name').textContent = currentUser.profile?.full_name || 'Membre';
+    
+    // Remplir le menu déroulant profil
+    const dropName = document.getElementById('dropdown-user-name');
+    const dropRole = document.getElementById('dropdown-user-role');
+    if (dropName) dropName.textContent = currentUser.profile?.full_name || 'Membre';
+    if (dropRole) dropRole.textContent = currentUser.profile?.role === 'admin' ? 'Administrateur' : 'Membre';
+    
     document.getElementById('mem-balance').textContent = `${currentUser.balance.toFixed(2)}€`;
     
     const subs = currentUser.profile?.subscriptions || [];

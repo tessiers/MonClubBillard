@@ -2191,3 +2191,218 @@ body.mode-cartesien .status-pill {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
 }
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE LAYOUT FOR SMARTPHONES & PROFILE DROPDOWN
+   ========================================================================== */
+
+/* Dropdown Menu for Profile */
+.user-profile {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 240px;
+    background: var(--panel);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0;
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-header {
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    text-align: left;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.4rem 0;
+}
+
+.dropdown-item {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.dropdown-item.danger {
+    color: #ef4444;
+}
+
+.dropdown-item.danger:hover {
+    background: rgba(239, 68, 68, 0.08);
+    color: #fca5a5;
+}
+
+/* Mobile-logo Header in Top-Bar (Hidden on desktop by default) */
+.mobile-logo-header {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.logo-circle-mini {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+}
+
+.logo-circle-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mobile-title {
+    font-weight: 800;
+    font-size: 1.15rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+/* SMARTPHONE RESPONSIVE QUERY */
+@media (max-width: 768px) {
+    /* Hide desktop sidebar */
+    .sidebar {
+        display: none !important;
+    }
+
+    /* main-content occupies full viewport width */
+    .main-content {
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow-y: auto;
+    }
+
+    /* Compact Top Bar for Smartphone */
+    .top-bar {
+        padding: 0 1.2rem;
+        height: 70px;
+        justify-content: space-between;
+    }
+
+    .mobile-logo-header {
+        display: flex;
+    }
+
+    /* Content spacing compact */
+    #content-area {
+        padding: 1.2rem;
+        width: 100%;
+    }
+
+    .welcome-hero {
+        padding: 2.2rem 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .welcome-hero h2 {
+        font-size: 2rem;
+    }
+
+    .welcome-hero p {
+        font-size: 0.95rem;
+    }
+
+    /* Stack cards vertically */
+    .management-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Dynamic stats formatting */
+    .quick-stats {
+        justify-content: space-between;
+        width: 100%;
+        padding-right: 0;
+        gap: 0.8rem;
+    }
+
+    .module-header.management-hero-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.2rem;
+        gap: 1.2rem;
+    }
+
+    .stat-item {
+        align-items: flex-start;
+    }
+
+    /* Drinks grid smaller sizing */
+    .drink-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.8rem;
+    }
+
+    .drink-item {
+        padding: 1.2rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .drink-item img.drink-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .drink-item i, .drink-item svg {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* Search bar width adapted */
+    .search-bar {
+        width: 100%;
+    }
+}
