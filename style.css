@@ -2240,14 +2240,9 @@ body.mode-cartesien .status-pill {
 
 /* Consumption columns styling */
 .consumption-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
-}
-@media (max-width: 768px) {
-    .consumption-columns {
-        grid-template-columns: 1fr;
-    }
 }
 .consumption-col {
     backdrop-filter: blur(4px);
