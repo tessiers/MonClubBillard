@@ -1736,9 +1736,9 @@ function initDrinkStocks() {
         const localStockKey = `stock_drink_${d.id}`;
         let localStock = localStorage.getItem(localStockKey);
         if (localStock === null) {
-            localStock = 20;
+            localStock = 0;
             localStorage.setItem(localStockKey, localStock);
-            logStockMovement(d.id, d.name, 'Entrée Stock Initial', 20, 'Admin (Système)', 'Stock initialisé à 20 unités');
+            logStockMovement(d.id, d.name, 'Ajustement (Inventaire)', 0, 'Système', 'Création de la boisson (stock initialisé à 0)');
         }
         d.stock = parseInt(localStock);
     });
@@ -1869,9 +1869,12 @@ function renderStockDashboard() {
                     </div>
                 </td>
                 <td>${statusBadge}</td>
-                <td style="text-align: right;">
+                <td style="text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
                     <button class="btn btn-outline" onclick="openRefillModal(${d.id}, '${d.name.replace(/'/g, "\\'")}')" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-green); color: var(--accent-green);">
                         <i data-lucide="package-plus" style="width:14px; height:14px;"></i> Approvisionner
+                    </button>
+                    <button class="btn btn-outline" onclick="openInventoryModal(${d.id}, '${d.name.replace(/'/g, "\\'")}', ${stock})" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-gold); color: var(--accent-gold);">
+                        <i data-lucide="clipboard-list" style="width:14px; height:14px;"></i> Inventaire
                     </button>
                 </td>
             `;
@@ -1919,6 +1922,13 @@ window.openRefillModal = function(drinkId, drinkName) {
     document.getElementById('refill-drink-name').value = drinkName;
     document.getElementById('refill-qty-input').value = 24;
     document.getElementById('refill-stock-modal').classList.remove('hidden');
+};
+
+window.openInventoryModal = function(drinkId, drinkName, currentStock) {
+    document.getElementById('inventory-drink-id').value = drinkId;
+    document.getElementById('inventory-drink-name').value = drinkName;
+    document.getElementById('inventory-qty-input').value = currentStock;
+    document.getElementById('inventory-stock-modal').classList.remove('hidden');
 };
 
 document.addEventListener('click', function(e) {
@@ -1982,6 +1992,34 @@ document.addEventListener('click', function(e) {
         updateDrinkStock(id, newStock, `Retrait (${mode})`, -qty, 'Caisse Enregistreuse', `Vente/Retrait de ${qty} pcs via caisse bar`).then(() => {
             hide('loading');
             document.getElementById('caisse-simulation-modal').classList.add('hidden');
+            loadAdminData();
+        });
+    }
+
+    if (e.target && e.target.id === 'btn-submit-inventory') {
+        const id = parseInt(document.getElementById('inventory-drink-id').value);
+        const newStock = parseInt(document.getElementById('inventory-qty-input').value);
+        
+        if (isNaN(newStock) || newStock < 0) {
+            alert("Veuillez saisir une quantité valide (0 ou plus).");
+            return;
+        }
+
+        const drink = drinks.find(d => d.id === id);
+        if (!drink) return;
+
+        const currentStock = drink.stock || 0;
+        const changeQty = newStock - currentStock;
+
+        if (changeQty === 0) {
+            document.getElementById('inventory-stock-modal').classList.add('hidden');
+            return; // Pas de changement
+        }
+
+        show('loading');
+        updateDrinkStock(id, newStock, 'Ajustement (Inventaire)', changeQty, 'Administrateur', `Inventaire: stock passé de ${currentStock} à ${newStock}`).then(() => {
+            hide('loading');
+            document.getElementById('inventory-stock-modal').classList.add('hidden');
             loadAdminData();
         });
     }

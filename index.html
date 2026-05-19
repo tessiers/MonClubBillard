@@ -1097,6 +1097,37 @@
                     </div>
                 </div>
 
+                <!-- Modal Inventaire / Correction de Stock -->
+                <div id="inventory-stock-modal" class="modal hidden">
+                    <div class="modal-content card" style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
+                        <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="clipboard-list" style="color: var(--accent-gold);"></i> Faire un Inventaire
+                        </h3>
+                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
+                            Définissez la quantité exacte de stock actuellement disponible. Cela corrigera la valeur existante.
+                        </p>
+
+                        <input type="hidden" id="inventory-drink-id">
+                        
+                        <div class="input-group">
+                            <label>Boisson</label>
+                            <input type="text" id="inventory-drink-name" readonly style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;" disabled>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 1rem;">
+                            <label>Nouvelle Quantité en stock réelle</label>
+                            <input type="number" id="inventory-qty-input" min="0" value="0" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                            <button class="btn-alt" onclick="document.getElementById('inventory-stock-modal').classList.add('hidden')">Annuler</button>
+                            <button class="btn-main" id="btn-submit-inventory" style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
+                                Valider l'inventaire
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="subtype-modal" class="modal hidden">
                     <div class="modal-content card"
                         style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
