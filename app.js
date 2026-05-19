@@ -759,7 +759,7 @@ let editingSubTypeId = null;
       }
       
       const select = document.getElementById('manual-mem-type');
-      select.innerHTML = window.cachedSubTypes.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+      select.innerHTML = `<option value="">-- Ne pas modifier l'abonnement --</option>` + window.cachedSubTypes.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
       // 2. Pré-remplir les champs dans la modale
       document.getElementById('manual-mem-name').value = fullName;
@@ -1240,7 +1240,8 @@ let editingSubTypeId = null;
       let avatarUrl = document.getElementById('manual-mem-avatar-url') ? document.getElementById('manual-mem-avatar-url').value : '';
       const avatarFile = document.getElementById('manual-mem-avatar-file') ? document.getElementById('manual-mem-avatar-file').files[0] : null;
 
-      if (!name || !email || !endDate) return alert("Tous les champs sont requis.");
+      if (!name || !email) return alert("Le nom et l'email sont requis.");
+      if (typeId && !endDate) return alert("La date de fin est requise pour modifier l'abonnement.");
 
       show('loading');
 
@@ -1259,7 +1260,7 @@ let editingSubTypeId = null;
       let isNew = !existing;
       let startDateStr = new Date().toISOString().split('T')[0];
 
-      if (existing) {
+      if (typeId && existing) {
         if (existing.subscription_end_date) {
           const currentEnd = new Date(existing.subscription_end_date);
           const today = new Date();
@@ -1276,11 +1277,14 @@ let editingSubTypeId = null;
 
       const record = {
         full_name: name,
-        email: email,
-        subscription_type_id: typeId,
-        subscription_end_date: endDate,
-        subscription_start_date: startDateStr
+        email: email
       };
+      
+      if (typeId) {
+        record.subscription_type_id = typeId;
+        record.subscription_end_date = endDate;
+        record.subscription_start_date = startDateStr;
+      }
 
       const { error } = await supabaseClient.from('imported_members').upsert(record, { onConflict: 'email' });
 
@@ -1300,12 +1304,14 @@ let editingSubTypeId = null;
              }
           }
 
-          await supabaseClient.from('subscriptions').insert({
-            member_id: profile.id,
-            type_id: typeId,
-            start_date: startDateStr,
-            end_date: endDate
-          });
+          if (typeId) {
+            await supabaseClient.from('subscriptions').insert({
+              member_id: profile.id,
+              type_id: typeId,
+              start_date: startDateStr,
+              end_date: endDate
+            });
+          }
         }
       }
 
@@ -1314,8 +1320,10 @@ let editingSubTypeId = null;
       else {
         if (isNew) {
           alert("Nouveau membre pré-enregistré avec succès !");
-        } else {
+        } else if (typeId) {
           alert("Abonnement prolongé / mis à jour avec succès !");
+        } else {
+          alert("Profil mis à jour avec succès !");
         }
         closeModal('member-modal');
         loadAdminData();
