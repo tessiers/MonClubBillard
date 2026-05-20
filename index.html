@@ -13,9 +13,15 @@
     <style>
         /* Force modal-overlay display flex when active, completely bypassing external CSS cache */
         @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
+
         .modal-overlay {
             position: fixed !important;
             inset: 0 !important;
@@ -29,6 +35,7 @@
             padding: 1.5rem !important;
             animation: modalFadeIn 0.2s ease-out !important;
         }
+
         .modal-overlay.hidden {
             display: none !important;
         }
@@ -57,7 +64,8 @@
                     onerror="this.onerror=null; this.src='https://via.placeholder.com/80?text=BC41'">
             </div>
             <h2 style="margin-bottom: 0.75rem;">Bienvenue au Club</h2>
-            <p class="card-subtitle" style="margin-top: 0; margin-bottom: 2rem;">Connectez-vous pour accéder à vos services</p>
+            <p class="card-subtitle" style="margin-top: 0; margin-bottom: 2rem;">Connectez-vous pour accéder à vos
+                services</p>
 
             <form id="login-form">
                 <div class="input-group id-pseudo-group hidden">
@@ -72,7 +80,9 @@
                     <label>Mot de passe</label>
                     <input type="password" id="login-password" required placeholder="••••••••">
                     <div style="text-align: right; margin-top: 0.4rem;">
-                        <a href="#" id="btn-forgot-password" style="font-size: 0.8rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s;">Mot de passe oublié ?</a>
+                        <a href="#" id="btn-forgot-password"
+                            style="font-size: 0.8rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s;">Mot
+                            de passe oublié ?</a>
                     </div>
                 </div>
                 <button type="submit" id="auth-submit-btn" class="btn btn-primary"
@@ -82,7 +92,8 @@
 
                 <p class="auth-footer" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
                     <span id="auth-toggle-text">Pas encore de compte ?</span>
-                    <a href="#" id="auth-toggle-btn" style="color: var(--accent-green); font-weight: 600; text-decoration: none; transition: color 0.2s;">S'inscrire</a>
+                    <a href="#" id="auth-toggle-btn"
+                        style="color: var(--accent-green); font-weight: 600; text-decoration: none; transition: color 0.2s;">S'inscrire</a>
                 </p>
             </form>
         </div>
@@ -98,29 +109,51 @@
                 </div>
                 <h1>Billard Club 41</h1>
                 <!-- Raccourcis contacts compacts -->
-                <div class="sidebar-contacts" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 12px; padding: 10px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 8px; width: 100%; text-align: left;">
-                    <a href="https://www.facebook.com/profile.php?id=61572776020869" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
+                <div class="sidebar-contacts"
+                    style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 12px; padding: 10px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 8px; width: 100%; text-align: left;">
+                    <a href="https://www.facebook.com/profile.php?id=61572776020869" target="_blank"
+                        style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;"
+                        onmouseover="this.style.color='var(--text-main)'"
+                        onmouseout="this.style.color='var(--text-muted)'">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="#1877f2" style="flex-shrink: 0;">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            <path
+                                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                         </svg> <span style="font-weight: 500;">Page Facebook</span>
                     </a>
-                    <a href="https://www.youtube.com/@bonmatch-o7g" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
+                    <a href="https://www.youtube.com/@bonmatch-o7g" target="_blank"
+                        style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;"
+                        onmouseover="this.style.color='var(--text-main)'"
+                        onmouseout="this.style.color='var(--text-muted)'">
                         <svg viewBox="0 0 24 24" width="14" height="14" style="flex-shrink: 0;">
-                            <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837z" fill="#FF0000"/>
-                            <polygon points="9.545,15.568 9.545,8.432 15.818,12" fill="#FFFFFF"/>
+                            <path
+                                d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837z"
+                                fill="#FF0000" />
+                            <polygon points="9.545,15.568 9.545,8.432 15.818,12" fill="#FFFFFF" />
                         </svg> <span style="font-weight: 500;">bonmatch-o7g</span>
                     </a>
-                    <a href="tel:0612853818" style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
-                        <i data-lucide="phone" style="width: 14px; height: 14px; color: var(--accent-green);"></i> <span style="font-weight: 500;">06 12 85 38 18</span>
+                    <a href="tel:0612853818"
+                        style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;"
+                        onmouseover="this.style.color='var(--text-main)'"
+                        onmouseout="this.style.color='var(--text-muted)'">
+                        <i data-lucide="phone" style="width: 14px; height: 14px; color: var(--accent-green);"></i> <span
+                            style="font-weight: 500;">06 12 85 38 18</span>
                     </a>
-                    <a href="https://wa.me/33612853818" target="_blank" style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
+                    <a href="https://wa.me/33612853818" target="_blank"
+                        style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;"
+                        onmouseover="this.style.color='var(--text-main)'"
+                        onmouseout="this.style.color='var(--text-muted)'">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="#25D366">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                         </svg>
                         <span style="font-weight: 500;">WhatsApp</span>
                     </a>
-                    <a href="mailto:billardclub41@gmail.com" style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-muted)'">
-                        <i data-lucide="mail" style="width: 14px; height: 14px; color: var(--accent-gold);"></i> <span style="font-weight: 500;">billardclub41@gmail.com</span>
+                    <a href="mailto:billardclub41@gmail.com"
+                        style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s;"
+                        onmouseover="this.style.color='var(--text-main)'"
+                        onmouseout="this.style.color='var(--text-muted)'">
+                        <i data-lucide="mail" style="width: 14px; height: 14px; color: var(--accent-gold);"></i> <span
+                            style="font-weight: 500;">billardclub41@gmail.com</span>
                     </a>
                 </div>
             </div>
@@ -186,12 +219,13 @@
                 <div class="user-profile" id="user-profile-menu-trigger">
                     <span id="user-name">Chargement...</span>
                     <div class="avatar"><i data-lucide="user"></i></div>
-                    
+
                     <!-- Menu déroulant profil -->
                     <div id="profile-dropdown" class="profile-dropdown hidden">
                         <div class="dropdown-header">
                             <span id="dropdown-user-name" style="font-weight: 600;">Chargement...</span>
-                            <span id="dropdown-user-role" style="font-size: 0.75rem; color: var(--text-muted);">Membre</span>
+                            <span id="dropdown-user-role"
+                                style="font-size: 0.75rem; color: var(--text-muted);">Membre</span>
                         </div>
                         <div class="dropdown-divider"></div>
                         <button type="button" id="dropdown-btn-change-password" class="dropdown-item">
@@ -218,14 +252,22 @@
                     <div class="dashboard-grid">
                         <div class="card info-card">
                             <h3><i data-lucide="megaphone"></i> Actualités</h3>
-                            <div class="news-list" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
-                                <div class="news-item" style="padding: 1.2rem; background: rgba(255, 255, 255, 0.02); border-radius: 12px; border: 1px solid var(--border);">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                        <span class="badge badge-active" style="background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem;">Nouveau</span>
+                            <div class="news-list"
+                                style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                                <div class="news-item"
+                                    style="padding: 1.2rem; background: rgba(255, 255, 255, 0.02); border-radius: 12px; border: 1px solid var(--border);">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <span class="badge badge-active"
+                                            style="background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem;">Nouveau</span>
                                         <span style="font-size: 0.8rem; color: var(--text-muted);">19 Mai 2026</span>
                                     </div>
-                                    <h4 style="color: white; margin-bottom: 0.3rem;">Nouveau Portail Unifié en ligne !</h4>
-                                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Bienvenue sur notre tout nouvel espace membre. Vous pouvez à présent consulter et gérer vos consommations, vos abonnements en cours et suivre tous les tournois du club.</p>
+                                    <h4 style="color: white; margin-bottom: 0.3rem;">Nouveau Portail Unifié en ligne !
+                                    </h4>
+                                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Bienvenue
+                                        sur notre tout nouvel espace membre. Vous pouvez à présent consulter et gérer
+                                        vos consommations, vos abonnements en cours et suivre tous les tournois du club.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -350,12 +392,15 @@
                                     <p id="label-joueurs-par-poule" class="help hidden"></p>
 
                                     <div style="margin-bottom: 15px;">
-                                         <label class="help" style="margin-bottom: 4px;">Répartition des joueurs</label>
-                                         <div style="padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); color: var(--text-main); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                                             <i data-lucide="shuffle" style="width: 16px; height: 16px; color: var(--accent-green);"></i> Tirage au sort automatique
-                                         </div>
-                                         <input type="hidden" id="repartition-poules" value="auto">
-                                     </div>
+                                        <label class="help" style="margin-bottom: 4px;">Répartition des joueurs</label>
+                                        <div
+                                            style="padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); color: var(--text-main); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                                            <i data-lucide="shuffle"
+                                                style="width: 16px; height: 16px; color: var(--accent-green);"></i>
+                                            Tirage au sort automatique
+                                        </div>
+                                        <input type="hidden" id="repartition-poules" value="auto">
+                                    </div>
 
                                     <div id="repartition-manuelle-wrap" class="hidden" style="margin-bottom: 15px;">
                                         <p class="help">Fais glisser les joueurs dans les poules ou utilise les boutons
@@ -374,8 +419,11 @@
                                         </div>
                                         <div style="flex: 1;">
                                             <label class="help" style="margin-bottom: 4px;">Tableau final</label>
-                                            <div style="padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); color: var(--text-main); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                                                <i data-lucide="shuffle" style="width: 16px; height: 16px; color: var(--accent-green);"></i> Tirage au sort (Aléatoire)
+                                            <div
+                                                style="padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); color: var(--text-main); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                                                <i data-lucide="shuffle"
+                                                    style="width: 16px; height: 16px; color: var(--accent-green);"></i>
+                                                Tirage au sort (Aléatoire)
                                             </div>
                                             <input type="hidden" id="structure-finale-poules" value="auto">
                                         </div>
@@ -421,8 +469,8 @@
                                     <p class="chakra-label" style="margin-bottom: 10px;"><span
                                             class="chakra-icon icon-rainbow"></span>Règles des matchs :</p>
 
-                                    <div class="inline" style="gap: 15px; margin-bottom: 15px;">
-                                        <div style="flex: 1;">
+                                    <div class="inline" style="gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                                        <div>
                                             <label for="regle-condition" class="help"
                                                 style="margin-bottom: 4px;">Condition de
                                                 victoire</label>
@@ -528,8 +576,7 @@
                                         <label class="admin-category-chip"><input type="checkbox"
                                                 id="new-player-prestige" checked>
                                             Prestige</label>
-                                        <label class="admin-category-chip"><input type="checkbox"
-                                                id="new-player-guest">
+                                        <label class="admin-category-chip"><input type="checkbox" id="new-player-guest">
                                             👤 Invité (Ponctuel)</label>
                                     </div>
                                     <div id="players-admin-list"></div>
@@ -784,15 +831,19 @@
                         <div class="dept-box" style="text-align: center; max-width: 420px; width: 100%;">
                             <h3>⚖️ Tirage au sort automatique</h3>
                             <p class="help" id="dept-desc">Ces joueurs sont à égalité parfaite.</p>
-                            <div class="dept-joueurs" id="dept-joueurs-list" style="margin: 15px 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;"></div>
-                            
+                            <div class="dept-joueurs" id="dept-joueurs-list"
+                                style="margin: 15px 0; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            </div>
+
                             <div id="dept-tirage-section">
                                 <div id="dept-roulette-display" class="dept-roulette-display"
-                                    style="font-size: 24px; font-weight: bold; margin: 20px 0; color: var(--accent-green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);">—</div>
+                                    style="font-size: 24px; font-weight: bold; margin: 20px 0; color: var(--accent-green); text-shadow: 0 0 15px rgba(16, 185, 129, 0.3);">
+                                    —</div>
                                 <button type="button" id="dept-btn-confirmer-tirage" class="btn-main hidden"
-                                    style="margin-top:8px; width: 100%; justify-content: center; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600;">✅ Confirmer ce résultat</button>
+                                    style="margin-top:8px; width: 100%; justify-content: center; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600;">✅
+                                    Confirmer ce résultat</button>
                             </div>
-                            
+
                             <button type="button" id="dept-btn-fermer" class="btn-alt"
                                 style="margin-top: 20px; width: 100%;">✕ Annuler</button>
                         </div>
@@ -854,12 +905,16 @@
 
                     <!-- Consumptions Section -->
                     <div id="adm-consumptions" class="admin-pane card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                             <h3><i data-lucide="coffee"></i> Suivi des Ardoises & Consommations</h3>
                             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                                 <div class="search-box-container" style="position: relative;">
-                                    <input type="text" id="consumption-search-input" placeholder="Rechercher un membre..." style="padding: 8px 12px 8px 35px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text-main); font-size: 0.9rem; width: 220px;">
-                                    <i data-lucide="search" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px; color: var(--text-muted);"></i>
+                                    <input type="text" id="consumption-search-input"
+                                        placeholder="Rechercher un membre..."
+                                        style="padding: 8px 12px 8px 35px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text-main); font-size: 0.9rem; width: 220px;">
+                                    <i data-lucide="search"
+                                        style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px; color: var(--text-muted);"></i>
                                 </div>
                             </div>
                         </div>
@@ -910,26 +965,33 @@
 
                     <!-- Stock Section -->
                     <div id="adm-stocks" class="admin-pane card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                             <div>
                                 <h3><i data-lucide="package"></i> Gestion des Stocks</h3>
-                                <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">Suivez les boissons, approvisionnez manuellement et gérez la liaison avec la caisse.</p>
+                                <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">Suivez les boissons,
+                                    approvisionnez manuellement et gérez la liaison avec la caisse.</p>
                             </div>
                             <div style="display: flex; gap: 0.8rem;">
-                                <button class="btn btn-primary" id="btn-simulate-caisse" style="display: flex; align-items: center; gap: 0.5rem; background: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: 600;">
-                                    <i data-lucide="calculator" style="width: 16px;"></i> Simulation Caisse Enregistreuse
+                                <button class="btn btn-primary" id="btn-simulate-caisse"
+                                    style="display: flex; align-items: center; gap: 0.5rem; background: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: 600;">
+                                    <i data-lucide="calculator" style="width: 16px;"></i> Simulation Caisse
+                                    Enregistreuse
                                 </button>
                             </div>
                         </div>
 
                         <!-- Grille d'état rapide des stocks -->
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;" id="stock-cards-grid">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;"
+                            id="stock-cards-grid">
                             <!-- Injecté par JS -->
                         </div>
 
                         <!-- Tableau de gestion détaillé -->
-                        <h4 style="margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="list-checks" style="color: var(--accent-green);"></i> Détail du Stock & Ajustements
+                        <h4
+                            style="margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="list-checks" style="color: var(--accent-green);"></i> Détail du Stock &
+                            Ajustements
                         </h4>
                         <div class="table-wrapper" style="margin-bottom: 2rem;">
                             <table>
@@ -949,8 +1011,10 @@
                         </div>
 
                         <!-- Historique des mouvements de stock -->
-                        <h4 style="margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="history" style="color: var(--accent-blue);"></i> Historique des Retraits & Approvisionnements
+                        <h4
+                            style="margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="history" style="color: var(--accent-blue);"></i> Historique des Retraits &
+                            Approvisionnements
                         </h4>
                         <div class="table-wrapper">
                             <table>
@@ -1026,7 +1090,8 @@
                         <div class="input-group" style="margin-top: 1rem;">
                             <label>Photo de profil (Facultatif)</label>
                             <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                <input type="text" id="manual-mem-avatar-url" placeholder="URL de l'image ou importez..."
+                                <input type="text" id="manual-mem-avatar-url"
+                                    placeholder="URL de l'image ou importez..."
                                     style="flex-grow: 1; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main);">
                                 <button type="button" class="btn btn-outline"
                                     onclick="document.getElementById('manual-mem-avatar-file').click()"
@@ -1087,29 +1152,34 @@
 
                 <!-- Modal Simulation Caisse Enregistreuse -->
                 <div id="caisse-simulation-modal" class="modal hidden">
-                    <div class="modal-content card" style="max-width: 500px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
+                    <div class="modal-content card"
+                        style="max-width: 500px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
                         <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-gold);">
                             <i data-lucide="calculator"></i> Simulateur Caisse Enregistreuse
                         </h3>
                         <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
-                            Simulez la vente ou le retrait de boissons directement depuis la caisse externe du bar. Cela déduira automatiquement les stocks en temps réel.
+                            Simulez la vente ou le retrait de boissons directement depuis la caisse externe du bar. Cela
+                            déduira automatiquement les stocks en temps réel.
                         </p>
 
                         <div class="input-group">
                             <label>1. Choisir la Boisson vendue à la caisse</label>
-                            <select id="caisse-drink-select" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
+                            <select id="caisse-drink-select"
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
                                 <!-- Injecté par JS -->
                             </select>
                         </div>
 
                         <div class="input-group" style="margin-top: 1rem;">
                             <label>2. Quantité vendue / retirée</label>
-                            <input type="number" id="caisse-qty-input" min="1" value="1" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
+                            <input type="number" id="caisse-qty-input" min="1" value="1"
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
                         </div>
 
                         <div class="input-group" style="margin-top: 1rem;">
                             <label>3. Mode de transaction de la Caisse</label>
-                            <select id="caisse-mode-select" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
+                            <select id="caisse-mode-select"
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
                                 <option value="Vente Caisse Espèces">Vente Caisse Espèces</option>
                                 <option value="Vente Caisse CB">Vente Caisse Carte Bancaire</option>
                                 <option value="Retrait Perte / Casse">Retrait Perte / Casse</option>
@@ -1118,8 +1188,10 @@
                         </div>
 
                         <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn-alt" onclick="document.getElementById('caisse-simulation-modal').classList.add('hidden')">Fermer</button>
-                            <button class="btn-main" id="btn-submit-caisse-sale" style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
+                            <button class="btn-alt"
+                                onclick="document.getElementById('caisse-simulation-modal').classList.add('hidden')">Fermer</button>
+                            <button class="btn-main" id="btn-submit-caisse-sale"
+                                style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
                                 Valider la vente
                             </button>
                         </div>
@@ -1128,7 +1200,8 @@
 
                 <!-- Modal Approvisionnement Manuel -->
                 <div id="refill-stock-modal" class="modal hidden">
-                    <div class="modal-content card" style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
+                    <div class="modal-content card"
+                        style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
                         <h3 style="display: flex; align-items: center; gap: 0.5rem;">
                             <i data-lucide="package-plus" style="color: var(--accent-green);"></i> Approvisionner Stock
                         </h3>
@@ -1137,20 +1210,25 @@
                         </p>
 
                         <input type="hidden" id="refill-drink-id">
-                        
+
                         <div class="input-group">
                             <label>Boisson</label>
-                            <input type="text" id="refill-drink-name" readonly style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;" disabled>
+                            <input type="text" id="refill-drink-name" readonly
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;"
+                                disabled>
                         </div>
 
                         <div class="input-group" style="margin-top: 1rem;">
                             <label>Quantité à ajouter au stock (ex: +24)</label>
-                            <input type="number" id="refill-qty-input" min="1" value="24" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
+                            <input type="number" id="refill-qty-input" min="1" value="24"
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
                         </div>
 
                         <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn-alt" onclick="document.getElementById('refill-stock-modal').classList.add('hidden')">Annuler</button>
-                            <button class="btn-main" id="btn-submit-refill" style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-green); color: #000; font-weight: 600;">
+                            <button class="btn-alt"
+                                onclick="document.getElementById('refill-stock-modal').classList.add('hidden')">Annuler</button>
+                            <button class="btn-main" id="btn-submit-refill"
+                                style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-green); color: #000; font-weight: 600;">
                                 Enregistrer l'approvisionnement
                             </button>
                         </div>
@@ -1159,29 +1237,36 @@
 
                 <!-- Modal Inventaire / Correction de Stock -->
                 <div id="inventory-stock-modal" class="modal hidden">
-                    <div class="modal-content card" style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
+                    <div class="modal-content card"
+                        style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
                         <h3 style="display: flex; align-items: center; gap: 0.5rem;">
                             <i data-lucide="clipboard-list" style="color: var(--accent-gold);"></i> Faire un Inventaire
                         </h3>
                         <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
-                            Définissez la quantité exacte de stock actuellement disponible. Cela corrigera la valeur existante.
+                            Définissez la quantité exacte de stock actuellement disponible. Cela corrigera la valeur
+                            existante.
                         </p>
 
                         <input type="hidden" id="inventory-drink-id">
-                        
+
                         <div class="input-group">
                             <label>Boisson</label>
-                            <input type="text" id="inventory-drink-name" readonly style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;" disabled>
+                            <input type="text" id="inventory-drink-name" readonly
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;"
+                                disabled>
                         </div>
 
                         <div class="input-group" style="margin-top: 1rem;">
                             <label>Nouvelle Quantité en stock réelle</label>
-                            <input type="number" id="inventory-qty-input" min="0" value="0" style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
+                            <input type="number" id="inventory-qty-input" min="0" value="0"
+                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
                         </div>
 
                         <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn-alt" onclick="document.getElementById('inventory-stock-modal').classList.add('hidden')">Annuler</button>
-                            <button class="btn-main" id="btn-submit-inventory" style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
+                            <button class="btn-alt"
+                                onclick="document.getElementById('inventory-stock-modal').classList.add('hidden')">Annuler</button>
+                            <button class="btn-main" id="btn-submit-inventory"
+                                style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
                                 Valider l'inventaire
                             </button>
                         </div>
@@ -1215,16 +1300,26 @@
 
                 <!-- Modal Historique de Consommations détaillé -->
                 <div id="consumption-detail-modal" class="modal hidden">
-                    <div class="modal-content card" style="max-width: 600px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem;">
-                            <h3 id="consumption-detail-title" style="margin: 0;"><i data-lucide="coffee"></i> Historique Consommations</h3>
-                            <button type="button" class="btn-close-modal" onclick="document.getElementById('consumption-detail-modal').classList.add('hidden')" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; line-height: 1;">✕</button>
+                    <div class="modal-content card"
+                        style="max-width: 600px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.8rem;">
+                            <h3 id="consumption-detail-title" style="margin: 0;"><i data-lucide="coffee"></i> Historique
+                                Consommations</h3>
+                            <button type="button" class="btn-close-modal"
+                                onclick="document.getElementById('consumption-detail-modal').classList.add('hidden')"
+                                style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; line-height: 1;">✕</button>
                         </div>
-                        
+
                         <div class="consumption-columns" style="display: flex; flex-direction: column; gap: 1.5rem;">
                             <!-- Colonne 1: Boissons prises (Ardoise) -->
-                            <div class="consumption-col card" style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border); padding: 1rem;">
-                                <h4 style="margin-top: 0; color: #ef4444; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;"><span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span> Boissons en ardoise (À régler)</h4>
+                            <div class="consumption-col card"
+                                style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border); padding: 1rem;">
+                                <h4
+                                    style="margin-top: 0; color: #ef4444; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
+                                    <span
+                                        style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
+                                    Boissons en ardoise (À régler)</h4>
                                 <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
                                     <table>
                                         <thead>
@@ -1240,10 +1335,15 @@
                                     </table>
                                 </div>
                             </div>
-                            
+
                             <!-- Colonne 2: Historique Réglé -->
-                            <div class="consumption-col card" style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border); padding: 1rem;">
-                                <h4 style="margin-top: 0; color: #22c55e; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;"><span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span> Consommations réglées</h4>
+                            <div class="consumption-col card"
+                                style="background: rgba(255, 255, 255, 0.01); border: 1px solid var(--border); padding: 1rem;">
+                                <h4
+                                    style="margin-top: 0; color: #22c55e; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
+                                    <span
+                                        style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span>
+                                    Consommations réglées</h4>
                                 <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
                                     <table>
                                         <thead>
@@ -1260,37 +1360,50 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
                             <div style="font-size: 1.1rem; color: white;">
-                                Ardoise due : <strong id="detail-total-due" style="color: #ef4444; font-size: 1.25rem;">0.00€</strong>
+                                Ardoise due : <strong id="detail-total-due"
+                                    style="color: #ef4444; font-size: 1.25rem;">0.00€</strong>
                             </div>
                             <div style="display: flex; gap: 1rem;">
-                                <button class="btn-alt" onclick="document.getElementById('consumption-detail-modal').classList.add('hidden')">Fermer</button>
-                                <button class="btn-main" id="btn-collect-tab" style="background: #22c55e; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);"><i data-lucide="check-circle" style="width:16px;"></i> Encaisser l'ardoise</button>
+                                <button class="btn-alt"
+                                    onclick="document.getElementById('consumption-detail-modal').classList.add('hidden')">Fermer</button>
+                                <button class="btn-main" id="btn-collect-tab"
+                                    style="background: #22c55e; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: white; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);"><i
+                                        data-lucide="check-circle" style="width:16px;"></i> Encaisser l'ardoise</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Écran d'interception bloquant si abonnement expiré -->
-                <div id="section-expired-interception" class="view" style="position: fixed; inset: 0; background: rgba(5, 8, 22, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem;">
-                    <div class="card" style="max-width: 480px; width: 100%; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3rem 2rem; box-shadow: 0 0 50px rgba(239, 68, 68, 0.15); display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
-                        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
+                <div id="section-expired-interception" class="view"
+                    style="position: fixed; inset: 0; background: rgba(5, 8, 22, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem;">
+                    <div class="card"
+                        style="max-width: 480px; width: 100%; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3rem 2rem; box-shadow: 0 0 50px rgba(239, 68, 68, 0.15); display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+                        <div
+                            style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
                             <i data-lucide="alert-triangle" style="width: 32px; height: 32px;"></i>
                         </div>
                         <h2 style="font-size: 1.75rem; color: white; margin: 0;">Accès Limité</h2>
-                        <h4 style="color: #ef4444; font-size: 1.1rem; margin: 0; font-weight: 600;" id="expired-sub-name">Abonnement Expiré</h4>
+                        <h4 style="color: #ef4444; font-size: 1.1rem; margin: 0; font-weight: 600;"
+                            id="expired-sub-name">Abonnement Expiré</h4>
                         <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem 0;">
-                            Votre abonnement s'est terminé le <strong id="expired-sub-date" style="color: white;">-</strong>.<br>
-                            Pour continuer à accéder au club, vous pouvez renouveler votre adhésion ci-dessous. Le montant sera ajouté à votre ardoise.
+                            Votre abonnement s'est terminé le <strong id="expired-sub-date"
+                                style="color: white;">-</strong>.<br>
+                            Pour continuer à accéder au club, vous pouvez renouveler votre adhésion ci-dessous. Le
+                            montant sera ajouté à votre ardoise.
                         </p>
-                        
-                        <div id="expired-memberships-list" style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; margin-bottom: 1rem;">
+
+                        <div id="expired-memberships-list"
+                            style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%; margin-bottom: 1rem;">
                             <!-- Injecté par le JS -->
                         </div>
 
-                        <button id="btn-logout-expired" class="btn btn-outline" style="border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; justify-content: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.05); padding: 0.8rem; font-weight: 600; border-radius: 10px;">
+                        <button id="btn-logout-expired" class="btn btn-outline"
+                            style="border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; justify-content: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.05); padding: 0.8rem; font-weight: 600; border-radius: 10px;">
                             <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Se déconnecter
                         </button>
                     </div>
@@ -1301,21 +1414,27 @@
                     <div class="modal-content card"
                         style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
                         <h3>Modifier mon mot de passe</h3>
-                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre nouveau mot de passe ci-dessous.</p>
-                        
+                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre nouveau mot de passe ci-dessous.
+                        </p>
+
                         <form id="change-password-form">
                             <div class="input-group">
                                 <label>Nouveau mot de passe</label>
-                                <input type="password" id="new-password" required minlength="6" placeholder="Au moins 6 caractères">
+                                <input type="password" id="new-password" required minlength="6"
+                                    placeholder="Au moins 6 caractères">
                             </div>
                             <div class="input-group">
                                 <label>Confirmer le nouveau mot de passe</label>
-                                <input type="password" id="confirm-password" required minlength="6" placeholder="••••••••">
+                                <input type="password" id="confirm-password" required minlength="6"
+                                    placeholder="••••••••">
                             </div>
-                            
+
                             <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                                <button type="button" class="btn btn-outline" id="cancel-change-password" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
-                                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Mettre à jour</button>
+                                <button type="button" class="btn btn-outline" id="cancel-change-password"
+                                    style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
+                                <button type="submit" class="btn btn-primary"
+                                    style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Mettre
+                                    à jour</button>
                             </div>
                         </form>
                     </div>
@@ -1326,17 +1445,21 @@
                     <div class="modal-content card"
                         style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
                         <h3>Mot de passe oublié ?</h3>
-                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre adresse e-mail. Un e-mail contenant un lien de réinitialisation vous sera envoyé.</p>
-                        
+                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre adresse e-mail. Un e-mail
+                            contenant un lien de réinitialisation vous sera envoyé.</p>
+
                         <form id="forgot-password-form">
                             <div class="input-group">
                                 <label>Adresse E-mail</label>
                                 <input type="email" id="forgot-email" required placeholder="votre@email.com">
                             </div>
-                            
+
                             <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                                <button type="button" class="btn btn-outline" id="cancel-forgot-password" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
-                                <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Envoyer le lien</button>
+                                <button type="button" class="btn btn-outline" id="cancel-forgot-password"
+                                    style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
+                                <button type="submit" class="btn btn-primary"
+                                    style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Envoyer
+                                    le lien</button>
                             </div>
                         </form>
                     </div>
@@ -1378,7 +1501,8 @@
             <p class="modal-description">Pour des raisons de sécurité, votre session va se verrouiller dans :</p>
             <div id="inactivity-timer-display" class="inactivity-countdown">15</div>
             <p class="modal-description-sub">Cliquez ci-dessous pour rester connecté.</p>
-            <button id="btn-keep-connected" class="btn-main font-weight-bold" style="width: 100%; margin-top: 15px;">Rester connecté</button>
+            <button id="btn-keep-connected" class="btn-main font-weight-bold"
+                style="width: 100%; margin-top: 15px;">Rester connecté</button>
         </div>
     </div>
 

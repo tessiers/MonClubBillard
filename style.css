@@ -90,10 +90,12 @@
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(11, 17, 32, 0.85); /* Modern deep dark backdrop */
+    background: rgba(11, 17, 32, 0.85);
+    /* Modern deep dark backdrop */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 999; /* Float over all standard elements but under loading overlay if needed */
+    z-index: 999;
+    /* Float over all standard elements but under loading overlay if needed */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,8 +117,13 @@
 }
 
 @keyframes modalFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes modalScaleIn {
@@ -124,6 +131,7 @@
         opacity: 0;
         transform: scale(0.95) translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -216,7 +224,7 @@
 body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--bg-main);
-    background-image: 
+    background-image:
         radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
     background-attachment: fixed;
@@ -234,7 +242,8 @@ body.logo-en-fond::before {
     background-size: var(--logo-bg-size, min(45vmin, 400px));
     background-position: var(--logo-bg-position, right 40px bottom 40px);
     background-repeat: no-repeat;
-    opacity: 0.08; /* Extremely subtle watermark */
+    opacity: 0.08;
+    /* Extremely subtle watermark */
     pointer-events: none;
     inset: 0;
     transition: opacity 0.3s ease;
@@ -442,8 +451,8 @@ h3 {
 }
 
 .welcome-hero {
-    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.7)), 
-                url('hero.png');
+    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.7)),
+        url('hero.png');
     background-size: cover;
     background-position: center;
     border-radius: var(--radius);
@@ -454,7 +463,7 @@ h3 {
     overflow: hidden;
     display: flex;
     align-items: center;
-    box-shadow: inset 0 0 100px rgba(0,0,0,0.5), var(--shadow);
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5), var(--shadow);
     border: 1px solid var(--border);
     animation: fadeIn 1s ease-out;
 }
@@ -469,7 +478,7 @@ h3 {
     padding: 3rem;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     animation: slideInLeft 0.8s ease-out;
 }
 
@@ -478,6 +487,7 @@ h3 {
         opacity: 0;
         transform: translateX(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -557,8 +567,8 @@ h3 {
     align-items: flex-end;
     padding: 4rem;
 
-    background: linear-gradient(rgba(11, 17, 32, 0.6), rgba(11, 17, 32, 0.8)), 
-                url('tournaments.png');
+    background: linear-gradient(rgba(11, 17, 32, 0.6), rgba(11, 17, 32, 0.8)),
+        url('tournaments.png');
     background-size: cover;
     background-position: center 30%;
     border-radius: var(--radius);
@@ -577,7 +587,7 @@ h3 {
 #section-tournaments .module-header h2 {
     font-size: 2.2rem;
     font-weight: 800;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -601,7 +611,8 @@ h3 {
     gap: 1.5rem;
     flex-wrap: wrap;
     justify-content: flex-end;
-    padding-right: 2rem; /* Décalage vers la gauche */
+    padding-right: 2rem;
+    /* Décalage vers la gauche */
 }
 
 .stat-item {
@@ -653,7 +664,8 @@ h3 {
     box-shadow: var(--shadow);
 }
 
-.drink-item i, .drink-item svg {
+.drink-item i,
+.drink-item svg {
     color: var(--accent-gold);
     width: 48px;
     height: 48px;
@@ -842,6 +854,7 @@ tr:hover td {
     gap: 2rem;
     margin-top: 2rem;
 }
+
 /* Conteneurs visuels des paramÃ¨tres de match */
 .chakra-choice {
     border: 1px solid var(--border);
@@ -1734,13 +1747,20 @@ body.mode-cartesien .status-pill {
     border-color: rgba(255, 215, 0, 0.35);
     box-shadow: 0 4px 20px rgba(255, 215, 0, 0.08);
 }
-.bracket-match.is-final .bracket-score { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.3); }
+
+.bracket-match.is-final .bracket-score {
+    color: #ffd700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
 
 .bracket-match.is-petite-finale {
     background: linear-gradient(135deg, rgba(205, 127, 50, 0.12), rgba(139, 69, 19, 0.22));
     border-color: rgba(205, 127, 50, 0.35);
 }
-.bracket-match.is-petite-finale .bracket-score { color: #cd7f32; }
+
+.bracket-match.is-petite-finale .bracket-score {
+    color: #cd7f32;
+}
 
 .bracket-match.is-semi-final {
     background: linear-gradient(135deg, rgba(148, 163, 184, 0.08), rgba(71, 85, 105, 0.18));
@@ -2184,9 +2204,29 @@ body.mode-cartesien .status-pill {
 }
 
 /* Boutons secondaires et corrections */
-.btn-alt { padding: 6px 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8rem; transition: all 0.3s ease; }
-.btn-alt:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
-.btn-score-save { color: var(--white) !important; border: none !important; border-radius: 8px !important; cursor: pointer !important; }
+.btn-alt {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.btn-alt:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-score-save {
+    color: var(--white) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+}
 
 /* --- ADMIN UTILITY CLASSES --- */
 .badge-active {
@@ -2194,21 +2234,35 @@ body.mode-cartesien .status-pill {
     color: var(--chakra-green);
     border-color: color-mix(in srgb, var(--chakra-green) 62%, transparent);
 }
+
 .badge-expired {
     background: color-mix(in srgb, var(--chakra-red) 20%, transparent);
     color: var(--chakra-red);
     border-color: color-mix(in srgb, var(--chakra-red) 62%, transparent);
 }
-.text-danger { color: var(--chakra-red) !important; }
-.text-warning { color: var(--chakra-yellow) !important; }
-.text-success { color: var(--chakra-green) !important; }
-.font-bold { font-weight: bold !important; }
+
+.text-danger {
+    color: var(--chakra-red) !important;
+}
+
+.text-warning {
+    color: var(--chakra-yellow) !important;
+}
+
+.text-success {
+    color: var(--chakra-green) !important;
+}
+
+.font-bold {
+    font-weight: bold !important;
+}
 
 /* Clickable Table Cells for Administration */
 .clickable-cell {
     cursor: pointer;
     transition: all 0.2s ease;
 }
+
 .clickable-cell:hover {
     color: var(--accent) !important;
     text-decoration: underline;
@@ -2227,6 +2281,7 @@ body.mode-cartesien .status-pill {
     background: rgba(239, 68, 68, 0.04) !important;
     border-left: 3px solid #ef4444 !important;
 }
+
 .unpaid-slate-row:hover {
     background: rgba(239, 68, 68, 0.08) !important;
 }
@@ -2244,6 +2299,7 @@ body.mode-cartesien .status-pill {
     flex-direction: column;
     gap: 1.5rem;
 }
+
 .consumption-col {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
@@ -2282,6 +2338,7 @@ body.mode-cartesien .status-pill {
         opacity: 0;
         transform: translateY(-5px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -2369,6 +2426,7 @@ body.mode-cartesien .status-pill {
 
 /* SMARTPHONE RESPONSIVE QUERY */
 @media (max-width: 768px) {
+
     /* Hide desktop sidebar */
     .sidebar {
         display: none !important;
@@ -2453,7 +2511,8 @@ body.mode-cartesien .status-pill {
         height: 60px;
     }
 
-    .drink-item i, .drink-item svg {
+    .drink-item i,
+    .drink-item svg {
         width: 36px;
         height: 36px;
     }
@@ -2461,463 +2520,473 @@ body.mode-cartesien .status-pill {
     /* Search bar width adapted */
     .search-bar {
         width: 100%;
-}
+    }
 
-/* Admin Panel Tabs - Dynamic Underline Styling */
-.admin-tabs .btn-tab {
-    background: none !important;
-    border: none !important;
-    color: var(--text-muted) !important;
-    font-weight: 600 !important;
-    cursor: pointer;
-    padding: 0.5rem 1rem !important;
-    border-bottom: 2px solid transparent !important;
-    border-radius: 0 !important;
-    transition: all 0.2s ease !important;
-    font-family: inherit;
-    font-size: 0.95rem;
-}
+    /* Admin Panel Tabs - Dynamic Underline Styling */
+    .admin-tabs .btn-tab {
+        background: none !important;
+        border: none !important;
+        color: var(--text-muted) !important;
+        font-weight: 600 !important;
+        cursor: pointer;
+        padding: 0.5rem 1rem !important;
+        border-bottom: 2px solid transparent !important;
+        border-radius: 0 !important;
+        transition: all 0.2s ease !important;
+        font-family: inherit;
+        font-size: 0.95rem;
+    }
 
-.admin-tabs .btn-tab:hover {
-    color: var(--text-main) !important;
-}
+    .admin-tabs .btn-tab:hover {
+        color: var(--text-main) !important;
+    }
 
-.admin-tabs .btn-tab.active {
-    color: var(--text-main) !important;
-    border-bottom: 2px solid var(--accent-green) !important;
-    background: none !important;
-}
+    .admin-tabs .btn-tab.active {
+        color: var(--text-main) !important;
+        border-bottom: 2px solid var(--accent-green) !important;
+        background: none !important;
+    }
 
-/* ============================================================
+    /* ============================================================
    NOUVEAUX STYLES - Améliorations Portail Unifié
    ============================================================ */
 
-/* --- Badge Joueur Invité --- */
-.guest-badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 1px 8px;
-    border-radius: 99px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    background: rgba(99, 102, 241, 0.18);
-    color: #a5b4fc;
-    border: 1px solid rgba(99, 102, 241, 0.4);
-    vertical-align: middle;
-    margin-left: 5px;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    box-shadow: 0 0 6px rgba(99, 102, 241, 0.2);
-}
-
-/* --- Modal Overlay Partagé (boisson + inactivité) --- */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(9, 13, 22, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    animation: modalFadeIn 0.2s ease-out;
-}
-
-.modal-card {
-    background: rgba(30, 41, 59, 0.92);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
-    padding: 2rem;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    animation: modalScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.modal-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--text-main);
-}
-
-.modal-description {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-}
-
-.modal-description-sub {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    margin-top: 0.75rem;
-}
-
-/* --- Modale Confirmation Boisson --- */
-.drink-confirm-card {
-    max-width: 420px;
-}
-
-.drink-confirm-preview {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    padding: 1.25rem;
-    margin: 1rem 0;
-    text-align: left;
-}
-
-.drink-confirm-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-
-.drink-confirm-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.drink-confirm-details {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.drink-confirm-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.drink-confirm-price {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--accent-green);
-}
-
-.drink-confirm-stock {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-
-.drink-confirm-notice {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-bottom: 1.25rem;
-    line-height: 1.4;
-}
-
-.drink-confirm-actions {
-    display: flex;
-    gap: 0.75rem;
-}
-
-.drink-confirm-actions .btn-main,
-.drink-confirm-actions .btn-alt {
-    flex: 1;
-    min-height: 48px;
-    font-size: 0.95rem;
-}
-
-/* --- Modale Inactivité --- */
-.inactivity-modal-card {
-    max-width: 380px;
-}
-
-.inactivity-icon-container {
-    margin-bottom: 0.75rem;
-}
-
-.inactivity-icon {
-    font-size: 3rem;
-    display: inline-block;
-    animation: pulse-inactivity 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse-inactivity {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.15); opacity: 0.8; }
-}
-
-.inactivity-countdown {
-    font-size: 4rem;
-    font-weight: 900;
-    color: #ef4444;
-    line-height: 1;
-    margin: 0.75rem 0;
-    text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-    font-family: 'Outfit', sans-serif;
-    transition: color 0.3s ease;
-}
-
-/* --- Barre de Navigation Mobile Tactile --- */
-#mobile-nav-bar {
-    display: none; /* Caché par défaut sur desktop, affiché via @media (max-width: 1024px) */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
-    padding: 0.5rem 0 env(safe-area-inset-bottom, 0.5rem);
-    align-items: center;
-    justify-content: space-around;
-}
-
-.mobile-nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    padding: 0.5rem 0.75rem;
-    border-radius: 12px;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.5);
-    transition: all 0.2s ease;
-    min-width: 56px;
-    min-height: 56px;
-    justify-content: center;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.mobile-nav-item:active {
-    transform: scale(0.92);
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.mobile-nav-item.active {
-    color: var(--accent-green);
-    background: rgba(16, 185, 129, 0.12);
-}
-
-.mobile-nav-item svg,
-.mobile-nav-item i {
-    width: 22px;
-    height: 22px;
-}
-
-.mobile-nav-item span {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-}
-
-.mobile-nav-item.active span {
-    color: var(--accent-green);
-}
-
-/* Indicateur actif (point) */
-.mobile-nav-item.active::after {
-    content: '';
-    display: block;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent-green);
-    margin-top: 2px;
-    box-shadow: 0 0 6px var(--accent-green);
-}
-
-/* --- Responsive Tablettes & Petits Écrans (≤ 1024px) --- */
-@media (max-width: 1024px) {
-
-    /* Masquer la sidebar latérale sur tablette */
-    .sidebar {
-        display: none !important;
+    /* --- Badge Joueur Invité --- */
+    .guest-badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 1px 8px;
+        border-radius: 99px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: rgba(99, 102, 241, 0.18);
+        color: #a5b4fc;
+        border: 1px solid rgba(99, 102, 241, 0.4);
+        vertical-align: middle;
+        margin-left: 5px;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        box-shadow: 0 0 6px rgba(99, 102, 241, 0.2);
     }
 
-    /* Afficher la navigation mobile du bas */
-    #mobile-nav-bar {
-        display: flex !important;
+    /* --- Modal Overlay Partagé (boisson + inactivité) --- */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(9, 13, 22, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        animation: modalFadeIn 0.2s ease-out;
     }
 
-    /* Le contenu principal prend toute la largeur et laisse de la place pour la nav du bas */
-    .app-shell {
-        flex-direction: column;
-    }
-
-    .main-content {
+    .modal-card {
+        background: rgba(30, 41, 59, 0.92);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        padding: 2rem;
         width: 100%;
-        padding-bottom: 76px; /* Hauteur de la barre mobile */
+        max-width: 400px;
+        text-align: center;
+        animation: modalScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Top bar plus compacte */
-    .top-bar {
-        height: 60px;
-        padding: 0 1rem;
-    }
-
-    /* Zone de contenu principale - padding réduit */
-    .content-area,
-    .page-content {
-        padding: 1rem;
-    }
-
-    /* Les grilles en colonnes multiples passent sur une seule colonne */
-    .dashboard-grid,
-    .config-grid,
-    .layout {
-        grid-template-columns: 1fr !important;
-        gap: 1rem;
-    }
-
-    /* Les cartes prennent toute la largeur */
-    .card {
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
         margin-bottom: 1rem;
+        color: var(--text-main);
     }
 
-    /* Les tables défilent horizontalement sans casser le layout */
-    .table-wrapper,
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
+    .modal-description {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
     }
 
-    table {
-        min-width: 500px;
+    .modal-description-sub {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-top: 0.75rem;
     }
 
-    /* Boutons et cibles tactiles élargies */
-    .btn-main,
-    .btn-alt,
-    .btn-danger,
-    .btn-score-save,
-    .btn-edit-score,
-    .btn-tab {
+    /* --- Modale Confirmation Boisson --- */
+    .drink-confirm-card {
+        max-width: 420px;
+    }
+
+    .drink-confirm-preview {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 1.25rem;
+        margin: 1rem 0;
+        text-align: left;
+    }
+
+    .drink-confirm-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        background: rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .drink-confirm-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .drink-confirm-details {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .drink-confirm-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .drink-confirm-price {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--accent-green);
+    }
+
+    .drink-confirm-stock {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+    }
+
+    .drink-confirm-notice {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 1.25rem;
+        line-height: 1.4;
+    }
+
+    .drink-confirm-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .drink-confirm-actions .btn-main,
+    .drink-confirm-actions .btn-alt {
+        flex: 1;
         min-height: 48px;
         font-size: 0.95rem;
     }
 
-    /* Checklist de sélection de joueurs - items plus grands */
-    .checklist-row {
-        min-height: 48px;
-        padding: 0.6rem 0.75rem;
+    /* --- Modale Inactivité --- */
+    .inactivity-modal-card {
+        max-width: 380px;
     }
 
-    /* Inputs plus grands pour faciliter la saisie */
-    .chakra-input,
-    .chakra-select,
-    input[type="text"],
-    input[type="number"],
-    select {
-        min-height: 48px;
-        font-size: 1rem;
+    .inactivity-icon-container {
+        margin-bottom: 0.75rem;
     }
 
-    /* Cartes de boissons plus grandes */
-    .drink-item {
-        min-height: 80px;
-        padding: 0.75rem;
+    .inactivity-icon {
+        font-size: 3rem;
+        display: inline-block;
+        animation: pulse-inactivity 1.5s ease-in-out infinite;
     }
 
-    /* Scores rapides - boutons plus larges */
-    .quick-scores button {
-        min-height: 44px;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+    @keyframes pulse-inactivity {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.15);
+            opacity: 0.8;
+        }
     }
 
-    /* Cards de matchs en cours - plus d'espace */
-    .match-card {
-        padding: 1rem;
-        margin-bottom: 1rem;
+    .inactivity-countdown {
+        font-size: 4rem;
+        font-weight: 900;
+        color: #ef4444;
+        line-height: 1;
+        margin: 0.75rem 0;
+        text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+        font-family: 'Outfit', sans-serif;
+        transition: color 0.3s ease;
     }
 
-    /* Input de score agrandi pour les doigts */
-    .score-input-inline {
-        width: 72px;
-        min-height: 52px;
-        font-size: 1.4rem;
-        text-align: center;
+    /* --- Barre de Navigation Mobile Tactile --- */
+    #mobile-nav-bar {
+        display: none;
+        /* Caché par défaut sur desktop, affiché via @media (max-width: 1024px) */
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(15, 23, 42, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+        padding: 0.5rem 0 env(safe-area-inset-bottom, 0.5rem);
+        align-items: center;
+        justify-content: space-around;
     }
 
-    /* Admin category chips - plus grands */
-    .admin-category-chip {
-        min-height: 40px;
-        padding: 0.4rem 0.75rem;
-        font-size: 0.88rem;
-    }
-
-    /* Bracket du tableau final - défilement horizontal */
-    .bracket-container,
-    #tableau-final-bracket {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Sections d'écran de tournoi - retirer les marges latérales excessives */
-    .tournoi-shell {
-        padding: 0.5rem;
-    }
-
-    .card {
-        border-radius: 12px;
-    }
-
-    /* Modal cards : plein écran sur très petits appareils */
-    .modal-card {
-        max-width: 100%;
-        border-radius: 16px;
-    }
-
-    /* Résumé header du tournoi plus compact */
-    .tournoi-header h2 {
-        font-size: 1.1rem;
-    }
-
-    #tournoi-meta {
-        font-size: 0.78rem;
-    }
-}
-
-/* --- Très petits écrans (≤ 480px) --- */
-@media (max-width: 480px) {
-    .modal-card {
-        padding: 1.25rem;
-        border-radius: 12px;
-    }
-
-    .drink-confirm-preview {
+    .mobile-nav-item {
+        display: flex;
         flex-direction: column;
-        text-align: center;
+        align-items: center;
+        gap: 3px;
+        padding: 0.5rem 0.75rem;
+        border-radius: 12px;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease;
+        min-width: 56px;
+        min-height: 56px;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .match-player-col {
-        min-width: 100px;
+    .mobile-nav-item:active {
+        transform: scale(0.92);
+        background: rgba(255, 255, 255, 0.06);
     }
 
-    .score-input-inline {
-        width: 60px;
+    .mobile-nav-item.active {
+        color: var(--accent-green);
+        background: rgba(16, 185, 129, 0.12);
     }
 
-    .top-bar {
-        padding: 0 0.75rem;
+    .mobile-nav-item svg,
+    .mobile-nav-item i {
+        width: 22px;
+        height: 22px;
     }
-}
 
+    .mobile-nav-item span {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+    }
+
+    .mobile-nav-item.active span {
+        color: var(--accent-green);
+    }
+
+    /* Indicateur actif (point) */
+    .mobile-nav-item.active::after {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--accent-green);
+        margin-top: 2px;
+        box-shadow: 0 0 6px var(--accent-green);
+    }
+
+    /* --- Responsive Tablettes & Petits Écrans (≤ 1024px) --- */
+    @media (max-width: 1024px) {
+
+        /* Masquer la sidebar latérale sur tablette */
+        .sidebar {
+            display: none !important;
+        }
+
+        /* Afficher la navigation mobile du bas */
+        #mobile-nav-bar {
+            display: flex !important;
+        }
+
+        /* Le contenu principal prend toute la largeur et laisse de la place pour la nav du bas */
+        .app-shell {
+            flex-direction: column;
+        }
+
+        .main-content {
+            width: 100%;
+            padding-bottom: 76px;
+            /* Hauteur de la barre mobile */
+        }
+
+        /* Top bar plus compacte */
+        .top-bar {
+            height: 60px;
+            padding: 0 1rem;
+        }
+
+        /* Zone de contenu principale - padding réduit */
+        .content-area,
+        .page-content {
+            padding: 1rem;
+        }
+
+        /* Les grilles en colonnes multiples passent sur une seule colonne */
+        .dashboard-grid,
+        .config-grid,
+        .layout {
+            grid-template-columns: 1fr !important;
+            gap: 1rem;
+        }
+
+        /* Les cartes prennent toute la largeur */
+        .card {
+            margin-bottom: 1rem;
+        }
+
+        /* Les tables défilent horizontalement sans casser le layout */
+        .table-wrapper,
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+        }
+
+        table {
+            min-width: 500px;
+        }
+
+        /* Boutons et cibles tactiles élargies */
+        .btn-main,
+        .btn-alt,
+        .btn-danger,
+        .btn-score-save,
+        .btn-edit-score,
+        .btn-tab {
+            min-height: 48px;
+            font-size: 0.95rem;
+        }
+
+        /* Checklist de sélection de joueurs - items plus grands */
+        .checklist-row {
+            min-height: 48px;
+            padding: 0.6rem 0.75rem;
+        }
+
+        /* Inputs plus grands pour faciliter la saisie */
+        .chakra-input,
+        .chakra-select,
+        input[type="text"],
+        input[type="number"],
+        select {
+            min-height: 48px;
+            font-size: 1rem;
+        }
+
+        /* Cartes de boissons plus grandes */
+        .drink-item {
+            min-height: 80px;
+            padding: 0.75rem;
+        }
+
+        /* Scores rapides - boutons plus larges */
+        .quick-scores button {
+            min-height: 44px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Cards de matchs en cours - plus d'espace */
+        .match-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Input de score agrandi pour les doigts */
+        .score-input-inline {
+            width: 72px;
+            min-height: 52px;
+            font-size: 1.4rem;
+            text-align: center;
+        }
+
+        /* Admin category chips - plus grands */
+        .admin-category-chip {
+            min-height: 40px;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.88rem;
+        }
+
+        /* Bracket du tableau final - défilement horizontal */
+        .bracket-container,
+        #tableau-final-bracket {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Sections d'écran de tournoi - retirer les marges latérales excessives */
+        .tournoi-shell {
+            padding: 0.5rem;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        /* Modal cards : plein écran sur très petits appareils */
+        .modal-card {
+            max-width: 100%;
+            border-radius: 16px;
+        }
+
+        /* Résumé header du tournoi plus compact */
+        .tournoi-header h2 {
+            font-size: 1.1rem;
+        }
+
+        #tournoi-meta {
+            font-size: 0.78rem;
+        }
+    }
+
+    /* --- Très petits écrans (≤ 480px) --- */
+    @media (max-width: 480px) {
+        .modal-card {
+            padding: 1.25rem;
+            border-radius: 12px;
+        }
+
+        .drink-confirm-preview {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .match-player-col {
+            min-width: 100px;
+        }
+
+        .score-input-inline {
+            width: 60px;
+        }
+
+        .top-bar {
+            padding: 0 0.75rem;
+        }
+    }

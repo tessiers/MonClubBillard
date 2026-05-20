@@ -1,7 +1,7 @@
 /* Styles pour la bannière de tournois magnifique */
 #section-tournaments .tournament-hero-header {
-    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.8)), 
-                url('tournaments.png');
+    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.8)),
+        url('tournaments.png');
     background-size: cover;
     background-position: center 60%;
     min-height: 400px;
@@ -24,23 +24,28 @@
     padding: 3rem;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     animation: fadeIn 1s ease-out;
 }
 
 /* Statuts de paiement et utilitaires */
-.success, .text-success {
-    color: #10b981 !important; /* Vert Néon - Payé / Actif */
+.success,
+.text-success {
+    color: #10b981 !important;
+    /* Vert Néon - Payé / Actif */
     font-weight: 700 !important;
 }
 
-.danger, .text-danger {
-    color: #ef4444 !important; /* Rouge - À régler / Expiré */
+.danger,
+.text-danger {
+    color: #ef4444 !important;
+    /* Rouge - À régler / Expiré */
     font-weight: 700 !important;
 }
 
 .text-warning {
-    color: #f59e0b !important; /* Orange - À renouveler */
+    color: #f59e0b !important;
+    /* Orange - À renouveler */
     font-weight: 700 !important;
 }
 
@@ -49,8 +54,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 
@@ -74,8 +84,8 @@
 
 /* Styles pour la bannière de la section gestion */
 #section-management .module-header.management-hero-header {
-    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.8)), 
-                url('management.png');
+    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.8)),
+        url('management.png');
     background-size: cover;
     background-position: center;
     min-height: 300px;
@@ -96,8 +106,8 @@
     font-weight: 800;
     line-height: 1.1;
     margin: 0;
-    background: linear-gradient(135deg, #fff 0%, #3b82f6 100%); /* Bleu pour la gestion */
+    background: linear-gradient(135deg, #fff 0%, #3b82f6 100%);
+    /* Bleu pour la gestion */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-
