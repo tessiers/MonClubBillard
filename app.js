@@ -1,5 +1,5 @@
 // Portail Unifié - Billard & Équitation
-console.log("Portail Unifié : Démarrage du script...");
+console.log("Portail Unifié : Démarrage du script v2.3.2...");
 
 let supabaseClient = null;
 let currentUser = null;
@@ -7,6 +7,9 @@ let drinks = [];
 let settings = {};
 let isLogin = true;
 let inactivityTimeout = null;
+let inactivityModalInterval = null;
+let isShowingInactivityModal = false;
+let pendingDrinkOrder = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("DOM chargé, initialisation...");
@@ -212,7 +215,49 @@ function applyRoleAccessControl() {
     }
 }
 
+function showInactivityCountdownModal() {
+    if (isShowingInactivityModal) return;
+    
+    isShowingInactivityModal = true;
+    const modal = document.getElementById('inactivity-countdown-modal');
+    const display = document.getElementById('inactivity-timer-display');
+    
+    if (!modal || !display) return;
+    
+    let countdown = 15;
+    display.textContent = countdown;
+    modal.classList.remove('hidden');
+    
+    if (inactivityModalInterval) clearInterval(inactivityModalInterval);
+    
+    inactivityModalInterval = setInterval(async () => {
+        countdown--;
+        display.textContent = countdown;
+        
+        if (countdown <= 0) {
+            clearInterval(inactivityModalInterval);
+            modal.classList.add('hidden');
+            isShowingInactivityModal = false;
+            
+            // Déconnexion forcée
+            if (currentUser) {
+                toggleLoading(true);
+                try {
+                    await supabaseClient.auth.signOut();
+                    console.log("Session déconnectée automatiquement pour inactivité.");
+                } catch (err) {
+                    console.error("Erreur de déconnexion automatique d'inactivité :", err);
+                } finally {
+                    toggleLoading(false);
+                }
+            }
+        }
+    }, 1000);
+}
+
 function resetInactivityTimer() {
+    if (isShowingInactivityModal) return; // Ne pas réinitialiser si la modale de compte à rebours est affichée
+    
     if (inactivityTimeout) {
         clearTimeout(inactivityTimeout);
     }
@@ -222,21 +267,8 @@ function resetInactivityTimer() {
         return;
     }
     
-    // Compte à rebours de 1 minute (60 000 ms) sans activité
-    inactivityTimeout = setTimeout(async () => {
-        console.log("Aucune activité depuis 1 minute. Déconnexion automatique de la session membre...");
-        if (currentUser) {
-            toggleLoading(true);
-            try {
-                await supabaseClient.auth.signOut();
-                alert("Votre session a été verrouillée automatiquement après 1 minute d'inactivité.");
-            } catch (err) {
-                console.error("Erreur déconnexion inactivité :", err);
-            } finally {
-                toggleLoading(false);
-            }
-        }
-    }, 60000);
+    // 45 secondes d'inactivité avant de faire apparaître la modale
+    inactivityTimeout = setTimeout(showInactivityCountdownModal, 45000);
 }
 
 function initInactivityTracker() {
@@ -268,6 +300,78 @@ function initNavigation() {
             switchSection(section);
         });
     });
+
+    // Câblage de la navigation mobile
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    mobileNavItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const section = item.getAttribute('data-section');
+            switchSection(section);
+        });
+    });
+
+    // Câblage de la modale d'inactivité
+    const btnKeepConnected = document.getElementById('btn-keep-connected');
+    if (btnKeepConnected) {
+        btnKeepConnected.addEventListener('click', () => {
+            const modal = document.getElementById('inactivity-countdown-modal');
+            if (modal) modal.classList.add('hidden');
+            
+            if (inactivityModalInterval) {
+                clearInterval(inactivityModalInterval);
+                inactivityModalInterval = null;
+            }
+            
+            isShowingInactivityModal = false;
+            resetInactivityTimer();
+        });
+    }
+
+    // Câblage de la modale de confirmation de boissons
+    const btnConfirmDrink = document.getElementById('btn-confirm-drink');
+    const btnCancelDrink = document.getElementById('btn-cancel-drink');
+    const drinkModal = document.getElementById('drink-order-confirm-modal');
+
+    if (btnConfirmDrink) {
+        btnConfirmDrink.addEventListener('click', async () => {
+            if (!pendingDrinkOrder) return;
+            
+            // On extrait immédiatement les données puis on vide la variable pour éviter tout double clic
+            const order = pendingDrinkOrder;
+            pendingDrinkOrder = null;
+            
+            const { id, name, price, drink } = order;
+            
+            if (drinkModal) drinkModal.classList.add('hidden');
+            toggleLoading(true);
+            const { error } = await supabaseClient.from('consumptions').insert({
+                member_id: currentUser.id,
+                drink_id: id,
+                price_at_time: price
+            });
+            toggleLoading(false);
+
+            if (error) {
+                alert(error.message);
+                // En cas d'erreur de réseau, on permet de réessayer
+                pendingDrinkOrder = order;
+            } else {
+                if (drink) {
+                    const currentStock = drink.stock || 0;
+                    const newStock = Math.max(0, currentStock - 1);
+                    await updateDrinkStock(id, newStock, 'Retrait (Club)', 1, 'Portail Club', `Consommé par ${currentUser.profile?.full_name || 'Membre'}`);
+                }
+                loadAppData();
+            }
+        });
+    }
+
+    if (btnCancelDrink) {
+        btnCancelDrink.addEventListener('click', () => {
+            if (drinkModal) drinkModal.classList.add('hidden');
+            pendingDrinkOrder = null;
+        });
+    }
 
     // Admin Tabs
     const adminTabs = document.querySelectorAll('.btn-tab');
@@ -413,7 +517,12 @@ function initNavigation() {
 
 function switchSection(name) {
     document.querySelectorAll('.nav-menu li').forEach(i => i.classList.remove('active'));
-    document.querySelector(`.nav-menu li[data-section="${name}"]`).classList.add('active');
+    const sidebarItem = document.querySelector(`.nav-menu li[data-section="${name}"]`);
+    if (sidebarItem) sidebarItem.classList.add('active');
+
+    document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+    const mobileItem = document.querySelector(`.mobile-nav-item[data-section="${name}"]`);
+    if (mobileItem) mobileItem.classList.add('active');
 
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(`section-${name}`).classList.add('active');
@@ -647,10 +756,10 @@ function renderManagementUI() {
         }
             
         return `
-        <div class="drink-item" onclick="logConsumption(${d.id}, '${d.name}', ${d.price})" style="${itemStyle} position: relative;">
+        <div class="drink-item" onclick="logConsumption(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}', ${d.price})" style="${itemStyle} position: relative;">
             <div style="position: absolute; top: 8px; right: 8px;">${stockBadge}</div>
             ${visual}
-            <span>${d.name}</span>
+            <span>${d.name || 'Boisson'}</span>
             <span class="drink-price">${d.price}€</span>
         </div>
         `;
@@ -681,6 +790,7 @@ async function loadHistory() {
 }
 
 async function logConsumption(id, name, price) {
+    console.log("logConsumption cliqué :", id, name, price);
     // VÉRIFICATION DU STOCK
     const drink = drinks.find(d => d.id === id);
     if (drink && drink.stock !== undefined && drink.stock !== null && drink.stock <= 0) {
@@ -688,27 +798,30 @@ async function logConsumption(id, name, price) {
         return;
     }
 
-    if (!confirm(`Confirmer : ${name} (${price}€) ?`)) return;
+    pendingDrinkOrder = { id, name, price, drink };
 
-    toggleLoading(true);
-    const { error } = await supabaseClient.from('consumptions').insert({
-        member_id: currentUser.id,
-        drink_id: id,
-        price_at_time: price
-    });
-    toggleLoading(false);
+    // Remplir et ouvrir la modale
+    document.getElementById('drink-confirm-name').textContent = name;
+    document.getElementById('drink-confirm-price').textContent = `${price}€`;
+    
+    const stock = drink ? (drink.stock ?? 20) : 20;
+    document.getElementById('drink-confirm-stock').textContent = `Stock restant : ${stock}`;
 
-    if (error) alert(error.message);
-    else {
-        // Décrémenter le stock de 1
-        if (drink) {
-            const currentStock = drink.stock || 0;
-            const newStock = Math.max(0, currentStock - 1);
-            await updateDrinkStock(id, newStock, 'Retrait (Club)', 1, 'Portail Club', `Consommé par ${currentUser.profile?.full_name || 'Membre'}`);
-        }
-        loadAppData();
+    const imgContainer = document.getElementById('drink-confirm-image-container');
+    if (drink && drink.image_url) {
+        imgContainer.innerHTML = `<img src="${drink.image_url}" alt="${name}" style="width:64px; height:64px; object-fit:contain; border-radius:8px;">`;
+    } else {
+        const iconName = drink?.icon || 'glass-water';
+        imgContainer.innerHTML = `<i data-lucide="${iconName}" style="width:48px; height:48px; stroke-width:1.5; color:var(--accent-gold);"></i>`;
     }
+    
+    // Rendre les icônes Lucide dynamiques
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // Afficher la modale
+    document.getElementById('drink-order-confirm-modal').classList.remove('hidden');
 }
+window.logConsumption = logConsumption;
 
 // --- ADMIN LOGIC ---
 // Sera remplacé par la vraie logique
@@ -1998,10 +2111,10 @@ function renderStockDashboard() {
                 </td>
                 <td>${statusBadge}</td>
                 <td style="text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                    <button class="btn btn-outline" onclick="openRefillModal(${d.id}, '${d.name.replace(/'/g, "\\'")}')" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-green); color: var(--accent-green);">
+                    <button class="btn btn-outline" onclick="openRefillModal(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}')" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-green); color: var(--accent-green);">
                         <i data-lucide="package-plus" style="width:14px; height:14px;"></i> Approvisionner
                     </button>
-                    <button class="btn btn-outline" onclick="openInventoryModal(${d.id}, '${d.name.replace(/'/g, "\\'")}', ${stock})" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-gold); color: var(--accent-gold);">
+                    <button class="btn btn-outline" onclick="openInventoryModal(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}', ${stock})" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-gold); color: var(--accent-gold);">
                         <i data-lucide="clipboard-list" style="width:14px; height:14px;"></i> Inventaire
                     </button>
                 </td>

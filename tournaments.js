@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newPlayerInputEl = document.getElementById('new-player-name');
     const newPlayerAmateurEl = document.getElementById('new-player-amateur');
     const newPlayerPrestigeEl = document.getElementById('new-player-prestige');
+    const newPlayerGuestEl = document.getElementById('new-player-guest');
     const addPlayerBtn = document.getElementById('add-player-btn');
     const assoconnectCsvInputEl = document.getElementById('assoconnect-csv-input');
 
@@ -365,7 +366,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+    // Enregistre en temps réel l'état complet du tournoi actif (non archivé) dans Supabase.
+    // Appelée après chaque action de jeu (validation de score, avancée de round, tirage).
+    async function syncActiveTournament() {
+        if (!tournoiActuel || tournoiActuel.estArchive) return;
+        try {
+            // On enrichit le payload avec les variables d'état secondaires nécessaires à la restauration.
+            tournoiActuel._etatSortants = {
+                sortantsConnusPourFinale: [...sortantsConnusPourFinale],
+                ordreTirageFinale: [...ordreTirageFinale],
+                poolTirageFinale: [...poolTirageFinale],
+                ouverturePhaseFinaleEnAttente,
+                decisionSortantsPrise,
+                continuerCartesien,
+                parametrageFinalDisponible
+            };
+            await saveTournamentToDB(tournoiActuel);
+        } catch (err) {
+            console.warn('syncActiveTournament: sauvegarde non critique ignorée.', err.message);
+        }
+    }
+
+    // Au démarrage, cherche un tournoi en cours (non archivé) et le restaure.
+    // Recharge les variables d'état globales et bascule sur le bon écran.
+    async function restaurerTournoiActuelDepuisDB() {
+        try {
+            const tousLesTournois = await getAllTournamentsFromDB();
+            const tournoiEnCours = tousLesTournois.find(t => t.estArchive !== true && t.id);
+            if (!tournoiEnCours) return;
+
+            tournoiActuel = tournoiEnCours;
+
+            // Restauration des variables d'état secondaires
+            const etat = tournoiActuel._etatSortants || {};
+            sortantsConnusPourFinale = Array.isArray(etat.sortantsConnusPourFinale) ? etat.sortantsConnusPourFinale : [];
+            ordreTirageFinale = Array.isArray(etat.ordreTirageFinale) ? etat.ordreTirageFinale : [];
+            poolTirageFinale = Array.isArray(etat.poolTirageFinale) ? etat.poolTirageFinale : [];
+            ouverturePhaseFinaleEnAttente = etat.ouverturePhaseFinaleEnAttente ?? false;
+            decisionSortantsPrise = etat.decisionSortantsPrise ?? false;
+            continuerCartesien = etat.continuerCartesien ?? true;
+            parametrageFinalDisponible = etat.parametrageFinalDisponible ?? false;
+
+            // Détermine sur quel écran revenir
+            const phaseFinale = tournoiActuel.phaseFinale;
+            if (phaseFinale && phaseFinale.matches && phaseFinale.matches.length > 0) {
+                renderTableauFinal();
+                ouvrirEcranTableauFinal();
+            } else if (sortantsConnusPourFinale.length > 0) {
+                rendrePageSortants();
+                ouvrirEcranSortants();
+            } else {
+                renderTournoi();
+                ouvrirEcranTournoi();
+            }
+        } catch (err) {
+            console.warn('restaurerTournoiActuelDepuisDB: restauration ignorée.', err.message);
+        }
+    }
+
     async function archiverLeTournoi() {
+
         if (!tournoiActuel) return;
         const btn = archiverTournoiBtn;
         if (btn) {
@@ -408,7 +468,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function renderDashboard() {
         try {
-            const tournois = await getAllTournamentsFromDB();
+            const tousLesTournois = await getAllTournamentsFromDB();
+            // On n'inclut que les tournois explicitement archivés pour les statistiques annuelles.
+            // Un tournoi en cours ne doit pas fausser les classements.
+            const tournois = tousLesTournois.filter(t => t.estArchive === true);
 
             const statsMap = {};
             tournois.forEach(t => {
@@ -707,11 +770,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const total = sortantsConnusPourFinale.length;
         tirageOrdreListEl.innerHTML = Array.from({ length: total }, (_, idx) => {
             const nom = ordreTirageFinale[idx];
-            return `<span class="tirage-slot ${nom ? 'done' : ''}">Case ${idx + 1}: ${texteSecurise(nom || '—')}</span>`;
+            return `<span class="tirage-slot ${nom ? 'done' : ''}">Case ${idx + 1}: ${formaterNomJoueurHTML(nom || '—')}</span>`;
         }).join('');
 
         tiragePoolListEl.innerHTML = poolTirageFinale.length
-            ? poolTirageFinale.map(nom => `<span class="finaliste-chip">${texteSecurise(nom)}</span>`).join('')
+            ? poolTirageFinale.map(nom => `<span class="finaliste-chip">${formaterNomJoueurHTML(nom)}</span>`).join('')
             : '<span class="help">Tous les joueurs ont été tirés.</span>';
 
         if (!ordreTirageFinale.length) {
@@ -724,6 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tirerFinalisteBtn.disabled = poolTirageFinale.length === 0;
         reinitTirageBtn.disabled = ordreTirageFinale.length === 0;
+        syncActiveTournament();
     }
 
     function synchroniserInfosPoules(source = 'nb') {
@@ -856,7 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
         synchroniserTirageFinalistes();
 
         finalistesListEl.innerHTML = sortantsConnusPourFinale
-            .map(nom => `<span class="finaliste-chip">${texteSecurise(nom)}</span>`)
+            .map(nom => `<span class="finaliste-chip">${formaterNomJoueurHTML(nom)}</span>`)
             .join('');
 
         renderTirageFinalistes();
@@ -878,6 +942,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
 
         roundSettingsHelpEl.textContent = `${tours.length} tour(s) configurables.`;
+        syncActiveTournament();
     }
 
     // Fonction: lireReglesParTourTableauFinal - rôle métier documenté pour faciliter la maintenance.
@@ -1078,10 +1143,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== 2) Participants & administration =====
     function normaliserCategoriesJoueur(categories) {
-        const categoriesValides = ['amateur', 'prestige'];
+        const categoriesValides = ['amateur', 'prestige', 'invite'];
         const source = Array.isArray(categories) ? categories : [];
         const categoriesNormalisees = categoriesValides.filter((categorie) => source.includes(categorie));
-        return categoriesNormalisees.length ? categoriesNormalisees : [...categoriesValides];
+        return categoriesNormalisees.length ? categoriesNormalisees : ['amateur', 'prestige'];
     }
 
     function creerFicheJoueur(nom, categories, photo = '') {
@@ -1105,6 +1170,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPhotoJoueur(joueur) {
         if (typeof joueur === 'string') return '';
         return joueur?.photo || '';
+    }
+
+    function trouverJoueur(nom) {
+        if (!nom) return null;
+        const nomNormalise = nom.trim().toLowerCase();
+        return joueurs.find(j => getNomJoueur(j).toLowerCase() === nomNormalise) || null;
+    }
+
+    function estJoueurInvite(nom) {
+        const j = trouverJoueur(nom);
+        return j ? getCategoriesJoueur(j).includes('invite') : false;
+    }
+
+    function formaterNomJoueurHTML(nom) {
+        const nomSec = texteSecurise(nom);
+        if (estJoueurInvite(nom)) {
+            return `${nomSec} <span class="guest-badge-pill">👤 Invité</span>`;
+        }
+        return nomSec;
     }
 
     function getInitiales(nom) {
@@ -1148,12 +1232,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const categories = [];
         if (newPlayerAmateurEl?.checked) categories.push('amateur');
         if (newPlayerPrestigeEl?.checked) categories.push('prestige');
+        if (newPlayerGuestEl?.checked) categories.push('invite');
         return categories;
     }
 
     function reinitialiserCategoriesNouveauJoueur() {
         if (newPlayerAmateurEl) newPlayerAmateurEl.checked = true;
         if (newPlayerPrestigeEl) newPlayerPrestigeEl.checked = true;
+        if (newPlayerGuestEl) newPlayerGuestEl.checked = false;
     }
 
     function synchroniserSelectionCategorie() {
@@ -1207,7 +1293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <input type="checkbox" data-player="${nom}" ${checked} ${disabled}>
                             <div class="player-row-with-photo">
                                 ${obtenirAvatarHTML(joueur, 'avatar-small')}
-                                <span>${nom}</span>
+                                <span>${formaterNomJoueurHTML(nom)}</span>
                             </div>
                         </label>
                     `;
@@ -1235,7 +1321,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return `
                         <div class="participant-chip">
                             ${obtenirAvatarHTML(joueur, 'avatar-small')}
-                            <span>${nom}</span>
+                            <span>${formaterNomJoueurHTML(nom)}</span>
                         </div>
                     `;
             })
@@ -1371,10 +1457,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                 ${obtenirAvatarHTML(joueur)}
                             </div>
                             <div>
-                                <div class="player-name">${nom}</div>
+                                <div class="player-name">${formaterNomJoueurHTML(nom)}</div>
                                 <div class="player-categories">
                                     <label class="admin-category-chip admin-category-chip-small"><input type="checkbox" onchange="modifierCategorieJoueur(${index}, 'amateur', this.checked)" ${categories.includes('amateur') ? 'checked' : ''}> Amateur</label>
                                     <label class="admin-category-chip admin-category-chip-small"><input type="checkbox" onchange="modifierCategorieJoueur(${index}, 'prestige', this.checked)" ${categories.includes('prestige') ? 'checked' : ''}> Prestige</label>
+                                    <label class="admin-category-chip admin-category-chip-small"><input type="checkbox" onchange="modifierCategorieJoueur(${index}, 'invite', this.checked)" ${categories.includes('invite') ? 'checked' : ''}> 👤 Invité</label>
                                 </div>
                                 <button type="button" class="btn-photo-upload" onclick="lancerUploadPhotoJoueur(${index})">
                                     ${photo ? 'Changer photo' : 'Ajouter photo'}
@@ -3700,13 +3787,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="match-versus-players">
                             <div class="match-player-col">
                                 ${obtenirAvatarHTML(jA, 'avatar-large')}
-                                <span class="match-player-name">${texteSecurise(m.playerA)}</span>
+                                <span class="match-player-name">${formaterNomJoueurHTML(m.playerA)}</span>
                                 <input id="score-a-${m.id}" class="chakra-input score-input-inline" type="number" min="0" step="1" value="0" aria-label="Score ${texteSecurise(m.playerA)}" oninput="marquerScoreEnAttenteValidation('${String(m.id).replaceAll("'", "\\'")}', 'cartesien')">
                             </div>
                             <span class="match-vs-divider">VS</span>
                             <div class="match-player-col">
                                 ${obtenirAvatarHTML(jB, 'avatar-large')}
-                                <span class="match-player-name">${texteSecurise(m.playerB)}</span>
+                                <span class="match-player-name">${formaterNomJoueurHTML(m.playerB)}</span>
                                 <input id="score-b-${m.id}" class="chakra-input score-input-inline" type="number" min="0" step="1" value="0" aria-label="Score ${texteSecurise(m.playerB)}" oninput="marquerScoreEnAttenteValidation('${String(m.id).replaceAll("'", "\\'")}', 'cartesien')">
                             </div>
                         </div>
@@ -3764,7 +3851,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ? '<span class="table-badge decider">Décisif qualification</span>'
                         : '<span class="table-badge">En file</span>'))}
                     </div>
-                    <div class="match-versus">${texteSecurise(m.playerA)} vs ${texteSecurise(m.playerB)}</div>
+                    <div class="match-versus">${formaterNomJoueurHTML(m.playerA)} vs ${formaterNomJoueurHTML(m.playerB)}</div>
                     <div class="match-actions" style="margin-top:8px;">
                         <button type="button" class="btn-edit-score" style="width:100%;" onclick="enregistrerMatchAttente('${String(m.id).replaceAll("'", "\\'")}')">Enregistrer le score</button>
                     </div>
@@ -3805,7 +3892,7 @@ document.addEventListener('DOMContentLoaded', () => {
         classementBodyEl.innerHTML = classement.map((l, idx) => `
                 <tr class="${guaranteedSet.has(l.joueur) ? 'row-guaranteed' : (knownSet.has(l.joueur) ? 'row-qualified' : '')}">
                     <td>${idx + 1}</td>
-                    <td class="${guaranteedSet.has(l.joueur) ? 'name-guaranteed' : ''}">${texteSecurise(l.joueur)}</td>
+                    <td class="${guaranteedSet.has(l.joueur) ? 'name-guaranteed' : ''}">${formaterNomJoueurHTML(l.joueur)}</td>
                     <td>${l.v}</td>
                     <td>${l.n}</td>
                     <td>${l.d}</td>
@@ -3843,11 +3930,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <tr>
                         <td>${formatRoundLabel(m)}</td>
                         <td>${m.status === 'in_progress' ? `Billard ${m.table}` : '<span class="txt-muted">-</span>'}</td>
-                        <td>${texteSecurise(m.playerA)} vs ${texteSecurise(m.playerB)}${m.matchType === 'tiebreak' ? ' <span class="badge badge-guaranteed">Décisive</span>' : ''}</td>
+                        <td>${formaterNomJoueurHTML(m.playerA)} vs ${formaterNomJoueurHTML(m.playerB)}${m.matchType === 'tiebreak' ? ' <span class="badge badge-guaranteed">Décisive</span>' : ''}</td>
                         <td>${statutLibelle[m.status] || m.status}</td>
                         <td>
                             ${m.scoreA !== null && m.scoreB !== null
-                    ? `${m.scoreA}-${m.scoreB}${m.winner ? ` • <span class="winner">${texteSecurise(m.winner)}</span>` : ' • <span class="draw">Nul</span>'}`
+                    ? `${m.scoreA}-${m.scoreB}${m.winner ? ` • <span class="winner">${formaterNomJoueurHTML(m.winner)}</span>` : ' • <span class="draw">Nul</span>'}`
                     : '<span class="txt-muted">-</span>'}
                         </td>
                         <td>
@@ -3888,7 +3975,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const contexteDepartage = detecterEgaliteNonResolue();
         if (contexteDepartage) demanderDepartageSimple(contexteDepartage);
 
-
+        // Synchronisation asynchrone non bloquante
+        syncActiveTournament();
     }
 
     function renderTournoiPoules() {
@@ -4186,14 +4274,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="bracket-player ${isWinnerA ? 'winner' : ''}">
                                 <div class="player-row-with-photo">
                                     ${obtenirAvatarHTML(jA, 'avatar-small')}
-                                    <span>${texteSecurise(nomA)}</span>
+                                    <span>${formaterNomJoueurHTML(nomA)}</span>
                                 </div>
                                 <strong>${scoreA}</strong>
                             </div>
                             <div class="bracket-player ${isWinnerB ? 'winner' : ''}">
                                 <div class="player-row-with-photo">
                                     ${obtenirAvatarHTML(jB, 'avatar-small')}
-                                    <span>${texteSecurise(nomB)}</span>
+                                    <span>${formaterNomJoueurHTML(nomB)}</span>
                                 </div>
                                 <strong>${scoreB}</strong>
                             </div>
@@ -4294,7 +4382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="match-round">${texteSecurise(m.label)}</span>
                         <span class="table-badge">${m.playerA && m.playerB ? 'En file' : 'En attente des qualifiés'}</span>
                     </div>
-                    <div class="match-versus">${texteSecurise(m.playerA || 'À définir')} vs ${texteSecurise(m.playerB || 'À définir')}</div>
+                    <div class="match-versus">${formaterNomJoueurHTML(m.playerA || 'À définir')} vs ${formaterNomJoueurHTML(m.playerB || 'À définir')}</div>
                     ${m.playerA && m.playerB ? `
                         <div class="match-actions" style="margin-top:8px;">
                             <button type="button" class="btn-edit-score" style="width:100%;" onclick="enregistrerMatchFinalAttente(${m.id})">Enregistrer le score</button>
@@ -4325,11 +4413,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(m => `
                     <tr>
                         <td>${texteSecurise(m.label)}</td>
-                        <td>${texteSecurise(m.playerA || 'À définir')} vs ${texteSecurise(m.playerB || 'À définir')}</td>
+                        <td>${formaterNomJoueurHTML(m.playerA || 'À définir')} vs ${formaterNomJoueurHTML(m.playerB || 'À définir')}</td>
                         <td>${statutLibelle[m.status] || m.status}</td>
                         <td>
                             ${m.scoreA !== null && m.scoreB !== null
-                    ? `${m.scoreA}-${m.scoreB} • <span class="final-winner">${texteSecurise(m.winner || '-')}</span>`
+                    ? `${m.scoreA}-${m.scoreB} • <span class="final-winner">${formaterNomJoueurHTML(m.winner || '-')}</span>`
                     : '<span class="txt-muted">-</span>'}
                         </td>
                         <td>
@@ -4343,10 +4431,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 `).join('');
 
         if (phaseFinale.winner && tournoiActuel && !tournoiActuel.estArchive) {
-            tableauFinalGagnantEl.innerHTML = `🏆 Vainqueur du tableau final : <strong>${texteSecurise(phaseFinale.winner)}</strong>`;
+            tableauFinalGagnantEl.innerHTML = `🏆 Vainqueur du tableau final : <strong>${formaterNomJoueurHTML(phaseFinale.winner)}</strong>`;
             if (archiverTournoiBtn) archiverTournoiBtn.classList.remove('hidden');
         } else if (phaseFinale.winner && tournoiActuel && tournoiActuel.estArchive) {
-            tableauFinalGagnantEl.innerHTML = `🏆 Vainqueur du tableau final : <strong>${texteSecurise(phaseFinale.winner)}</strong> <br>💾 <em>Ce tournoi est archivé.</em>`;
+            tableauFinalGagnantEl.innerHTML = `🏆 Vainqueur du tableau final : <strong>${formaterNomJoueurHTML(phaseFinale.winner)}</strong> <br>💾 <em>Ce tournoi est archivé.</em>`;
             if (archiverTournoiBtn) archiverTournoiBtn.classList.add('hidden');
         } else {
             tableauFinalGagnantEl.innerHTML = 'Le tableau final est en cours.';
@@ -4391,7 +4479,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTableauFinalResultats();
         afficherPopupFelicitationsFinale();
 
-
+        // Synchronisation asynchrone non bloquante
+        syncActiveTournament();
     }
 
     // Fonction: lancerTableauFinalDepuisSortants - rôle métier documenté for faciliter la maintenance.
@@ -4738,6 +4827,8 @@ document.addEventListener('DOMContentLoaded', () => {
         rafraichirUI();
         appliquerThemeCartesien();
         appliquerVisibiliteSortantsPoules();
+        // Restauration d'un tournoi en cours au démarrage
+        await restaurerTournoiActuelDepuisDB();
     }).catch(async (err) => {
         console.error("Impossible d'initialiser Supabase", err);
         await chargerJoueurs();
@@ -4745,6 +4836,8 @@ document.addEventListener('DOMContentLoaded', () => {
         rafraichirUI();
         appliquerThemeCartesien();
         appliquerVisibiliteSortantsPoules();
+        // Tentative de restauration depuis le cache local en cas d'échec réseau
+        await restaurerTournoiActuelDepuisDB();
     });
 
 });

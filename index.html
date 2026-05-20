@@ -8,8 +8,31 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Portail Club - Billard & Équitation</title>
-    <link rel="stylesheet" href="style.css?v=2.3.0">
+    <link rel="stylesheet" href="style.css?v=2.3.2">
     <link rel="stylesheet" href="tournament_hero.css">
+    <style>
+        /* Force modal-overlay display flex when active, completely bypassing external CSS cache */
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-overlay {
+            position: fixed !important;
+            inset: 0 !important;
+            background: rgba(9, 13, 22, 0.85) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            z-index: 10000 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 1.5rem !important;
+            animation: modalFadeIn 0.2s ease-out !important;
+        }
+        .modal-overlay.hidden {
+            display: none !important;
+        }
+    </style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -127,6 +150,26 @@
                 </button>
             </div>
         </nav>
+
+        <!-- Navigation Tactile Mobile (bas d'écran sur petits appareils) -->
+        <div id="mobile-nav-bar" class="mobile-nav-bar">
+            <div class="mobile-nav-item active" data-section="home">
+                <i data-lucide="home"></i>
+                <span>Accueil</span>
+            </div>
+            <div class="mobile-nav-item" data-section="management">
+                <i data-lucide="users"></i>
+                <span>Gestion</span>
+            </div>
+            <div class="mobile-nav-item" data-section="tournaments">
+                <i data-lucide="trophy"></i>
+                <span>Tournois</span>
+            </div>
+            <div class="mobile-nav-item" data-section="admin">
+                <i data-lucide="shield-check"></i>
+                <span>Admin</span>
+            </div>
+        </div>
 
         <main class="main-content">
             <!-- Header avec rappel du thème Billard -->
@@ -485,6 +528,9 @@
                                         <label class="admin-category-chip"><input type="checkbox"
                                                 id="new-player-prestige" checked>
                                             Prestige</label>
+                                        <label class="admin-category-chip"><input type="checkbox"
+                                                id="new-player-guest">
+                                            👤 Invité (Ponctuel)</label>
                                     </div>
                                     <div id="players-admin-list"></div>
                                     <div class="admin-row">
@@ -1300,12 +1346,48 @@
         </main>
     </div>
 
+    <!-- Modale de Confirmation de Commande de Boisson -->
+    <div id="drink-order-confirm-modal" class="modal-overlay hidden">
+        <div class="modal-card drink-confirm-card">
+            <h3 class="modal-title">Confirmer la commande</h3>
+            <div class="drink-confirm-preview">
+                <div id="drink-confirm-image-container" class="drink-confirm-icon">
+                    <!-- Image ou icône dynamique -->
+                </div>
+                <div class="drink-confirm-details">
+                    <span id="drink-confirm-name" class="drink-confirm-title">Boisson</span>
+                    <span id="drink-confirm-price" class="drink-confirm-price">0.00€</span>
+                    <span id="drink-confirm-stock" class="drink-confirm-stock">Stock restant : --</span>
+                </div>
+            </div>
+            <p class="drink-confirm-notice">Le montant de cet achat sera débité de votre ardoise club.</p>
+            <div class="drink-confirm-actions">
+                <button id="btn-cancel-drink" class="btn-alt">Annuler</button>
+                <button id="btn-confirm-drink" class="btn-main">Confirmer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale de Compte à Rebours d'Inactivité -->
+    <div id="inactivity-countdown-modal" class="modal-overlay hidden">
+        <div class="modal-card inactivity-modal-card">
+            <div class="inactivity-icon-container">
+                <span class="inactivity-icon">⏳</span>
+            </div>
+            <h3 class="modal-title">Inactivité Détectée</h3>
+            <p class="modal-description">Pour des raisons de sécurité, votre session va se verrouiller dans :</p>
+            <div id="inactivity-timer-display" class="inactivity-countdown">15</div>
+            <p class="modal-description-sub">Cliquez ci-dessous pour rester connecté.</p>
+            <button id="btn-keep-connected" class="btn-main font-weight-bold" style="width: 100%; margin-top: 15px;">Rester connecté</button>
+        </div>
+    </div>
+
     <div id="fb-root"></div>
     <script async defer crossorigin="anonymous"
         src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v17.0"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-    <script src="tournaments.js?v=2.3.0" defer></script>
-    <script src="app.js?v=2.3.0" defer></script>
+    <script src="tournaments.js?v=2.3.2" defer></script>
+    <script src="app.js?v=2.3.2" defer></script>
     <script>
         // Initialisation des icônes Lucide
         lucide.createIcons();
