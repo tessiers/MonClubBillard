@@ -599,8 +599,10 @@
                                         <p class="tournoi-sub" id="tournoi-meta"></p>
                                     </div>
                                 </div>
-                                <button type="button" id="retour-config" class="btn-alt" style="width:auto;">Retour
-                                    configuration</button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button type="button" id="retour-config" class="btn-alt" style="width:auto;">Retour configuration</button>
+                                    <button type="button" id="annuler-tournoi-1" class="btn-danger" style="width:auto;" title="Annuler le tournoi en cours"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Annuler</button>
+                                </div>
                             </div>
 
                             <div class="status-row" id="status-row"></div>
@@ -685,8 +687,10 @@
                                             tour par tour.</p>
                                     </div>
                                 </div>
-                                <button type="button" id="retour-tournoi-depuis-sortants" class="btn-alt"
-                                    style="width:auto;">Retour tournoi</button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button type="button" id="retour-tournoi-depuis-sortants" class="btn-alt" style="width:auto;">Retour tournoi</button>
+                                    <button type="button" id="annuler-tournoi-2" class="btn-danger" style="width:auto;" title="Annuler le tournoi en cours"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Annuler</button>
+                                </div>
                             </div>
 
                             <h3 class="section-title">Joueurs qualifiés</h3>
@@ -739,8 +743,10 @@
                                         <p class="tournoi-sub" id="tableau-final-meta"></p>
                                     </div>
                                 </div>
-                                <button type="button" id="retour-sortants" class="btn-alt" style="width:auto;">Retour
-                                    page sortants</button>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button type="button" id="retour-sortants" class="btn-alt" style="width:auto;">Retour page sortants</button>
+                                    <button type="button" id="annuler-tournoi-3" class="btn-danger" style="width:auto;" title="Annuler le tournoi en cours"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Annuler</button>
+                                </div>
                             </div>
 
                             <div class="status-row" id="tableau-final-status-row"></div>
@@ -1319,7 +1325,8 @@
                                     style="margin-top: 0; color: #ef4444; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
                                     <span
                                         style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
-                                    Boissons en ardoise (À régler)</h4>
+                                    Boissons en ardoise (À régler)
+                                </h4>
                                 <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
                                     <table>
                                         <thead>
@@ -1343,7 +1350,8 @@
                                     style="margin-top: 0; color: #22c55e; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
                                     <span
                                         style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%;"></span>
-                                    Consommations réglées</h4>
+                                    Consommations réglées
+                                </h4>
                                 <div class="table-wrapper" style="max-height: 300px; overflow-y: auto;">
                                     <table>
                                         <thead>
@@ -1511,7 +1519,7 @@
         src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v17.0"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <script src="tournaments.js?v=2.3.2" defer></script>
-    <script src="app.js?v=2.3.2" defer></script>
+    <script src="app.js?v=2.3.3" defer></script>
     <script>
         // Initialisation des icônes Lucide
         lucide.createIcons();
