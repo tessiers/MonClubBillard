@@ -2999,4 +2999,46 @@ body.mode-cartesien .status-pill {
         .top-bar {
             padding: 0 0.75rem;
         }
+
+        /* Améliorations de lisibilité de l'écran de connexion sur smartphone */
+        .auth-card {
+            padding: 1.5rem 1.25rem !important;
+            max-width: 95% !important;
+            margin: 0 auto;
+        }
+
+        .logo-circle.large {
+            width: 100px !important;
+            height: 100px !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .auth-card h2 {
+            font-size: 1.5rem !important;
+        }
+
+        .auth-card .card-subtitle {
+            margin-bottom: 1.25rem !important;
+            font-size: 0.85rem !important;
+        }
+
+        .input-group {
+            margin-bottom: 1rem !important;
+        }
+
+        .input-group label {
+            font-size: 0.8rem !important;
+            margin-bottom: 0.35rem !important;
+        }
+
+        .input-group input {
+            padding: 0.7rem 0.9rem !important;
+            font-size: 0.95rem !important;
+        }
+
+        #auth-submit-btn {
+            padding: 0.75rem !important;
+            font-size: 0.95rem !important;
+            margin-bottom: 1rem !important;
+        }
     }
