@@ -1576,26 +1576,38 @@ async function openMemberConsumptionDetails(memberId, memberName) {
     if (unpaidList.length === 0) {
       unpaidBody.innerHTML = `<tr><td colspan="3" class="text-muted" style="text-align:center;">Aucune boisson en ardoise.</td></tr>`;
     } else {
-      unpaidBody.innerHTML = unpaidList.map(c => `
+      unpaidBody.innerHTML = unpaidList.map(c => {
+        const qtyText = c.quantity && c.quantity > 1 ? ` (x${c.quantity})` : '';
+        const dateObj = new Date(c.created_at);
+        const formattedDate = `${dateObj.toLocaleDateString('fr-FR')} à ${dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+        const lineTotal = c.price_at_time * (c.quantity || 1);
+        return `
             <tr>
-              <td>${new Date(c.created_at).toLocaleDateString()}</td>
-              <td>${c.drinks?.name || 'Article'}</td>
-              <td class="text-danger" style="font-weight:600;">${c.price_at_time.toFixed(2)}€</td>
+              <td>${formattedDate}</td>
+              <td>${c.drinks?.name || 'Article'}${qtyText}</td>
+              <td class="text-danger" style="font-weight:600;">${lineTotal.toFixed(2)}€</td>
             </tr>
-          `).join('');
+          `;
+      }).join('');
     }
 
     const paidBody = document.getElementById('detail-paid-list');
     if (paidList.length === 0) {
       paidBody.innerHTML = `<tr><td colspan="3" class="text-muted" style="text-align:center;">Aucun historique de règlement.</td></tr>`;
     } else {
-      paidBody.innerHTML = paidList.map(c => `
+      paidBody.innerHTML = paidList.map(c => {
+        const qtyText = c.quantity && c.quantity > 1 ? ` (x${c.quantity})` : '';
+        const dateObj = new Date(c.created_at);
+        const formattedDate = `${dateObj.toLocaleDateString('fr-FR')} à ${dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+        const lineTotal = c.price_at_time * (c.quantity || 1);
+        return `
             <tr>
-              <td>${new Date(c.created_at).toLocaleDateString()}</td>
-              <td>${c.drinks?.name || 'Article'}</td>
-              <td class="text-success" style="font-weight:600;">${c.price_at_time.toFixed(2)}€</td>
+              <td>${formattedDate}</td>
+              <td>${c.drinks?.name || 'Article'}${qtyText}</td>
+              <td class="text-success" style="font-weight:600;">${lineTotal.toFixed(2)}€</td>
             </tr>
-          `).join('');
+          `;
+      }).join('');
     }
 
     const collectBtn = document.getElementById('btn-collect-tab');
