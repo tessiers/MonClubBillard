@@ -747,6 +747,16 @@ tr:hover td {
     border-color: var(--bg-sidebar);
 }
 
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626; /* Slightly darker red */
+}
+
+
 /* Admin Specific */
 .admin-nav {
     display: flex;

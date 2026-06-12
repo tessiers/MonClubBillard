@@ -1417,6 +1417,27 @@
                     </div>
                 </div>
 
+                <!-- Écran d'interception bloquant si connexion PC pour un membre -->
+                <div id="section-pc-blocked-interception" class="view"
+                    style="position: fixed; inset: 0; background: rgba(5, 8, 22, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem;">
+                    <div class="card"
+                        style="max-width: 480px; width: 100%; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3rem 2rem; box-shadow: 0 0 50px rgba(239, 68, 68, 0.15); display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+                        <div
+                            style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
+                            <i data-lucide="smartphone" style="width: 32px; height: 32px; color: #ef4444;"></i>
+                        </div>
+                        <h2 style="font-size: 1.75rem; color: white; margin: 0;">Connexion Smartphone Requise</h2>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem 0;">
+                            En tant que membre simple, votre accès au Portail Club est strictement réservé aux smartphones (pour l'enregistrement de vos consommations).<br>
+                            Les connexions depuis un ordinateur (PC/Mac) ne sont pas autorisées.
+                        </p>
+                        <button id="btn-logout-pc-blocked" class="btn btn-outline"
+                            style="border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; justify-content: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.05); padding: 0.8rem; font-weight: 600; border-radius: 10px;">
+                            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Se déconnecter
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Modal de Changement de Mot de Passe -->
                 <div id="change-password-modal" class="modal hidden">
                     <div class="modal-content card"
@@ -1491,6 +1512,22 @@
                     <span id="drink-confirm-stock" class="drink-confirm-stock">Stock restant : --</span>
                 </div>
             </div>
+            
+            <!-- Sélecteur de quantité -->
+            <div class="drink-confirm-quantity" style="display: flex; align-items: center; justify-content: space-between; margin: 1.25rem 0; padding: 0.8rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 12px; width: 100%;">
+                <span style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Quantité :</span>
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <button type="button" id="btn-qty-minus" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">-</button>
+                    <span id="drink-confirm-qty" style="width: 30px; text-align: center; color: var(--text-main); font-weight: bold; font-size: 1.2rem;">1</span>
+                    <button type="button" id="btn-qty-plus" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">+</button>
+                </div>
+            </div>
+            <!-- Total de la commande -->
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 1.25rem; padding: 0 0.5rem;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">Total :</span>
+                <span id="drink-confirm-total" style="font-weight: bold; color: var(--accent-green); font-size: 1.4rem;">0.00€</span>
+            </div>
+
             <p class="drink-confirm-notice">Le montant de cet achat sera débité de votre ardoise club.</p>
             <div class="drink-confirm-actions">
                 <button id="btn-cancel-drink" class="btn-alt">Annuler</button>

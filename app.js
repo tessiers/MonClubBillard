@@ -204,17 +204,20 @@ function applyRoleAccessControl() {
   const navHome = document.querySelector('.nav-menu li[data-section="home"]');
   const navTournaments = document.querySelector('.nav-menu li[data-section="tournaments"]');
   const navAdmin = document.querySelector('.nav-menu li[data-section="admin"]');
+  const mobileNavBar = document.getElementById('mobile-nav-bar');
 
   if (role === 'admin') {
     if (navHome) navHome.style.display = '';
     if (navTournaments) navTournaments.style.display = '';
     if (navAdmin) navAdmin.style.display = '';
+    if (mobileNavBar) mobileNavBar.style.display = '';
 
     switchSection('home');
   } else {
     if (navHome) navHome.style.display = 'none';
     if (navTournaments) navTournaments.style.display = 'none';
     if (navAdmin) navAdmin.style.display = 'none';
+    if (mobileNavBar) mobileNavBar.style.display = 'none';
 
     // Les membres normaux sont strictement redirigés vers Gestion Club
     switchSection('management');
@@ -337,6 +340,36 @@ function initNavigation() {
   const btnConfirmDrink = document.getElementById('btn-confirm-drink');
   const btnCancelDrink = document.getElementById('btn-cancel-drink');
   const drinkModal = document.getElementById('drink-order-confirm-modal');
+  const btnQtyMinus = document.getElementById('btn-qty-minus');
+  const btnQtyPlus = document.getElementById('btn-qty-plus');
+  const drinkConfirmQty = document.getElementById('drink-confirm-qty');
+  const drinkConfirmTotal = document.getElementById('drink-confirm-total');
+
+  if (btnQtyMinus && btnQtyPlus && drinkConfirmQty && drinkConfirmTotal) {
+    btnQtyMinus.addEventListener('click', () => {
+      if (!pendingDrinkOrder) return;
+      if (pendingDrinkOrder.quantity > 1) {
+        pendingDrinkOrder.quantity--;
+        drinkConfirmQty.textContent = pendingDrinkOrder.quantity;
+        drinkConfirmTotal.textContent = `${(pendingDrinkOrder.price * pendingDrinkOrder.quantity).toFixed(2)}€`;
+      }
+    });
+
+    btnQtyPlus.addEventListener('click', () => {
+      if (!pendingDrinkOrder) return;
+      const drink = pendingDrinkOrder.drink;
+      const isMemberItem = drink ? isMembership(drink) : false;
+      const stock = isMemberItem ? Infinity : (drink ? (drink.stock ?? 20) : 20);
+
+      if (pendingDrinkOrder.quantity < stock) {
+        pendingDrinkOrder.quantity++;
+        drinkConfirmQty.textContent = pendingDrinkOrder.quantity;
+        drinkConfirmTotal.textContent = `${(pendingDrinkOrder.price * pendingDrinkOrder.quantity).toFixed(2)}€`;
+      } else {
+        alert("Désolé, vous ne pouvez pas commander plus que le stock disponible !");
+      }
+    });
+  }
 
   if (btnConfirmDrink) {
     btnConfirmDrink.addEventListener('click', async () => {
@@ -346,14 +379,15 @@ function initNavigation() {
       const order = pendingDrinkOrder;
       pendingDrinkOrder = null;
 
-      const { id, name, price, drink } = order;
+      const { id, name, price, drink, quantity } = order;
 
       if (drinkModal) drinkModal.classList.add('hidden');
       toggleLoading(true);
       const { error } = await supabaseClient.from('consumptions').insert({
         member_id: currentUser.id,
         drink_id: id,
-        price_at_time: price
+        price_at_time: price,
+        quantity: quantity
       });
       toggleLoading(false);
 
@@ -364,8 +398,8 @@ function initNavigation() {
       } else {
         if (drink && !isMembership(drink)) {
           const currentStock = drink.stock || 0;
-          const newStock = Math.max(0, currentStock - 1);
-          await updateDrinkStock(id, newStock, 'Retrait (Club)', 1, 'Portail Club', `Consommé par ${currentUser.profile?.full_name || 'Membre'}`);
+          const newStock = Math.max(0, currentStock - quantity);
+          await updateDrinkStock(id, newStock, 'Retrait (Club)', -quantity, 'Portail Club', `Consommé par ${currentUser.profile?.full_name || 'Membre'}`);
         }
         loadAppData();
       }
@@ -522,6 +556,11 @@ function initNavigation() {
 }
 
 function switchSection(name) {
+  const role = currentUser?.profile?.role || 'member';
+  if (role !== 'admin' && name !== 'management') {
+    name = 'management';
+  }
+
   document.querySelectorAll('.nav-menu li').forEach(i => i.classList.remove('active'));
   const sidebarItem = document.querySelector(`.nav-menu li[data-section="${name}"]`);
   if (sidebarItem) sidebarItem.classList.add('active');
@@ -563,6 +602,26 @@ async function loadAppData() {
 
     // Vérification de validité de l'abonnement pour les membres simples
     const role = currentUser.profile?.role || 'member';
+
+    // Détection si l'appareil est un mobile/smartphone
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (role !== 'admin' && !isMobile) {
+      document.getElementById('section-pc-blocked-interception').style.display = 'flex';
+      const pcBlockedLogoutBtn = document.getElementById('btn-logout-pc-blocked');
+      if (pcBlockedLogoutBtn) {
+        pcBlockedLogoutBtn.onclick = async () => {
+          toggleLoading(true);
+          await supabaseClient.auth.signOut();
+          document.getElementById('section-pc-blocked-interception').style.display = 'none';
+          toggleLoading(false);
+        };
+      }
+      toggleLoading(false);
+      return; // Bloque le reste du chargement
+    } else {
+      document.getElementById('section-pc-blocked-interception').style.display = 'none';
+    }
+
     const subs = currentUser.profile?.subscriptions || [];
     const activeSub = subs.sort((a, b) => new Date(b.end_date) - new Date(a.end_date))[0];
     const todayStr = new Date().toISOString().split('T')[0];
@@ -787,14 +846,22 @@ async function loadHistory() {
     .limit(10);
 
   const histBody = document.getElementById('history-list');
-  histBody.innerHTML = hist?.map(h => `
+  histBody.innerHTML = hist?.map(h => {
+    const qtyText = h.quantity && h.quantity > 1 ? ` (x${h.quantity})` : '';
+    const dateObj = new Date(h.created_at);
+    const formattedDate = dateObj.toLocaleDateString('fr-FR');
+    const formattedTime = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    const lineTotal = h.price_at_time * (h.quantity || 1);
+
+    return `
         <tr>
-            <td>${new Date(h.created_at).toLocaleDateString()}</td>
-            <td>${h.drinks?.name || 'Article'}</td>
-            <td>${h.price_at_time}€</td>
+            <td>${formattedDate} à ${formattedTime}</td>
+            <td>${h.drinks?.name || 'Article'}${qtyText}</td>
+            <td>${lineTotal.toFixed(2)}€</td>
             <td class="${h.is_paid ? 'success' : 'danger'}">${h.is_paid ? 'Payé' : 'À régler'}</td>
         </tr>
-    `).join('') || '';
+    `;
+  }).join('') || '';
 }
 
 async function logConsumption(id, name, price) {
@@ -808,11 +875,13 @@ async function logConsumption(id, name, price) {
     return;
   }
 
-  pendingDrinkOrder = { id, name, price, drink };
+  pendingDrinkOrder = { id, name, price, drink, quantity: 1 };
 
   // Remplir et ouvrir la modale
   document.getElementById('drink-confirm-name').textContent = name;
   document.getElementById('drink-confirm-price').textContent = `${price}€`;
+  document.getElementById('drink-confirm-qty').textContent = '1';
+  document.getElementById('drink-confirm-total').textContent = `${price.toFixed(2)}€`;
 
   if (isMemberItem) {
     document.getElementById('drink-confirm-stock').textContent = `Pas de gestion de stock`;

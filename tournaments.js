@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             // On cherche les catégories des joueurs dans la base globale "joueurs"
                             const jW = joueurs.find(j => (j.nom || '').trim() === winnerName);
                             const jL = joueurs.find(j => (j.nom || '').trim() === loserName);
-                            
+
                             const catW = jW && Array.isArray(jW.categories) && jW.categories.includes('prestige') ? 'prestige' : 'amateur';
                             const catL = jL && Array.isArray(jL.categories) && jL.categories.includes('prestige') ? 'prestige' : 'amateur';
 
@@ -667,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const condition = regleConditionEl?.value || 'total';
         const isMixte = getCategorieTournoiSelectionnee() === 'mixte';
         const nombre = Number.parseInt(regleNombreEl.value, 10);
-        
+
         const mixteAmaAma = Number.parseInt(mixteAmaAmaEl?.value, 10) || 2;
         const mixtePrePre = Number.parseInt(mixtePrePreEl?.value, 10) || 3;
         const mixteAmaPreAma = Number.parseInt(mixteAmaPreAmaEl?.value, 10) || 2;
@@ -1382,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         .filter((joueur) => getNomJoueur(joueur));
                 }
             }
-        } catch (_) {}
+        } catch (_) { }
 
         if (supabaseActive) {
             try {
@@ -2147,10 +2147,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `Ces ${groupe.length} joueurs sont à égalité parfaite. Un tirage au sort automatique va déterminer le vainqueur.`;
         document.getElementById('dept-joueurs-list').innerHTML =
             groupe.map(j => `<span class="dept-joueur-chip">${texteSecurise(j)}</span>`).join('');
-        
+
         const confirmerBtn = document.getElementById('dept-btn-confirmer-tirage');
         if (confirmerBtn) confirmerBtn.classList.add('hidden');
-        
+
         const r = document.getElementById('dept-roulette-display');
         if (r) { r.textContent = '—'; r.className = 'dept-roulette-display'; }
         document.getElementById('dept-overlay').classList.remove('hidden');
@@ -2183,7 +2183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const vainqueur = joueurs[Math.floor(Math.random() * joueurs.length)];
         tirageTempResult = vainqueur;
-        
+
         if (confirmerBtn) confirmerBtn.classList.add('hidden');
         roulette.className = 'dept-roulette-display spinning';
 
@@ -2618,7 +2618,7 @@ document.addEventListener('DOMContentLoaded', () => {
         match.scoreB = scoreB;
         const roundConfig = tournoiActuel?.finalSettings?.[match.round] || { condition: 'total', nombre: 1 };
         const pseudoSettings = { ...tournoiActuel?.settings, condition: roundConfig.condition, nombre: roundConfig.nombre };
-        
+
         if (pseudoSettings.condition === 'gagnantes') {
             const { objectifA, objectifB } = getObjectifsPourMatch(pseudoSettings, match.playerA, match.playerB);
             if (scoreA === objectifA && scoreB < objectifB) match.winner = match.playerA;
@@ -4107,8 +4107,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>
                             ${m.status === 'finished'
                     ? `<button type="button" class="btn-edit-score" style="padding: 2px 5px; font-size:10px;" onclick="modifierScoreMatch('${String(m.id).replaceAll("'", "\\'")}')">Edit</button>`
-                    : (m.status === 'waiting' 
-                        ? `<button type="button" class="btn-edit-score" style="padding: 2px 5px; font-size:10px;" onclick="enregistrerMatchAttente('${String(m.id).replaceAll("'", "\\'")}')">Edit</button>` 
+                    : (m.status === 'waiting'
+                        ? `<button type="button" class="btn-edit-score" style="padding: 2px 5px; font-size:10px;" onclick="enregistrerMatchAttente('${String(m.id).replaceAll("'", "\\'")}')">Edit</button>`
                         : 'Cours')}
                         </td>
                     </tr>
@@ -4565,6 +4565,50 @@ document.addEventListener('DOMContentLoaded', () => {
         rendreParticipantsSelectionnes();
     });
     retourConfigBtn.addEventListener('click', fermerEcranTournoi);
+
+    function annulerTournoiActuel() {
+        if (!confirm("Voulez-vous vraiment annuler ce tournoi en cours ?\n\nAttention : Tout l'historique de ce tournoi sera définitivement perdu et il ne sera pas archivé. (Idéal pour les essais)")) return;
+
+        // Remove from DB/Cache
+        if (tournoiActuel && tournoiActuel.id) {
+            const cache = lireCacheTournoisLocal();
+            const newCache = cache.filter(t => t.id !== tournoiActuel.id);
+            ecrireCacheTournoisLocal(newCache);
+            
+            if (supabaseActive && supabaseClient) {
+                supabaseClient.from('tournaments').delete().eq('id', tournoiActuel.id)
+                    .then(({error}) => {
+                        if (error) console.error("Erreur lors de la suppression (annulation) du tournoi:", error.message);
+                    });
+            }
+        }
+        
+        // Reset state
+        tournoiActuel = null;
+        decisionSortantsPrise = false;
+        continuerCartesien = true;
+        ouverturePhaseFinaleEnAttente = false;
+        parametrageFinalDisponible = false;
+        sortantsConnusPourFinale = [];
+        ordreTirageFinale = [];
+        poolTirageFinale = [];
+        derniereClePopupFinale = null;
+        
+        tournoiScreenEl.classList.add('hidden');
+        sortantsScreenEl.classList.add('hidden');
+        tableauFinalScreenEl.classList.add('hidden');
+        configScreenEl.classList.remove('hidden');
+        
+        alert("Le tournoi en cours a été annulé avec succès.");
+    }
+
+    const btnAnnuler1 = document.getElementById('annuler-tournoi-1');
+    const btnAnnuler2 = document.getElementById('annuler-tournoi-2');
+    const btnAnnuler3 = document.getElementById('annuler-tournoi-3');
+    if (btnAnnuler1) btnAnnuler1.addEventListener('click', annulerTournoiActuel);
+    if (btnAnnuler2) btnAnnuler2.addEventListener('click', annulerTournoiActuel);
+    if (btnAnnuler3) btnAnnuler3.addEventListener('click', annulerTournoiActuel);
+
     continuerCartesienBtn.addEventListener('click', continuerCartesienApresSortantsConnus);
     arreterCartesienBtn.addEventListener('click', arreterCartesienEtPreparerFinale);
     ouvrirParametrageFinalBtn.addEventListener('click', () => {
