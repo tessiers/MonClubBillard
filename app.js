@@ -357,17 +357,9 @@ function initNavigation() {
 
     btnQtyPlus.addEventListener('click', () => {
       if (!pendingDrinkOrder) return;
-      const drink = pendingDrinkOrder.drink;
-      const isMemberItem = drink ? isMembership(drink) : false;
-      const stock = isMemberItem ? Infinity : (drink ? (drink.stock ?? 20) : 20);
-
-      if (pendingDrinkOrder.quantity < stock) {
-        pendingDrinkOrder.quantity++;
-        drinkConfirmQty.textContent = pendingDrinkOrder.quantity;
-        drinkConfirmTotal.textContent = `${(pendingDrinkOrder.price * pendingDrinkOrder.quantity).toFixed(2)}€`;
-      } else {
-        alert("Désolé, vous ne pouvez pas commander plus que le stock disponible !");
-      }
+      pendingDrinkOrder.quantity++;
+      drinkConfirmQty.textContent = pendingDrinkOrder.quantity;
+      drinkConfirmTotal.textContent = `${(pendingDrinkOrder.price * pendingDrinkOrder.quantity).toFixed(2)}€`;
     });
   }
 
@@ -396,11 +388,6 @@ function initNavigation() {
         // En cas d'erreur de réseau, on permet de réessayer
         pendingDrinkOrder = order;
       } else {
-        if (drink && !isMembership(drink)) {
-          const currentStock = drink.stock || 0;
-          const newStock = Math.max(0, currentStock - quantity);
-          await updateDrinkStock(id, newStock, 'Retrait (Club)', -quantity, 'Portail Club', `Consommé par ${currentUser.profile?.full_name || 'Membre'}`);
-        }
         loadAppData();
       }
     });
@@ -742,7 +729,6 @@ async function loadAppData() {
     const { data: drks, error: drkError } = await supabaseClient.from('drinks').select('*');
     if (drkError) console.error("Erreur boissons:", drkError.message);
     drinks = drks || [];
-    initDrinkStocks();
 
     // 4. Rendu de l'interface
     renderManagementUI();
@@ -810,24 +796,8 @@ function renderManagementUI() {
       ? `<img src="${d.image_url}" alt="${d.name}" class="drink-image">`
       : `<i data-lucide="${d.icon || 'glass-water'}"></i>`;
 
-    let stockBadge = '';
-    let itemStyle = '';
-
-    if (!isMembership(d)) {
-      const stock = d.stock ?? 20;
-      if (stock === 0) {
-        stockBadge = `<span style="font-size: 0.75rem; background: rgba(220, 53, 69, 0.2); color: #ff4d4d; border: 1px solid rgba(220, 53, 69, 0.4); padding: 2px 6px; border-radius: 8px;">Rupture</span>`;
-        itemStyle = 'opacity: 0.5; filter: grayscale(1); cursor: not-allowed;';
-      } else if (stock < 5) {
-        stockBadge = `<span style="font-size: 0.75rem; background: rgba(255, 193, 7, 0.2); color: var(--accent-gold); border: 1px solid rgba(255, 193, 7, 0.4); padding: 2px 6px; border-radius: 8px;">${stock} restants</span>`;
-      } else {
-        stockBadge = `<span style="font-size: 0.75rem; background: rgba(40, 167, 69, 0.1); color: var(--accent-green); border: 1px solid rgba(40, 167, 69, 0.2); padding: 2px 6px; border-radius: 8px;">En stock</span>`;
-      }
-    }
-
     return `
-        <div class="drink-item" onclick="logConsumption(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}', ${d.price})" style="${itemStyle} position: relative;">
-            <div style="position: absolute; top: 8px; right: 8px;">${stockBadge}</div>
+        <div class="drink-item" onclick="logConsumption(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}', ${d.price})" style="position: relative;">
             ${visual}
             <span>${d.name || 'Boisson'}</span>
             <span class="drink-price">${d.price}€</span>
@@ -872,12 +842,6 @@ async function logConsumption(id, name, price) {
   const drink = drinks.find(d => d.id === id);
   const isMemberItem = drink ? isMembership(drink) : false;
 
-  // VÉRIFICATION DU STOCK (uniquement pour les boissons hors adhésion)
-  if (!isMemberItem && drink && drink.stock !== undefined && drink.stock !== null && drink.stock <= 0) {
-    alert(`Désolé, la boisson "${name}" est en rupture de stock !`);
-    return;
-  }
-
   pendingDrinkOrder = { id, name, price, drink, quantity: 1 };
 
   // Remplir et ouvrir la modale
@@ -886,12 +850,8 @@ async function logConsumption(id, name, price) {
   document.getElementById('drink-confirm-qty').textContent = '1';
   document.getElementById('drink-confirm-total').textContent = `${price.toFixed(2)}€`;
 
-  if (isMemberItem) {
-    document.getElementById('drink-confirm-stock').textContent = `Pas de gestion de stock`;
-  } else {
-    const stock = drink ? (drink.stock ?? 20) : 20;
-    document.getElementById('drink-confirm-stock').textContent = `Stock restant : ${stock}`;
-  }
+  const stockEl = document.getElementById('drink-confirm-stock');
+  if (stockEl) stockEl.textContent = '';
 
   const imgContainer = document.getElementById('drink-confirm-image-container');
   if (drink && drink.image_url) {
@@ -1247,10 +1207,6 @@ async function loadAdminData() {
         `;
     sBody.appendChild(row);
   });
-  const { data: sLogs } = await supabaseClient.from('stock_logs').select('*').order('created_at', { ascending: false }).limit(100);
-  stockLogs = sLogs || [];
-
-  renderStockDashboard();
   lucide.createIcons();
 }
 
@@ -2074,297 +2030,4 @@ document.getElementById('csv-import').addEventListener('change', async (e) => {
   }
 });
 
-// ==========================================
-// --- GESTION DES STOCKS & CAISSE LIAISON ---
-// ==========================================
 
-let stockLogs = [];
-
-function initDrinkStocks() {
-  drinks.forEach(d => {
-    if (d.stock === undefined || d.stock === null) {
-      d.stock = 0;
-    }
-  });
-}
-
-async function logStockMovement(drinkId, drinkName, type, qty, source, detail) {
-  if (!supabaseClient) return;
-  try {
-    await supabaseClient.from('stock_logs').insert({
-      drink_id: drinkId,
-      drink_name: drinkName,
-      type: type,
-      qty: qty,
-      source: source,
-      detail: detail
-    });
-  } catch (err) {
-    console.warn("Erreur logStockMovement:", err);
-  }
-}
-
-async function updateDrinkStock(drinkId, newQty, type, changeQty, source, detail) {
-  const drink = drinks.find(d => d.id === drinkId);
-  if (!drink) return false;
-
-  try {
-    const { error } = await supabaseClient
-      .from('drinks')
-      .update({ stock: newQty })
-      .eq('id', drinkId);
-    if (error) throw error;
-  } catch (e) {
-    console.warn("Erreur mise à jour stock Supabase:", e);
-    return false;
-  }
-
-  drink.stock = newQty;
-  await logStockMovement(drinkId, drink.name, type, changeQty, source, detail);
-  return true;
-}
-
-function renderStockDashboard() {
-  const stockCardsGrid = document.getElementById('stock-cards-grid');
-  if (!stockCardsGrid) return;
-
-  const physicalDrinks = drinks.filter(d => !isMembership(d));
-  let totalDrinks = physicalDrinks.length;
-  let outOfStockCount = physicalDrinks.filter(d => (d.stock || 0) === 0).length;
-  let lowStockCount = physicalDrinks.filter(d => (d.stock || 0) > 0 && (d.stock || 0) < 5).length;
-  let totalStockVolume = physicalDrinks.reduce((acc, d) => acc + (d.stock || 0), 0);
-
-  stockCardsGrid.innerHTML = `
-        <div class="card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;">
-            <div style="background: rgba(24, 119, 242, 0.1); color: var(--accent-blue); padding: 0.8rem; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="glass-water" style="width: 24px; height: 24px;"></i>
-            </div>
-            <div>
-                <span class="text-muted" style="font-size: 0.8rem; display: block;">Références boissons</span>
-                <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">${totalDrinks}</span>
-            </div>
-        </div>
-        <div class="card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;">
-            <div style="background: rgba(37, 211, 102, 0.1); color: var(--accent-green); padding: 0.8rem; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="boxes" style="width: 24px; height: 24px;"></i>
-            </div>
-            <div>
-                <span class="text-muted" style="font-size: 0.8rem; display: block;">Volume total en stock</span>
-                <span style="font-size: 1.5rem; font-weight: 700; color: var(--accent-green);">${totalStockVolume} pcs</span>
-            </div>
-        </div>
-        <div class="card" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem;">
-            <div style="background: rgba(255, 193, 7, 0.1); color: var(--accent-gold); padding: 0.8rem; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="alert-triangle" style="width: 24px; height: 24px;"></i>
-            </div>
-            <div>
-                <span class="text-muted" style="font-size: 0.8rem; display: block;">Stocks faibles (&lt; 5)</span>
-                <span style="font-size: 1.5rem; font-weight: 700; color: var(--accent-gold);">${lowStockCount}</span>
-            </div>
-        </div>
-        <div class="card" style="background: rgba(220, 53, 69, 0.1); color: #ff4d4d; padding: 0.8rem; border-radius: 10px; display: flex; align-items: center; gap: 1rem;">
-            <div style="background: rgba(220, 53, 69, 0.1); color: #ff4d4d; padding: 0.8rem; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="x-circle" style="width: 24px; height: 24px;"></i>
-            </div>
-            <div>
-                <span class="text-muted" style="font-size: 0.8rem; display: block;">Ruptures de stock</span>
-                <span style="font-size: 1.5rem; font-weight: 700; color: #ff4d4d;">${outOfStockCount}</span>
-            </div>
-        </div>
-    `;
-
-  const adminStockList = document.getElementById('admin-stock-list');
-  if (adminStockList) {
-    adminStockList.innerHTML = '';
-    const physicalDrinks = drinks.filter(d => !isMembership(d));
-    physicalDrinks.forEach(d => {
-      const stock = d.stock || 0;
-      let statusBadge = '';
-      let progressColor = 'var(--accent-green)';
-
-      if (stock === 0) {
-        statusBadge = '<span class="badge" style="background: rgba(220, 53, 69, 0.2); color: #ff4d4d; border: 1px solid rgba(220, 53, 69, 0.4); font-size: 0.75rem;">Rupture !</span>';
-        progressColor = '#ff4d4d';
-      } else if (stock < 5) {
-        statusBadge = '<span class="badge" style="background: rgba(255, 193, 7, 0.2); color: var(--accent-gold); border: 1px solid rgba(255, 193, 7, 0.4); font-size: 0.75rem;">Faible</span>';
-        progressColor = 'var(--accent-gold)';
-      } else {
-        statusBadge = '<span class="badge" style="background: rgba(40, 167, 69, 0.2); color: var(--accent-green); border: 1px solid rgba(40, 167, 69, 0.4); font-size: 0.75rem;">Correct</span>';
-      }
-
-      const percent = Math.min(100, (stock / 50) * 100);
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-                <td>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        ${d.image_url ? `<img src="${d.image_url}" style="width:28px;height:28px;object-fit:cover;border-radius:4px;">` : `<i data-lucide="${d.icon || 'glass-water'}"></i>`}
-                        <span style="font-weight: 500;">${d.name}</span>
-                    </div>
-                </td>
-                <td>${d.price}€</td>
-                <td>
-                    <div style="display: flex; flex-direction: column; gap: 4px; width: 150px;">
-                        <span style="font-weight: 700; font-size: 1rem;">${stock} pcs</span>
-                        <div style="width: 100%; height: 6px; background: rgba(255, 255, 255, 0.05); border-radius: 3px; overflow: hidden;">
-                            <div style="width: ${percent}%; height: 100%; background: ${progressColor}; border-radius: 3px; transition: width 0.3s;"></div>
-                        </div>
-                    </div>
-                </td>
-                <td>${statusBadge}</td>
-                <td style="text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                    <button class="btn btn-outline" onclick="openRefillModal(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}')" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-green); color: var(--accent-green);">
-                        <i data-lucide="package-plus" style="width:14px; height:14px;"></i> Approvisionner
-                    </button>
-                    <button class="btn btn-outline" onclick="openInventoryModal(${d.id}, '${(d.name || '').replace(/'/g, "\\'")}', ${stock})" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent-gold); color: var(--accent-gold);">
-                        <i data-lucide="clipboard-list" style="width:14px; height:14px;"></i> Inventaire
-                    </button>
-                </td>
-            `;
-      adminStockList.appendChild(row);
-    });
-  }
-
-  const stockLogsList = document.getElementById('stock-logs-list');
-  if (stockLogsList) {
-    stockLogsList.innerHTML = stockLogs.map(l => {
-      let movementLabel = '';
-      if (l.type.startsWith('Entrée')) {
-        movementLabel = `<span style="color: var(--accent-green); font-weight: 600;">+${l.qty} (Entrée)</span>`;
-      } else if (l.type.startsWith('Retrait')) {
-        movementLabel = `<span style="color: #ff4d4d; font-weight: 600;">-${l.qty} (Sortie)</span>`;
-      } else {
-        movementLabel = `<span style="color: var(--accent-gold); font-weight: 600;">${l.qty > 0 ? '+' : ''}${l.qty} (Ajustement)</span>`;
-      }
-
-      let sourceBadge = '';
-      if (l.source.includes('Caisse')) {
-        sourceBadge = `<span class="badge" style="background: rgba(255, 193, 7, 0.15); color: var(--accent-gold); border: 1px solid rgba(255, 193, 7, 0.3); font-size: 0.7rem;">${l.source}</span>`;
-      } else if (l.source.includes('Club')) {
-        sourceBadge = `<span class="badge" style="background: rgba(24, 119, 242, 0.15); color: var(--accent-blue); border: 1px solid rgba(24, 119, 242, 0.3); font-size: 0.7rem;">${l.source}</span>`;
-      } else {
-        sourceBadge = `<span class="badge" style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border); font-size: 0.7rem;">${l.source}</span>`;
-      }
-
-      return `
-                <tr>
-                    <td style="font-size: 0.8rem; color: var(--text-muted);">${new Date(l.created_at).toLocaleString()}</td>
-                    <td style="font-weight: 500;">${l.drink_name || 'N/A'}</td>
-                    <td>${movementLabel}</td>
-                    <td>${Math.abs(l.qty)} pcs</td>
-                    <td>${sourceBadge}</td>
-                    <td style="font-size: 0.8rem; color: var(--text-muted); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${l.detail || '-'}</td>
-                </tr>
-            `;
-    }).join('');
-  }
-}
-
-window.openRefillModal = function (drinkId, drinkName) {
-  document.getElementById('refill-drink-id').value = drinkId;
-  document.getElementById('refill-drink-name').value = drinkName;
-  document.getElementById('refill-qty-input').value = 24;
-  document.getElementById('refill-stock-modal').classList.remove('hidden');
-};
-
-window.openInventoryModal = function (drinkId, drinkName, currentStock) {
-  document.getElementById('inventory-drink-id').value = drinkId;
-  document.getElementById('inventory-drink-name').value = drinkName;
-  document.getElementById('inventory-qty-input').value = currentStock;
-  document.getElementById('inventory-stock-modal').classList.remove('hidden');
-};
-
-document.addEventListener('click', function (e) {
-  if (e.target && e.target.id === 'btn-simulate-caisse') {
-    const select = document.getElementById('caisse-drink-select');
-    if (select) {
-      const physicalDrinks = drinks.filter(d => !isMembership(d));
-      select.innerHTML = physicalDrinks.map(d =>
-        `<option value="${d.id}">${d.name} (Stock actuel: ${d.stock || 0})</option>`
-      ).join('');
-    }
-    document.getElementById('caisse-qty-input').value = 1;
-    document.getElementById('caisse-simulation-modal').classList.remove('hidden');
-  }
-
-  if (e.target && e.target.id === 'btn-submit-refill') {
-    const id = parseInt(document.getElementById('refill-drink-id').value);
-    const qty = parseInt(document.getElementById('refill-qty-input').value);
-
-    if (isNaN(qty) || qty <= 0) {
-      alert("Veuillez saisir une quantité supérieure à 0.");
-      return;
-    }
-
-    const drink = drinks.find(d => d.id === id);
-    if (!drink) return;
-
-    const currentStock = drink.stock || 0;
-    const newStock = currentStock + qty;
-
-    show('loading');
-    updateDrinkStock(id, newStock, 'Entrée (Approvisionnement)', qty, 'Administrateur', `Approvisionnement manuel de +${qty} unités`).then(() => {
-      hide('loading');
-      document.getElementById('refill-stock-modal').classList.add('hidden');
-      loadAdminData();
-    });
-  }
-
-  if (e.target && e.target.id === 'btn-submit-caisse-sale') {
-    const id = parseInt(document.getElementById('caisse-drink-select').value);
-    const qty = parseInt(document.getElementById('caisse-qty-input').value);
-    const mode = document.getElementById('caisse-mode-select').value;
-
-    if (isNaN(qty) || qty <= 0) {
-      alert("Veuillez saisir une quantité supérieure à 0.");
-      return;
-    }
-
-    const drink = drinks.find(d => d.id === id);
-    if (!drink) return;
-
-    const currentStock = drink.stock || 0;
-    if (qty > currentStock) {
-      if (!confirm(`La quantité demandée (${qty}) est supérieure au stock disponible (${currentStock}). Valider quand même et passer en stock négatif ?`)) {
-        return;
-      }
-    }
-
-    const newStock = Math.max(0, currentStock - qty);
-
-    show('loading');
-    updateDrinkStock(id, newStock, `Retrait (${mode})`, -qty, 'Caisse Enregistreuse', `Vente/Retrait de ${qty} pcs via caisse bar`).then(() => {
-      hide('loading');
-      document.getElementById('caisse-simulation-modal').classList.add('hidden');
-      loadAdminData();
-    });
-  }
-
-  if (e.target && e.target.id === 'btn-submit-inventory') {
-    const id = parseInt(document.getElementById('inventory-drink-id').value);
-    const newStock = parseInt(document.getElementById('inventory-qty-input').value);
-
-    if (isNaN(newStock) || newStock < 0) {
-      alert("Veuillez saisir une quantité valide (0 ou plus).");
-      return;
-    }
-
-    const drink = drinks.find(d => d.id === id);
-    if (!drink) return;
-
-    const currentStock = drink.stock || 0;
-    const changeQty = newStock - currentStock;
-
-    if (changeQty === 0) {
-      document.getElementById('inventory-stock-modal').classList.add('hidden');
-      return; // Pas de changement
-    }
-
-    show('loading');
-    updateDrinkStock(id, newStock, 'Ajustement (Inventaire)', changeQty, 'Administrateur', `Inventaire: stock passé de ${currentStock} à ${newStock}`).then(() => {
-      hide('loading');
-      document.getElementById('inventory-stock-modal').classList.add('hidden');
-      loadAdminData();
-    });
-  }
-});

@@ -600,8 +600,11 @@
                                     </div>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button type="button" id="retour-config" class="btn-alt" style="width:auto;">Retour configuration</button>
-                                    <button type="button" id="annuler-tournoi-1" class="btn-danger" style="width:auto;" title="Annuler le tournoi en cours"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Annuler</button>
+                                    <button type="button" id="retour-config" class="btn-alt" style="width:auto;">Retour
+                                        configuration</button>
+                                    <button type="button" id="annuler-tournoi-1" class="btn-danger" style="width:auto;"
+                                        title="Annuler le tournoi en cours"><i data-lucide="trash-2"
+                                            style="width: 14px; height: 14px;"></i> Annuler</button>
                                 </div>
                             </div>
 
@@ -688,8 +691,11 @@
                                     </div>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button type="button" id="retour-tournoi-depuis-sortants" class="btn-alt" style="width:auto;">Retour tournoi</button>
-                                    <button type="button" id="annuler-tournoi-2" class="btn-danger" style="width:auto;" title="Annuler le tournoi en cours"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Annuler</button>
+                                    <button type="button" id="retour-tournoi-depuis-sortants" class="btn-alt"
+                                        style="width:auto;">Retour tournoi</button>
+                                    <button type="button" id="annuler-tournoi-2" class="btn-danger" style="width:auto;"
+                                        title="Annuler le tournoi en cours"><i data-lucide="trash-2"
+                                            style="width: 14px; height: 14px;"></i> Annuler</button>
                                 </div>
                             </div>
 
@@ -744,8 +750,11 @@
                                     </div>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button type="button" id="retour-sortants" class="btn-alt" style="width:auto;">Retour page sortants</button>
-                                    <button type="button" id="annuler-tournoi-3" class="btn-danger" style="width:auto;" title="Annuler le tournoi en cours"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Annuler</button>
+                                    <button type="button" id="retour-sortants" class="btn-alt"
+                                        style="width:auto;">Retour page sortants</button>
+                                    <button type="button" id="annuler-tournoi-3" class="btn-danger" style="width:auto;"
+                                        title="Annuler le tournoi en cours"><i data-lucide="trash-2"
+                                            style="width: 14px; height: 14px;"></i> Annuler</button>
                                 </div>
                             </div>
 
@@ -868,7 +877,6 @@
                             <button class="btn-tab active" data-tab="adm-members">Membres</button>
                             <button class="btn-tab" data-tab="adm-consumptions">Consommations</button>
                             <button class="btn-tab" data-tab="adm-drinks">Boissons</button>
-                            <button class="btn-tab" data-tab="adm-stocks">Stocks</button>
                             <button class="btn-tab" data-tab="adm-subs">Abonnements</button>
                         </div>
                     </div>
@@ -969,77 +977,7 @@
                         </div>
                     </div>
 
-                    <!-- Stock Section -->
-                    <div id="adm-stocks" class="admin-pane card">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                            <div>
-                                <h3><i data-lucide="package"></i> Gestion des Stocks</h3>
-                                <p class="text-muted" style="font-size: 0.85rem; margin-top: 4px;">Suivez les boissons,
-                                    approvisionnez manuellement et gérez la liaison avec la caisse.</p>
-                            </div>
-                            <div style="display: flex; gap: 0.8rem;">
-                                <button class="btn btn-primary" id="btn-simulate-caisse"
-                                    style="display: flex; align-items: center; gap: 0.5rem; background: var(--accent-gold); border-color: var(--accent-gold); color: #000; font-weight: 600;">
-                                    <i data-lucide="calculator" style="width: 16px;"></i> Simulation Caisse
-                                    Enregistreuse
-                                </button>
-                            </div>
-                        </div>
 
-                        <!-- Grille d'état rapide des stocks -->
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem;"
-                            id="stock-cards-grid">
-                            <!-- Injecté par JS -->
-                        </div>
-
-                        <!-- Tableau de gestion détaillé -->
-                        <h4
-                            style="margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="list-checks" style="color: var(--accent-green);"></i> Détail du Stock &
-                            Ajustements
-                        </h4>
-                        <div class="table-wrapper" style="margin-bottom: 2rem;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Boisson</th>
-                                        <th>Prix unitaire</th>
-                                        <th>Stock Actuel</th>
-                                        <th>Statut</th>
-                                        <th style="text-align: right;">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-stock-list">
-                                    <!-- Injecté par JS -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Historique des mouvements de stock -->
-                        <h4
-                            style="margin-bottom: 1rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="history" style="color: var(--accent-blue);"></i> Historique des Retraits &
-                            Approvisionnements
-                        </h4>
-                        <div class="table-wrapper">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date / Heure</th>
-                                        <th>Boisson</th>
-                                        <th>Mouvement</th>
-                                        <th>Quantité</th>
-                                        <th>Source</th>
-                                        <th>Détail / Caisse</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="stock-logs-list">
-                                    <!-- Injecté par JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
 
                     <!-- Abonnements Section -->
                     <div id="adm-subs" class="admin-pane card">
@@ -1156,128 +1094,7 @@
                     </div>
                 </div>
 
-                <!-- Modal Simulation Caisse Enregistreuse -->
-                <div id="caisse-simulation-modal" class="modal hidden">
-                    <div class="modal-content card"
-                        style="max-width: 500px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
-                        <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-gold);">
-                            <i data-lucide="calculator"></i> Simulateur Caisse Enregistreuse
-                        </h3>
-                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
-                            Simulez la vente ou le retrait de boissons directement depuis la caisse externe du bar. Cela
-                            déduira automatiquement les stocks en temps réel.
-                        </p>
 
-                        <div class="input-group">
-                            <label>1. Choisir la Boisson vendue à la caisse</label>
-                            <select id="caisse-drink-select"
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
-                                <!-- Injecté par JS -->
-                            </select>
-                        </div>
-
-                        <div class="input-group" style="margin-top: 1rem;">
-                            <label>2. Quantité vendue / retirée</label>
-                            <input type="number" id="caisse-qty-input" min="1" value="1"
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
-                        </div>
-
-                        <div class="input-group" style="margin-top: 1rem;">
-                            <label>3. Mode de transaction de la Caisse</label>
-                            <select id="caisse-mode-select"
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
-                                <option value="Vente Caisse Espèces">Vente Caisse Espèces</option>
-                                <option value="Vente Caisse CB">Vente Caisse Carte Bancaire</option>
-                                <option value="Retrait Perte / Casse">Retrait Perte / Casse</option>
-                                <option value="Consommation Offerte">Consommation Offerte / Staff</option>
-                            </select>
-                        </div>
-
-                        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn-alt"
-                                onclick="document.getElementById('caisse-simulation-modal').classList.add('hidden')">Fermer</button>
-                            <button class="btn-main" id="btn-submit-caisse-sale"
-                                style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
-                                Valider la vente
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Approvisionnement Manuel -->
-                <div id="refill-stock-modal" class="modal hidden">
-                    <div class="modal-content card"
-                        style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
-                        <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="package-plus" style="color: var(--accent-green);"></i> Approvisionner Stock
-                        </h3>
-                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
-                            Remplissez manuellement le stock pour cette boisson.
-                        </p>
-
-                        <input type="hidden" id="refill-drink-id">
-
-                        <div class="input-group">
-                            <label>Boisson</label>
-                            <input type="text" id="refill-drink-name" readonly
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;"
-                                disabled>
-                        </div>
-
-                        <div class="input-group" style="margin-top: 1rem;">
-                            <label>Quantité à ajouter au stock (ex: +24)</label>
-                            <input type="number" id="refill-qty-input" min="1" value="24"
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
-                        </div>
-
-                        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn-alt"
-                                onclick="document.getElementById('refill-stock-modal').classList.add('hidden')">Annuler</button>
-                            <button class="btn-main" id="btn-submit-refill"
-                                style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-green); color: #000; font-weight: 600;">
-                                Enregistrer l'approvisionnement
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Inventaire / Correction de Stock -->
-                <div id="inventory-stock-modal" class="modal hidden">
-                    <div class="modal-content card"
-                        style="max-width: 400px; width: 100%; border: 1px solid var(--border); padding: 1.5rem;">
-                        <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i data-lucide="clipboard-list" style="color: var(--accent-gold);"></i> Faire un Inventaire
-                        </h3>
-                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
-                            Définissez la quantité exacte de stock actuellement disponible. Cela corrigera la valeur
-                            existante.
-                        </p>
-
-                        <input type="hidden" id="inventory-drink-id">
-
-                        <div class="input-group">
-                            <label>Boisson</label>
-                            <input type="text" id="inventory-drink-name" readonly
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.02); color: var(--text-muted); font-size: 0.9rem;"
-                                disabled>
-                        </div>
-
-                        <div class="input-group" style="margin-top: 1rem;">
-                            <label>Nouvelle Quantité en stock réelle</label>
-                            <input type="number" id="inventory-qty-input" min="0" value="0"
-                                style="width: 100%; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text-main); font-size: 0.9rem;">
-                        </div>
-
-                        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                            <button class="btn-alt"
-                                onclick="document.getElementById('inventory-stock-modal').classList.add('hidden')">Annuler</button>
-                            <button class="btn-main" id="btn-submit-inventory"
-                                style="border:none; padding: 8px 16px; border-radius:8px; background: var(--accent-gold); color: #000; font-weight: 600;">
-                                Valider l'inventaire
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
                 <div id="subtype-modal" class="modal hidden">
                     <div class="modal-content card"
@@ -1428,7 +1245,8 @@
                         </div>
                         <h2 style="font-size: 1.75rem; color: white; margin: 0;">Connexion Smartphone Requise</h2>
                         <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem 0;">
-                            En tant que membre simple, votre accès au Portail Club est strictement réservé aux smartphones (pour l'enregistrement de vos consommations).<br>
+                            En tant que membre simple, votre accès au Portail Club est strictement réservé aux
+                            smartphones (pour l'enregistrement de vos consommations).<br>
                             Les connexions depuis un ordinateur (PC/Mac) ne sont pas autorisées.
                         </p>
                         <button id="btn-logout-pc-blocked" class="btn btn-outline"
@@ -1512,20 +1330,30 @@
                     <span id="drink-confirm-stock" class="drink-confirm-stock">Stock restant : --</span>
                 </div>
             </div>
-            
+
             <!-- Sélecteur de quantité -->
-            <div class="drink-confirm-quantity" style="display: flex; align-items: center; justify-content: space-between; margin: 1.25rem 0; padding: 0.8rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 12px; width: 100%;">
+            <div class="drink-confirm-quantity"
+                style="display: flex; align-items: center; justify-content: space-between; margin: 1.25rem 0; padding: 0.8rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 12px; width: 100%;">
                 <span style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Quantité :</span>
                 <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <button type="button" id="btn-qty-minus" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">-</button>
-                    <span id="drink-confirm-qty" style="width: 30px; text-align: center; color: var(--text-main); font-weight: bold; font-size: 1.2rem;">1</span>
-                    <button type="button" id="btn-qty-plus" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">+</button>
+                    <button type="button" id="btn-qty-minus"
+                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; transition: all 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.1)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.05)'">-</button>
+                    <span id="drink-confirm-qty"
+                        style="width: 30px; text-align: center; color: var(--text-main); font-weight: bold; font-size: 1.2rem;">1</span>
+                    <button type="button" id="btn-qty-plus"
+                        style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--text-main); font-size: 1.2rem; cursor: pointer; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: bold; transition: all 0.2s;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.1)'"
+                        onmouseout="this.style.background='rgba(255,255,255,0.05)'">+</button>
                 </div>
             </div>
             <!-- Total de la commande -->
-            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 1.25rem; padding: 0 0.5rem;">
+            <div
+                style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 1.25rem; padding: 0 0.5rem;">
                 <span style="color: var(--text-muted); font-size: 0.9rem;">Total :</span>
-                <span id="drink-confirm-total" style="font-weight: bold; color: var(--accent-green); font-size: 1.4rem;">0.00€</span>
+                <span id="drink-confirm-total"
+                    style="font-weight: bold; color: var(--accent-green); font-size: 1.4rem;">0.00€</span>
             </div>
 
             <p class="drink-confirm-notice">Le montant de cet achat sera débité de votre ardoise club.</p>
