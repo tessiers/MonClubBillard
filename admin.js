@@ -22,6 +22,7 @@
           `<div style="width:32px; height:32px; border-radius:50%; background:rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display:inline-flex; align-items:center; justify-content:center; font-weight:bold; color:#22c55e; vertical-align: middle; margin-right: 8px;">${m.full_name.charAt(0).toUpperCase()}</div>`;
 
         const row = document.createElement('tr');
+        row.className = balance > 0 ? 'unpaid-slate-row' : 'paid-slate-row';
         row.innerHTML = `
           <td>
             <div style="display:flex; align-items:center;">

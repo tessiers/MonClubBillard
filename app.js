@@ -815,11 +815,17 @@ async function loadHistory() {
     .from('consumptions')
     .select('*, drinks(name)')
     .eq('member_id', currentUser.id)
-    .order('created_at', { ascending: false })
-    .limit(10);
+    .eq('is_paid', false)
+    .order('created_at', { ascending: false });
 
   const histBody = document.getElementById('history-list');
-  histBody.innerHTML = hist?.map(h => {
+
+  if (!hist || hist.length === 0) {
+    histBody.innerHTML = `<tr><td colspan="3" class="text-muted" style="text-align:center; padding: 1.5rem;">✅ Aucune ardoise en attente — vous êtes à jour !</td></tr>`;
+    return;
+  }
+
+  histBody.innerHTML = hist.map(h => {
     const qtyText = h.quantity && h.quantity > 1 ? ` (x${h.quantity})` : '';
     const dateObj = new Date(h.created_at);
     const formattedDate = dateObj.toLocaleDateString('fr-FR');
@@ -827,14 +833,13 @@ async function loadHistory() {
     const lineTotal = h.price_at_time * (h.quantity || 1);
 
     return `
-        <tr>
+        <tr class="unpaid-slate-row">
             <td>${formattedDate} à ${formattedTime}</td>
             <td>${h.drinks?.name || 'Article'}${qtyText}</td>
-            <td>${lineTotal.toFixed(2)}€</td>
-            <td class="${h.is_paid ? 'success' : 'danger'}">${h.is_paid ? 'Payé' : 'À régler'}</td>
+            <td class="slate-due-high">${lineTotal.toFixed(2)}€</td>
         </tr>
     `;
-  }).join('') || '';
+  }).join('');
 }
 
 async function logConsumption(id, name, price) {
@@ -990,6 +995,8 @@ async function loadAdminData() {
       const row = document.createElement('tr');
       if (balance > 0) {
         row.className = 'unpaid-slate-row';
+      } else {
+        row.className = 'paid-slate-row';
       }
 
       const safeName = m.full_name.replace(/'/g, "\\'");

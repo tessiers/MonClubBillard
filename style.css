@@ -714,6 +714,42 @@ tr:hover td {
     background: rgba(255, 255, 255, 0.08);
 }
 
+/* Ardoises - Coloration rouge / vert selon statut de paiement */
+.unpaid-slate-row td {
+    background: rgba(239, 68, 68, 0.07);
+}
+
+.unpaid-slate-row:hover td {
+    background: rgba(239, 68, 68, 0.14);
+}
+
+.paid-slate-row td {
+    background: rgba(16, 185, 129, 0.07);
+}
+
+.paid-slate-row:hover td {
+    background: rgba(16, 185, 129, 0.14);
+}
+
+/* Cellule montant ardoise non-payée */
+.slate-due-high {
+    color: #ef4444 !important;
+    font-weight: 700;
+}
+
+/* Statut payé/non-payé dans l'historique membre */
+td.success,
+.text-success {
+    color: #22c55e !important;
+    font-weight: 600;
+}
+
+td.danger,
+.text-danger {
+    color: #ef4444 !important;
+    font-weight: 600;
+}
+
 /* Buttons */
 .btn {
     padding: 0.8rem 1.5rem;
@@ -753,7 +789,8 @@ tr:hover td {
 }
 
 .btn-danger:hover {
-    background: #dc2626; /* Slightly darker red */
+    background: #dc2626;
+    /* Slightly darker red */
 }
 
 
@@ -2313,6 +2350,12 @@ body.mode-cartesien .status-pill {
 .consumption-col {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+}
+
+/* Les tables du modal historique n'ont que 3 courtes colonnes :
+   on annule le min-width global (560px) pour éviter le scroll horizontal */
+.consumption-col table {
+    min-width: 0;
 }
 
 /* ==========================================================================
