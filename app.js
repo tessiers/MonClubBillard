@@ -523,7 +523,7 @@ function initNavigation() {
       toggleLoading(true);
       try {
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-          redirectTo: 'https://tessiers.github.io/MonClubBillard/'
+          redirectTo: window.location.origin + window.location.pathname
         });
 
         if (error) {

@@ -1217,65 +1217,66 @@
                     </div>
                 </div>
 
-                <!-- Modal de Changement de Mot de Passe -->
-                <div id="change-password-modal" class="modal hidden">
-                    <div class="modal-content card"
-                        style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
-                        <h3>Modifier mon mot de passe</h3>
-                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre nouveau mot de passe ci-dessous.
-                        </p>
-
-                        <form id="change-password-form">
-                            <div class="input-group">
-                                <label>Nouveau mot de passe</label>
-                                <input type="password" id="new-password" required minlength="6"
-                                    placeholder="Au moins 6 caractères">
-                            </div>
-                            <div class="input-group">
-                                <label>Confirmer le nouveau mot de passe</label>
-                                <input type="password" id="confirm-password" required minlength="6"
-                                    placeholder="••••••••">
-                            </div>
-
-                            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                                <button type="button" class="btn btn-outline" id="cancel-change-password"
-                                    style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
-                                <button type="submit" class="btn btn-primary"
-                                    style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Mettre
-                                    à jour</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Modal de Récupération de Mot de Passe -->
-                <div id="forgot-password-modal" class="modal hidden">
-                    <div class="modal-content card"
-                        style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
-                        <h3>Mot de passe oublié ?</h3>
-                        <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre adresse e-mail. Un e-mail
-                            contenant un lien de réinitialisation vous sera envoyé.</p>
-
-                        <form id="forgot-password-form">
-                            <div class="input-group">
-                                <label>Adresse E-mail</label>
-                                <input type="email" id="forgot-email" required placeholder="votre@email.com">
-                            </div>
-
-                            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
-                                <button type="button" class="btn btn-outline" id="cancel-forgot-password"
-                                    style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
-                                <button type="submit" class="btn btn-primary"
-                                    style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Envoyer
-                                    le lien</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
             </div>
         </main>
     </div>
+
+    <!-- Modal de Changement de Mot de Passe -->
+    <div id="change-password-modal" class="modal hidden">
+        <div class="modal-content card"
+            style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
+            <h3>Modifier mon mot de passe</h3>
+            <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre nouveau mot de passe ci-dessous.
+            </p>
+
+            <form id="change-password-form">
+                <div class="input-group">
+                    <label>Nouveau mot de passe</label>
+                    <input type="password" id="new-password" required minlength="6"
+                        placeholder="Au moins 6 caractères">
+                </div>
+                <div class="input-group">
+                    <label>Confirmer le nouveau mot de passe</label>
+                    <input type="password" id="confirm-password" required minlength="6"
+                        placeholder="••••••••">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" id="cancel-change-password"
+                        style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Mettre
+                        à jour</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Récupération de Mot de Passe -->
+    <div id="forgot-password-modal" class="modal hidden">
+        <div class="modal-content card"
+            style="max-width: 400px; width: 100%; border: 1px solid var(--border);">
+            <h3>Mot de passe oublié ?</h3>
+            <p class="help" style="margin-bottom: 1.5rem;">Saisissez votre adresse e-mail. Un e-mail
+                contenant un lien de réinitialisation vous sera envoyé.</p>
+
+            <form id="forgot-password-form">
+                <div class="input-group">
+                    <label>Adresse E-mail</label>
+                    <input type="email" id="forgot-email" required placeholder="votre@email.com">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" id="cancel-forgot-password"
+                        style="padding: 0.5rem 1rem; font-size: 0.85rem;">Annuler</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="padding: 0.5rem 1.2rem; font-size: 0.85rem; background: var(--accent-green); border: none;">Envoyer
+                        le lien</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Modale de Confirmation de Commande de Boisson -->
     <div id="drink-order-confirm-modal" class="modal-overlay hidden">
