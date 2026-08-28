@@ -14,7 +14,7 @@ const SUPABASE_URL = window.SUPABASE_URL || "https://iwtuwtvgrocmxfkmidlk.supaba
 const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3dHV3dHZncm9jbXhma21pZGxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTM5NzUsImV4cCI6MjA5MzkyOTk3NX0.ISCfQxrD4dAnygL-teYon-KoJWrzDuTEHFZpe9tslmY";
 const MAX_BILLARDS = 2;
 const DEPARTAGE_VERSION = 2;
-const MIN_FINALISTES_TABLEAU = 4;
+const MIN_FINALISTES_TABLEAU = 2;
 
 document.addEventListener('DOMContentLoaded', () => {
 
