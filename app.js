@@ -591,10 +591,10 @@ async function loadAppData() {
     const role = currentUser.profile?.role || 'member';
 
     // Détection si l'appareil est un mobile/smartphone (User-Agent, taille d'écran ou écran tactile)
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                     window.innerWidth <= 1024 || 
-                     ('ontouchstart' in window) || 
-                     (navigator.maxTouchPoints > 0);
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      window.innerWidth <= 1024 ||
+      ('ontouchstart' in window) ||
+      (navigator.maxTouchPoints > 0);
     if (role !== 'admin' && !isMobile) {
       document.getElementById('section-pc-blocked-interception').style.display = 'flex';
       const pcBlockedLogoutBtn = document.getElementById('btn-logout-pc-blocked');
