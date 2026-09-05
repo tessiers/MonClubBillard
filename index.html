@@ -101,6 +101,30 @@
     </div>
   </div>
 
+  <!-- Écran de Verrouillage (Inactivité) -->
+  <div id="lock-screen-view" class="auth-view hidden" style="z-index: 10000; position: fixed; inset: 0; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; padding: 1rem;">
+    <div class="auth-card card">
+      <div class="logo-circle large">
+        <i data-lucide="lock" style="width: 40px; height: 40px; color: var(--accent-orange);"></i>
+      </div>
+      <h2 style="margin-bottom: 0.75rem;">Session verrouillée</h2>
+      <p class="card-subtitle" style="margin-top: 0; margin-bottom: 2rem;">Veuillez saisir votre mot de passe pour <strong id="lock-email-display"></strong></p>
+
+      <form id="lock-form">
+        <div class="input-group">
+          <label>Mot de passe</label>
+          <input type="password" id="lock-password" required placeholder="••••••••" autocomplete="new-password">
+        </div>
+        <button type="submit" id="lock-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-bottom: 1rem; background: var(--accent-orange); border-color: var(--accent-orange);">
+          Déverrouiller <i data-lucide="unlock"></i>
+        </button>
+        <button type="button" id="lock-switch-user-btn" class="btn btn-outline" style="width: 100%; justify-content: center;">
+          Changer d'utilisateur
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div id="app-shell" class="app-shell hidden">
     <!-- Sidebar style "Sellerie/Club-House" -->
     <nav class="sidebar">

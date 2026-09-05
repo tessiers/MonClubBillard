@@ -61,7 +61,14 @@ async function initAuth() {
   if (session && !currentUser) {
     handleSignIn(session.user);
   } else if (!session) {
-    showView('login-view');
+    const lockedEmail = sessionStorage.getItem('locked_email');
+    if (lockedEmail) {
+      const lockDisplay = document.getElementById('lock-email-display');
+      if (lockDisplay) lockDisplay.textContent = lockedEmail;
+      showView('lock-screen-view');
+    } else {
+      showView('login-view');
+    }
     toggleLoading(false);
   }
 
@@ -181,6 +188,42 @@ async function initAuth() {
     }
     toggleLoading(false);
   });
+
+  // Gestion du Lock Screen
+  const lockForm = document.getElementById('lock-form');
+  const lockSwitchUserBtn = document.getElementById('lock-switch-user-btn');
+
+  if (lockForm) {
+    lockForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = sessionStorage.getItem('locked_email');
+      const password = document.getElementById('lock-password').value;
+
+      if (!email || !password) return;
+
+      toggleLoading(true);
+      const { error, data } = await supabaseClient.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        alert("Mot de passe incorrect : " + error.message);
+        toggleLoading(false);
+      } else {
+        sessionStorage.removeItem('locked_email');
+        document.getElementById('lock-password').value = '';
+        // La session est restaurée, handleSignIn sera appelé par le listener onAuthStateChange ou manuellement
+        handleSignIn(data.user);
+        toggleLoading(false);
+      }
+    });
+  }
+
+  if (lockSwitchUserBtn) {
+    lockSwitchUserBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('locked_email');
+      document.getElementById('lock-password').value = '';
+      showView('login-view');
+    });
+  }
 }
 
 function handleSignIn(user) {
@@ -194,7 +237,15 @@ function handleSignOut() {
   if (inactivityTimeout) {
     clearTimeout(inactivityTimeout);
   }
-  showView('login-view');
+  
+  const lockedEmail = sessionStorage.getItem('locked_email');
+  if (lockedEmail) {
+    const lockDisplay = document.getElementById('lock-email-display');
+    if (lockDisplay) lockDisplay.textContent = lockedEmail;
+    showView('lock-screen-view');
+  } else {
+    showView('login-view');
+  }
 }
 
 // --- CONTROLE D'ACCES PAR ROLE & VERROUILLAGE D'INACTIVITE ---
@@ -250,6 +301,7 @@ function showInactivityCountdownModal() {
 
       // Déconnexion forcée
       if (currentUser) {
+        sessionStorage.setItem('locked_email', currentUser.email);
         toggleLoading(true);
         try {
           await supabaseClient.auth.signOut();
@@ -685,7 +737,9 @@ async function loadAppData() {
           if (matchedType) {
             const startDate = new Date();
             const endDate = new Date();
-            endDate.setDate(startDate.getDate() + (matchedType.duration_days || 30));
+            let dur = matchedType.duration_days;
+            if (dur === null || dur === undefined || isNaN(dur)) dur = 30;
+            endDate.setDate(startDate.getDate() + dur);
 
             const { error: subError } = await supabaseClient.from('subscriptions').insert({
               member_id: currentUser.id,
@@ -1284,7 +1338,8 @@ function updateCalculatedEndDate() {
   const selectedType = window.cachedSubTypes.find(t => t.id.toString() === typeId.toString());
   if (!selectedType) return;
 
-  const duration = parseInt(selectedType.duration_days) || 365;
+  let duration = parseInt(selectedType.duration_days);
+  if (isNaN(duration)) duration = 365;
 
   let baseDate = new Date();
   let isProlongation = false;

@@ -568,3 +568,30 @@
           loadAdminData();
         };
 
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          try {
+            const data = new Uint8Array(event.target.result);
+            // Lecture avec SheetJS (XLSX)
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const rows = XLSX.utils.sheet_to_json(worksheet);
+            
+            await processRows(rows);
+          } catch (err) {
+            alert("Erreur de traitement du fichier : " + err.message);
+          } finally {
+            hide('loading');
+            // Réinitialiser l'input file pour permettre un nouvel import
+            document.getElementById('csv-import').value = '';
+          }
+        };
+        reader.readAsArrayBuffer(file);
+
+      } catch (err) {
+        alert("Erreur d'import : " + err.message);
+        hide('loading');
+      }
+    });
+
