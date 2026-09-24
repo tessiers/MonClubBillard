@@ -102,23 +102,28 @@
   </div>
 
   <!-- Écran de Verrouillage (Inactivité) -->
-  <div id="lock-screen-view" class="auth-view hidden" style="z-index: 10000; position: fixed; inset: 0; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; padding: 1rem;">
+  <div id="lock-screen-view" class="auth-view hidden"
+    style="z-index: 10000; position: fixed; inset: 0; background: var(--bg-dark); display: flex; align-items: center; justify-content: center; padding: 1rem;">
     <div class="auth-card card">
       <div class="logo-circle large">
         <i data-lucide="lock" style="width: 40px; height: 40px; color: var(--accent-orange);"></i>
       </div>
       <h2 style="margin-bottom: 0.75rem;">Session verrouillée</h2>
-      <p class="card-subtitle" style="margin-top: 0; margin-bottom: 2rem;">Veuillez saisir votre mot de passe pour <strong id="lock-email-display"></strong></p>
+      <p class="card-subtitle" style="margin-top: 0; margin-bottom: 2rem;">Veuillez saisir votre mot de passe pour
+        <strong id="lock-email-display"></strong>
+      </p>
 
       <form id="lock-form">
         <div class="input-group">
           <label>Mot de passe</label>
           <input type="password" id="lock-password" required placeholder="••••••••" autocomplete="new-password">
         </div>
-        <button type="submit" id="lock-submit-btn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-bottom: 1rem; background: var(--accent-orange); border-color: var(--accent-orange);">
+        <button type="submit" id="lock-submit-btn" class="btn btn-primary"
+          style="width: 100%; justify-content: center; margin-bottom: 1rem; background: var(--accent-orange); border-color: var(--accent-orange);">
           Déverrouiller <i data-lucide="unlock"></i>
         </button>
-        <button type="button" id="lock-switch-user-btn" class="btn btn-outline" style="width: 100%; justify-content: center;">
+        <button type="button" id="lock-switch-user-btn" class="btn btn-outline"
+          style="width: 100%; justify-content: center;">
           Changer d'utilisateur
         </button>
       </form>
@@ -883,6 +888,7 @@
                     <th>Nom</th>
                     <th>Email</th>
                     <th>Statut</th>
+                    <th>Approuvé</th>
                     <th>Abonnement</th>
                     <th>Fin adhésion</th>
                     <th>Solde Bar</th>
@@ -1169,6 +1175,29 @@
                     data-lucide="check-circle" style="width:16px;"></i> Encaisser l'ardoise</button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Écran d'interception bloquant si compte non validé -->
+        <div id="section-unapproved-interception" class="view"
+          style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5, 8, 22, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 2rem;">
+          <div class="card"
+            style="max-width: 480px; width: 100%; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3rem 2rem; box-shadow: 0 0 50px rgba(239, 68, 68, 0.15); display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+            <div
+              style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
+              <i data-lucide="alert-triangle" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h2 style="font-size: 1.75rem; color: white; margin: 0;">Accès Limité</h2>
+            <h4 style="color: #ef4444; font-size: 1.1rem; margin: 0; font-weight: 600;">En attente de validation</h4>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1rem 0;">
+              Votre compte est actuellement en attente de validation par un administrateur du club.<br>
+              Veuillez contacter un responsable pour faire valider votre accès.
+            </p>
+
+            <button id="btn-logout-unapproved" class="btn btn-outline"
+              style="border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; justify-content: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.05); padding: 0.8rem; font-weight: 600; border-radius: 10px;">
+              <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Se déconnecter
+            </button>
           </div>
         </div>
 

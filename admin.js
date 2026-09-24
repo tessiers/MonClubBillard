@@ -321,8 +321,13 @@
     async function deleteDrink(id) {
       if (!confirm("Supprimer cette boisson ?")) return;
       const { error } = await supabaseClient.from('drinks').delete().eq('id', id);
-      if (error) alert("Erreur: " + error.message);
-      else {
+      if (error) {
+        if (error.message.includes('foreign key constraint') || error.code === '23503') {
+          alert("Impossible de supprimer cette boisson car elle a déjà été consommée par des membres.\n\nAstuce : Modifiez plutôt son nom et son prix pour la remplacer par une nouvelle boisson.");
+        } else {
+          alert("Erreur: " + error.message);
+        }
+      } else {
         loadAppData();
         loadAdminData();
       }

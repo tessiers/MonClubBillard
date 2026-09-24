@@ -664,6 +664,45 @@ async function loadAppData() {
       document.getElementById('section-pc-blocked-interception').style.display = 'none';
     }
 
+    let isApproved = currentUser.profile?.is_approved === true;
+
+    if (role !== 'admin' && !isApproved) {
+      // --- Vérifier si l'utilisateur a été pré-validé ---
+      const { data: imported } = await supabaseClient
+        .from('imported_members')
+        .select('is_approved')
+        .eq('email', currentUser.email.toLowerCase().trim())
+        .maybeSingle();
+
+      if (imported && imported.is_approved === true) {
+        isApproved = true;
+        if (currentUser.profile) currentUser.profile.is_approved = true;
+        // Tente de mettre à jour la base
+        supabaseClient.from('profiles').update({ is_approved: true }).eq('id', currentUser.id).then();
+      }
+    }
+
+    if (role !== 'admin' && !isApproved) {
+      document.getElementById('section-unapproved-interception').style.display = 'flex';
+
+      const unapprovedLogoutBtn = document.getElementById('btn-logout-unapproved');
+      if (unapprovedLogoutBtn) {
+        unapprovedLogoutBtn.onclick = async () => {
+          toggleLoading(true);
+          await supabaseClient.auth.signOut();
+          document.getElementById('section-unapproved-interception').style.display = 'none';
+          toggleLoading(false);
+        };
+      }
+
+      toggleLoading(false);
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      return; // Bloque le reste du chargement
+    } else {
+      const el = document.getElementById('section-unapproved-interception');
+      if (el) el.style.display = 'none';
+    }
+
     const subs = currentUser.profile?.subscriptions || [];
     const activeSub = subs.sort((a, b) => new Date(b.end_date) - new Date(a.end_date))[0];
     const todayStr = new Date().toISOString().split('T')[0];
@@ -1139,6 +1178,12 @@ async function loadAdminData() {
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             <span class="badge badge-active" style="font-size: 0.7rem;">Inscrit</span>
           </td>
+          <td style="text-align: center; vertical-align: middle;">
+            <label class="toggle-switch">
+              <input type="checkbox" onchange="toggleMemberApproval('${m.id}', this.checked)" ${m.is_approved ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+          </td>
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             ${lastSub ? lastSub.subscription_types.name : '<span class="text-muted">Aucun</span>'}
           </td>
@@ -1185,6 +1230,12 @@ async function loadAdminData() {
           <td class="clickable-cell" title="Modifier l'abonnement" style="font-size: 0.85rem;" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">${p.email}</td>
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             <span class="badge badge-expired" style="font-size: 0.7rem;">En attente</span>
+          </td>
+          <td style="text-align: center; vertical-align: middle;">
+            <label class="toggle-switch">
+              <input type="checkbox" onchange="togglePendingApproval(${p.id}, this.checked)" ${p.is_approved ? 'checked' : ''} title="Pré-valider ce membre pour sa future inscription">
+              <span class="slider"></span>
+            </label>
           </td>
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">
             ${p.subscription_types?.name || 'Inconnu'}
@@ -1326,6 +1377,38 @@ async function editMemberPseudo(profileId, currentPseudo) {
   }
 }
 window.editMemberPseudo = editMemberPseudo;
+
+// --- GESTION DES VALIDATIONS MEMBRES ---
+async function toggleMemberApproval(profileId, isApproved) {
+  show('loading');
+  const { error } = await supabaseClient
+    .from('profiles')
+    .update({ is_approved: isApproved })
+    .eq('id', profileId);
+  hide('loading');
+  
+  if (error) {
+    alert("Erreur lors de la mise à jour: " + error.message);
+    loadAdminData(); // recharger pour remettre le bouton dans le bon état
+  }
+}
+window.toggleMemberApproval = toggleMemberApproval;
+
+async function togglePendingApproval(importId, isApproved) {
+  show('loading');
+  const { error } = await supabaseClient
+    .from('imported_members')
+    .update({ is_approved: isApproved })
+    .eq('id', importId);
+  hide('loading');
+  
+  if (error) {
+    alert("Erreur lors de la mise à jour: " + error.message);
+    loadAdminData(); // recharger pour remettre le bouton dans le bon état
+  }
+}
+window.togglePendingApproval = togglePendingApproval;
+
 
 // --- NOUVEAU MEMBRE & PROLONGATION ---
 window.cachedSubTypes = [];
@@ -1745,8 +1828,13 @@ document.getElementById('save-drink-btn').addEventListener('click', async () => 
 async function deleteDrink(id) {
   if (!confirm("Supprimer cette boisson ?")) return;
   const { error } = await supabaseClient.from('drinks').delete().eq('id', id);
-  if (error) alert("Erreur: " + error.message);
-  else {
+  if (error) {
+    if (error.message.includes('foreign key constraint') || error.code === '23503') {
+      alert("Impossible de supprimer cette boisson car elle a déjà été consommée par des membres.\n\nAstuce : Modifiez plutôt son nom et son prix pour la remplacer par une nouvelle boisson.");
+    } else {
+      alert("Erreur: " + error.message);
+    }
+  } else {
     loadAppData();
     loadAdminData();
   }
