@@ -1,0 +1,23 @@
+{
+  "name": "Billard Club 41",
+  "short_name": "BC41",
+  "description": "Portail des membres du Billard Club 41",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#085569",
+  "theme_color": "#085569",
+  "icons": [
+    {
+      "src": "Logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "Logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -8,6 +8,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Portail Club - Billard & Équitation</title>
+  <meta name="theme-color" content="#085569">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="Logo.jpg">
   <link rel="stylesheet" href="style.css?v=2.3.2">
   <link rel="stylesheet" href="tournament_hero.css">
   <style>
@@ -1387,6 +1390,19 @@
   <script>
     // Initialisation des icônes Lucide
     lucide.createIcons();
+  </script>
+
+  <!-- Script pour enregistrer le Service Worker (PWA) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(registration => {
+          console.log('ServiceWorker enregistré avec succès. Portée: ', registration.scope);
+        }, err => {
+          console.log('L\\'enregistrement du ServiceWorker a échoué: ', err);
+        });
+      });
+    }
   </script>
 </body>
 
