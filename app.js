@@ -733,12 +733,12 @@ async function loadAppData() {
       if (membershipsList) {
         membershipsList.innerHTML = memberships.map(d => {
           return `
-                    <button class="btn btn-outline" onclick="purchaseMembership(${d.id}, '${d.name.replace(/'/g, "\\'")}', ${d.price})" style="justify-content: space-between; padding: 1rem; border-radius: 10px; background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: white;">
+                    <button class="btn btn-outline" onclick="purchaseMembership(${d.id}, '${d.name.replace(/'/g, "\\'")}', ${d.price})" style="justify-content: space-between; padding: 1rem; border-radius: 10px; background: rgba(6, 182, 212, 0.1); border-color: rgba(6, 182, 212, 0.3); color: white;">
                         <div style="display:flex; align-items:center; gap: 0.5rem;">
-                            <i data-lucide="${d.icon || 'check-circle'}" style="color: #22c55e;"></i>
+                            <i data-lucide="${d.icon || 'check-circle'}" style="color: #0891b2;"></i>
                             <span style="font-weight: 600;">${d.name}</span>
                         </div>
-                        <span style="font-weight: bold; color: #22c55e;">${d.price}€</span>
+                        <span style="font-weight: bold; color: #0891b2;">${d.price}€</span>
                     </button>
                     `;
         }).join('');
@@ -1097,7 +1097,7 @@ async function loadAdminData() {
       row.innerHTML = `
             <td>
               <div style="display:flex; align-items:center; gap:8px;">
-                <div style="width:32px; height:32px; border-radius:50%; background:rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display:flex; align-items:center; justify-content:center; font-weight:bold; color:#22c55e;">
+                <div style="width:32px; height:32px; border-radius:50%; background:rgba(6, 182, 212, 0.2); border: 1px solid rgba(6, 182, 212, 0.4); display:flex; align-items:center; justify-content:center; font-weight:bold; color:#0891b2;">
                   ${m.full_name.charAt(0).toUpperCase()}
                 </div>
                 <span>${m.full_name}</span>
@@ -1111,7 +1111,7 @@ async function loadAdminData() {
                 <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;" title="Historique & Détails" onclick="openMemberConsumptionDetails('${m.id}', '${safeName}')">
                   <i data-lucide="eye" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;"></i> Détails
                 </button>
-                ${balance > 0 ? `<button class="btn btn-outline" style="border-color:#22c55e; color:#22c55e; padding:4px 8px; font-size:0.8rem;" title="Encaisser l'ardoise" onclick="clearMemberBalance('${m.id}')"><i data-lucide="check-circle" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;"></i> Encaisser</button>` : ''}
+                ${balance > 0 ? `<button class="btn btn-outline" style="border-color:#0891b2; color:#0891b2; padding:4px 8px; font-size:0.8rem;" title="Encaisser l'ardoise" onclick="clearMemberBalance('${m.id}')"><i data-lucide="check-circle" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;"></i> Encaisser</button>` : ''}
               </div>
             </td>
           `;
@@ -1155,7 +1155,7 @@ async function loadAdminData() {
 
     const avatarHtml = m.avatar_url ?
       `<img src="${m.avatar_url}" style="width:64px; height:64px; border-radius:50%; object-fit:cover; border: 1px solid rgba(255,255,255,0.2);">` :
-      `<div style="width:64px; height:64px; border-radius:50%; background:rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.4); display:flex; align-items:center; justify-content:center; font-weight:bold; color:#22c55e; font-size:1.5rem;">${m.full_name.charAt(0).toUpperCase()}</div>`;
+      `<div style="width:64px; height:64px; border-radius:50%; background:rgba(6, 182, 212, 0.2); border: 1px solid rgba(6, 182, 212, 0.4); display:flex; align-items:center; justify-content:center; font-weight:bold; color:#0891b2; font-size:1.5rem;">${m.full_name.charAt(0).toUpperCase()}</div>`;
 
     row.innerHTML = `
           <td class="clickable-cell" title="Modifier l'abonnement" onclick="openSubscriptionFor('${safeName}', '${safeEmail}')">

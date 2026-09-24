@@ -1,16 +1,16 @@
 :root {
     /* Modern Dark Glassmorphism Theme with Enhanced Contrast */
-    --bg-main: #0f172a;
+    --bg-main: #085569;
     /* Fond principal ardoise un peu plus clair pour plus de contraste */
-    --bg-sidebar: rgba(15, 23, 42, 0.85);
+    --bg-sidebar: rgba(4, 31, 38, 0.85);
     /* Sidebar plus opaque et contrastée */
     --text-main: #ffffff;
     /* Texte principal blanc pur */
     --text-muted: #cbd5e1;
     /* Texte secondaire gris clair très lisible */
-    --accent-gold: #10b981;
+    --accent-gold: #06b6d4;
     /* Remplacé par Vert Néon (Gagnant) */
-    --accent-green: #10b981;
+    --accent-green: #06b6d4;
     /* Vert Néon */
     --accent-leather: #6366f1;
     /* Remplacé par Indigo vibrant */
@@ -29,13 +29,13 @@
 
     /* Variables de compatibilité Tournois (mappées sur le thème Moderne) */
     --bg: var(--bg-main);
-    --bg-glass: rgba(15, 23, 42, 0.88);
-    --bg-deep: #090d16;
-    --panel: rgba(30, 41, 59, 0.75);
-    --panel-soft: rgba(30, 41, 59, 0.45);
+    --bg-glass: rgba(4, 31, 38, 0.88);
+    --bg-deep: #021216;
+    --panel: rgba(8, 48, 59, 0.75);
+    --panel-soft: rgba(8, 48, 59, 0.45);
     --accent: var(--accent-green);
     --accent-rgb: 16, 185, 129;
-    --accent-glow: rgba(16, 185, 129, 0.35);
+    --accent-glow: rgba(6, 182, 212, 0.35);
     --accent-deep: #059669;
     --danger: #ef4444;
     --text: var(--text-main);
@@ -43,7 +43,7 @@
     --chakra-red: #ef4444;
     --chakra-orange: #f59e0b;
     --chakra-yellow: #fbbf24;
-    --chakra-green: #10b981;
+    --chakra-green: #06b6d4;
     --chakra-blue: #3b82f6;
     --chakra-indigo: #6366f1;
     --chakra-violet: #8b5cf6;
@@ -58,8 +58,11 @@
 /* Global Overlays */
 .loading-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(11, 17, 32, 0.9);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(2, 18, 22, 0.9);
     backdrop-filter: blur(5px);
     z-index: 9999;
     display: flex;
@@ -89,8 +92,11 @@
 /* Modals styling - Premium Overlay */
 .modal {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(11, 17, 32, 0.85);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(2, 18, 22, 0.85);
     /* Modern deep dark backdrop */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -149,8 +155,9 @@
     align-items: center;
     justify-content: center;
     background-image:
-        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.25) 0px, transparent 60%),
+        radial-gradient(at 100% 100%, rgba(8, 145, 178, 0.25) 0px, transparent 60%), radial-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 1px);
+    `r`n background-size: 100% 100%, 100% 100%, 16px 16px;
 }
 
 .auth-card {
@@ -212,12 +219,12 @@
 
 .input-group input:focus {
     border-color: var(--accent-green);
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1);
 }
 
 .auth-footer a:hover {
     color: var(--white) !important;
-    text-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    text-shadow: 0 0 8px rgba(6, 182, 212, 0.6);
     text-decoration: underline !important;
 }
 
@@ -225,8 +232,9 @@ body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--bg-main);
     background-image:
-        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.15) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.25) 0px, transparent 60%),
+        radial-gradient(at 100% 100%, rgba(8, 145, 178, 0.25) 0px, transparent 60%), radial-gradient(rgba(0, 0, 0, 0.4) 1px, transparent 1px);
+    `r`n background-size: 100% 100%, 100% 100%, 16px 16px;
     background-attachment: fixed;
     color: var(--text-main);
     overflow: hidden;
@@ -245,7 +253,10 @@ body.logo-en-fond::before {
     opacity: 0.08;
     /* Extremely subtle watermark */
     pointer-events: none;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     transition: opacity 0.3s ease;
 }
 
@@ -378,7 +389,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(4, 31, 38, 0.5);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
@@ -451,7 +462,7 @@ h3 {
 }
 
 .welcome-hero {
-    background: linear-gradient(rgba(11, 17, 32, 0.4), rgba(11, 17, 32, 0.7)),
+    background: linear-gradient(rgba(2, 18, 22, 0.4), rgba(2, 18, 22, 0.7)),
         url('hero.png');
     background-size: cover;
     background-position: center;
@@ -474,7 +485,7 @@ h3 {
     max-width: 650px;
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    background: rgba(15, 23, 42, 0.5);
+    background: rgba(4, 31, 38, 0.5);
     padding: 3rem;
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -567,7 +578,7 @@ h3 {
     align-items: flex-end;
     padding: 4rem;
 
-    background: linear-gradient(rgba(11, 17, 32, 0.6), rgba(11, 17, 32, 0.8)),
+    background: linear-gradient(rgba(2, 18, 22, 0.6), rgba(2, 18, 22, 0.8)),
         url('tournaments.png');
     background-size: cover;
     background-position: center 30%;
@@ -725,11 +736,11 @@ tr:hover td {
 }
 
 .paid-slate-row td {
-    background: rgba(16, 185, 129, 0.07);
+    background: rgba(6, 182, 212, 0.07);
 }
 
 .paid-slate-row:hover td {
-    background: rgba(16, 185, 129, 0.14);
+    background: rgba(6, 182, 212, 0.14);
 }
 
 /* Cellule montant ardoise non-payée */
@@ -741,7 +752,7 @@ tr:hover td {
 /* Statut payé/non-payé dans l'historique membre */
 td.success,
 .text-success {
-    color: #22c55e !important;
+    color: #0891b2 !important;
     font-weight: 600;
 }
 
@@ -1872,7 +1883,10 @@ body.mode-cartesien .status-pill {
 /* ===== Modal dÃ©partage ===== */
 .dept-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(2, 8, 23, 0.82);
     backdrop-filter: blur(5px);
     z-index: 600;
@@ -2056,7 +2070,7 @@ body.mode-cartesien .status-pill {
 
 .avatar.cat-amateur {
     background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
-    color: #1e293b;
+    color: #08303b;
     border: 2px solid #cbd5e1;
     box-shadow: 0 2px 6px rgba(148, 163, 184, 0.25);
 }
@@ -2602,532 +2616,545 @@ body.mode-cartesien .status-pill {
     }
 }
 
-    /* ============================================================
+/* ============================================================
    NOUVEAUX STYLES - Améliorations Portail Unifié
    ============================================================ */
 
-    /* --- Badge Joueur Invité --- */
-    .guest-badge-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
-        padding: 1px 8px;
-        border-radius: 99px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        background: rgba(99, 102, 241, 0.18);
-        color: #a5b4fc;
-        border: 1px solid rgba(99, 102, 241, 0.4);
-        vertical-align: middle;
-        margin-left: 5px;
-        letter-spacing: 0.02em;
-        white-space: nowrap;
-        box-shadow: 0 0 6px rgba(99, 102, 241, 0.2);
+/* --- Badge Joueur Invité --- */
+.guest-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 8px;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.18);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    vertical-align: middle;
+    margin-left: 5px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.2);
+}
+
+/* --- Modal Overlay Partagé (boisson + inactivité) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(1, 14, 18, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    animation: modalFadeIn 0.2s ease-out;
+}
+
+.modal-card {
+    background: rgba(30, 41, 59, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: modalScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.modal-description {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-description-sub {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+}
+
+/* --- Modale Confirmation Boisson --- */
+.drink-confirm-card {
+    max-width: 420px;
+}
+
+.drink-confirm-preview {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    text-align: left;
+}
+
+.drink-confirm-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.drink-confirm-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.drink-confirm-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drink-confirm-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.drink-confirm-price {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent-green);
+}
+
+.drink-confirm-stock {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.drink-confirm-notice {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+}
+
+.drink-confirm-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.drink-confirm-actions .btn-main,
+.drink-confirm-actions .btn-alt {
+    flex: 1;
+    min-height: 48px;
+    font-size: 0.95rem;
+}
+
+/* --- Modale Inactivité --- */
+.inactivity-modal-card {
+    max-width: 380px;
+}
+
+.inactivity-icon-container {
+    margin-bottom: 0.75rem;
+}
+
+.inactivity-icon {
+    font-size: 3rem;
+    display: inline-block;
+    animation: pulse-inactivity 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-inactivity {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
     }
 
-    /* --- Modal Overlay Partagé (boisson + inactivité) --- */
-    .modal-overlay {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(9, 13, 22, 0.85);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem;
-        animation: modalFadeIn 0.2s ease-out;
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+}
+
+.inactivity-countdown {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #ef4444;
+    line-height: 1;
+    margin: 0.75rem 0;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    font-family: 'Outfit', sans-serif;
+    transition: color 0.3s ease;
+}
+
+/* --- Barre de Navigation Mobile Tactile --- */
+#mobile-nav-bar {
+    display: none;
+    /* Caché par défaut sur desktop, affiché via @media (max-width: 1024px) */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+    padding: 0.5rem 0 env(safe-area-inset-bottom, 0.5rem);
+    align-items: center;
+    justify-content: space-around;
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease;
+    min-width: 56px;
+    min-height: 56px;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-item:active {
+    transform: scale(0.92);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.mobile-nav-item.active {
+    color: var(--accent-green);
+    background: rgba(6, 182, 212, 0.12);
+}
+
+.mobile-nav-item svg,
+.mobile-nav-item i {
+    width: 22px;
+    height: 22px;
+}
+
+.mobile-nav-item span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.mobile-nav-item.active span {
+    color: var(--accent-green);
+}
+
+/* Indicateur actif (point) */
+.mobile-nav-item.active::after {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    margin-top: 2px;
+    box-shadow: 0 0 6px var(--accent-green);
+}
+
+/* --- Responsive Tablettes & Petits Écrans (≤ 1024px) --- */
+@media (max-width: 1024px) {
+
+    /* Masquer la sidebar latérale sur tablette */
+    .sidebar {
+        display: none !important;
     }
 
-    .modal-card {
-        background: rgba(30, 41, 59, 0.92);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 20px;
-        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-        padding: 2rem;
-        width: 100%;
-        max-width: 400px;
-        text-align: center;
-        animation: modalScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Afficher la navigation mobile du bas */
+    #mobile-nav-bar {
+        display: flex !important;
     }
 
-    .modal-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: var(--text-main);
-    }
-
-    .modal-description {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .modal-description-sub {
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        margin-top: 0.75rem;
-    }
-
-    /* --- Modale Confirmation Boisson --- */
-    .drink-confirm-card {
-        max-width: 420px;
-    }
-
-    .drink-confirm-preview {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
-        padding: 1.25rem;
-        margin: 1rem 0;
-        text-align: left;
-    }
-
-    .drink-confirm-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 12px;
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        flex-shrink: 0;
-        overflow: hidden;
-    }
-
-    .drink-confirm-icon img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .drink-confirm-details {
-        display: flex;
+    /* Le contenu principal prend toute la largeur et laisse de la place pour la nav du bas */
+    .app-shell {
         flex-direction: column;
-        gap: 4px;
     }
 
-    .drink-confirm-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: var(--text-main);
+    .main-content {
+        width: 100%;
+        padding-bottom: 76px;
+        /* Hauteur de la barre mobile */
     }
 
-    .drink-confirm-price {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: var(--accent-green);
+    /* Top bar plus compacte */
+    .top-bar {
+        height: 60px;
+        padding: 0 1rem;
     }
 
-    .drink-confirm-stock {
-        font-size: 0.78rem;
-        color: var(--text-muted);
+    /* Zone de contenu principale - padding réduit */
+    .content-area,
+    .page-content {
+        padding: 1rem;
     }
 
-    .drink-confirm-notice {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin-bottom: 1.25rem;
-        line-height: 1.4;
+    /* Les grilles en colonnes multiples passent sur une seule colonne */
+    .dashboard-grid,
+    .config-grid,
+    .layout {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
     }
 
-    .drink-confirm-actions {
-        display: flex;
-        gap: 0.75rem;
+    /* Les cartes prennent toute la largeur */
+    .card {
+        margin-bottom: 1rem;
     }
 
-    .drink-confirm-actions .btn-main,
-    .drink-confirm-actions .btn-alt {
-        flex: 1;
+    /* Les tables défilent horizontalement sans casser le layout */
+    .table-wrapper,
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+
+    table {
+        min-width: 500px;
+    }
+
+    /* Boutons et cibles tactiles élargies */
+    .btn-main,
+    .btn-alt,
+    .btn-danger,
+    .btn-score-save,
+    .btn-edit-score,
+    .btn-tab {
         min-height: 48px;
         font-size: 0.95rem;
     }
 
-    /* --- Modale Inactivité --- */
-    .inactivity-modal-card {
-        max-width: 380px;
+    /* Checklist de sélection de joueurs - items plus grands */
+    .checklist-row {
+        min-height: 48px;
+        padding: 0.6rem 0.75rem;
     }
 
-    .inactivity-icon-container {
-        margin-bottom: 0.75rem;
+    /* Inputs plus grands pour faciliter la saisie */
+    .chakra-input,
+    .chakra-select,
+    input[type="text"],
+    input[type="number"],
+    select {
+        min-height: 48px;
+        font-size: 1rem;
     }
 
-    .inactivity-icon {
-        font-size: 3rem;
-        display: inline-block;
-        animation: pulse-inactivity 1.5s ease-in-out infinite;
+    /* Cartes de boissons plus grandes */
+    .drink-item {
+        min-height: 80px;
+        padding: 0.75rem;
     }
 
-    @keyframes pulse-inactivity {
-
-        0%,
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        50% {
-            transform: scale(1.15);
-            opacity: 0.8;
-        }
+    /* Scores rapides - boutons plus larges */
+    .quick-scores button {
+        min-height: 44px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
     }
 
-    .inactivity-countdown {
-        font-size: 4rem;
-        font-weight: 900;
-        color: #ef4444;
-        line-height: 1;
-        margin: 0.75rem 0;
-        text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
-        font-family: 'Outfit', sans-serif;
-        transition: color 0.3s ease;
+    /* Cards de matchs en cours - plus d'espace */
+    .match-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
     }
 
-    /* --- Barre de Navigation Mobile Tactile --- */
-    #mobile-nav-bar {
-        display: none;
-        /* Caché par défaut sur desktop, affiché via @media (max-width: 1024px) */
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background: rgba(15, 23, 42, 0.92);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
-        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
-        padding: 0.5rem 0 env(safe-area-inset-bottom, 0.5rem);
-        align-items: center;
-        justify-content: space-around;
+    /* Input de score agrandi pour les doigts */
+    .score-input-inline {
+        width: 72px;
+        min-height: 52px;
+        font-size: 1.4rem;
+        text-align: center;
     }
 
-    .mobile-nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-        padding: 0.5rem 0.75rem;
+    /* Admin category chips - plus grands */
+    .admin-category-chip {
+        min-height: 40px;
+        padding: 0.4rem 0.75rem;
+        font-size: 0.88rem;
+    }
+
+    /* Bracket du tableau final - défilement horizontal */
+    .bracket-container,
+    #tableau-final-bracket {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Sections d'écran de tournoi - retirer les marges latérales excessives */
+    .tournoi-shell {
+        padding: 0.5rem;
+    }
+
+    .card {
         border-radius: 12px;
-        cursor: pointer;
-        color: rgba(255, 255, 255, 0.5);
-        transition: all 0.2s ease;
-        min-width: 56px;
-        min-height: 56px;
-        justify-content: center;
-        -webkit-tap-highlight-color: transparent;
     }
 
-    .mobile-nav-item:active {
-        transform: scale(0.92);
-        background: rgba(255, 255, 255, 0.06);
+    /* Modal cards : plein écran sur très petits appareils */
+    .modal-card {
+        max-width: 100%;
+        border-radius: 16px;
     }
 
-    .mobile-nav-item.active {
-        color: var(--accent-green);
-        background: rgba(16, 185, 129, 0.12);
+    /* Résumé header du tournoi plus compact */
+    .tournoi-header h2 {
+        font-size: 1.1rem;
     }
 
-    .mobile-nav-item svg,
-    .mobile-nav-item i {
-        width: 22px;
-        height: 22px;
+    #tournoi-meta {
+        font-size: 0.78rem;
+    }
+}
+
+/* --- Très petits écrans (≤ 480px) --- */
+@media (max-width: 480px) {
+    .modal-card {
+        padding: 1.25rem;
+        border-radius: 12px;
     }
 
-    .mobile-nav-item span {
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.01em;
-        white-space: nowrap;
+    .drink-confirm-preview {
+        flex-direction: column;
+        text-align: center;
     }
 
-    .mobile-nav-item.active span {
-        color: var(--accent-green);
+    .match-player-col {
+        min-width: 100px;
     }
 
-    /* Indicateur actif (point) */
-    .mobile-nav-item.active::after {
-        content: '';
-        display: block;
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--accent-green);
-        margin-top: 2px;
-        box-shadow: 0 0 6px var(--accent-green);
+    .score-input-inline {
+        width: 60px;
     }
 
-    /* --- Responsive Tablettes & Petits Écrans (≤ 1024px) --- */
-    @media (max-width: 1024px) {
-
-        /* Masquer la sidebar latérale sur tablette */
-        .sidebar {
-            display: none !important;
-        }
-
-        /* Afficher la navigation mobile du bas */
-        #mobile-nav-bar {
-            display: flex !important;
-        }
-
-        /* Le contenu principal prend toute la largeur et laisse de la place pour la nav du bas */
-        .app-shell {
-            flex-direction: column;
-        }
-
-        .main-content {
-            width: 100%;
-            padding-bottom: 76px;
-            /* Hauteur de la barre mobile */
-        }
-
-        /* Top bar plus compacte */
-        .top-bar {
-            height: 60px;
-            padding: 0 1rem;
-        }
-
-        /* Zone de contenu principale - padding réduit */
-        .content-area,
-        .page-content {
-            padding: 1rem;
-        }
-
-        /* Les grilles en colonnes multiples passent sur une seule colonne */
-        .dashboard-grid,
-        .config-grid,
-        .layout {
-            grid-template-columns: 1fr !important;
-            gap: 1rem;
-        }
-
-        /* Les cartes prennent toute la largeur */
-        .card {
-            margin-bottom: 1rem;
-        }
-
-        /* Les tables défilent horizontalement sans casser le layout */
-        .table-wrapper,
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            max-width: 100%;
-        }
-
-        table {
-            min-width: 500px;
-        }
-
-        /* Boutons et cibles tactiles élargies */
-        .btn-main,
-        .btn-alt,
-        .btn-danger,
-        .btn-score-save,
-        .btn-edit-score,
-        .btn-tab {
-            min-height: 48px;
-            font-size: 0.95rem;
-        }
-
-        /* Checklist de sélection de joueurs - items plus grands */
-        .checklist-row {
-            min-height: 48px;
-            padding: 0.6rem 0.75rem;
-        }
-
-        /* Inputs plus grands pour faciliter la saisie */
-        .chakra-input,
-        .chakra-select,
-        input[type="text"],
-        input[type="number"],
-        select {
-            min-height: 48px;
-            font-size: 1rem;
-        }
-
-        /* Cartes de boissons plus grandes */
-        .drink-item {
-            min-height: 80px;
-            padding: 0.75rem;
-        }
-
-        /* Scores rapides - boutons plus larges */
-        .quick-scores button {
-            min-height: 44px;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        /* Cards de matchs en cours - plus d'espace */
-        .match-card {
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Input de score agrandi pour les doigts */
-        .score-input-inline {
-            width: 72px;
-            min-height: 52px;
-            font-size: 1.4rem;
-            text-align: center;
-        }
-
-        /* Admin category chips - plus grands */
-        .admin-category-chip {
-            min-height: 40px;
-            padding: 0.4rem 0.75rem;
-            font-size: 0.88rem;
-        }
-
-        /* Bracket du tableau final - défilement horizontal */
-        .bracket-container,
-        #tableau-final-bracket {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Sections d'écran de tournoi - retirer les marges latérales excessives */
-        .tournoi-shell {
-            padding: 0.5rem;
-        }
-
-        .card {
-            border-radius: 12px;
-        }
-
-        /* Modal cards : plein écran sur très petits appareils */
-        .modal-card {
-            max-width: 100%;
-            border-radius: 16px;
-        }
-
-        /* Résumé header du tournoi plus compact */
-        .tournoi-header h2 {
-            font-size: 1.1rem;
-        }
-
-        #tournoi-meta {
-            font-size: 0.78rem;
-        }
+    .top-bar {
+        padding: 0 0.75rem;
     }
 
-    /* --- Très petits écrans (≤ 480px) --- */
-    @media (max-width: 480px) {
-        .modal-card {
-            padding: 1.25rem;
-            border-radius: 12px;
-        }
-
-        .drink-confirm-preview {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .match-player-col {
-            min-width: 100px;
-        }
-
-        .score-input-inline {
-            width: 60px;
-        }
-
-        .top-bar {
-            padding: 0 0.75rem;
-        }
-
-        /* Améliorations de lisibilité de l'écran de connexion sur smartphone */
-        .auth-card {
-            padding: 1.5rem 1.25rem !important;
-            max-width: 95% !important;
-            margin: 0 auto;
-        }
-
-        .logo-circle.large {
-            width: 100px !important;
-            height: 100px !important;
-            margin-bottom: 1rem !important;
-        }
-
-        .auth-card h2 {
-            font-size: 1.5rem !important;
-        }
-
-        .auth-card .card-subtitle {
-            margin-bottom: 1.25rem !important;
-            font-size: 0.85rem !important;
-        }
-
-        .input-group {
-            margin-bottom: 1rem !important;
-        }
-
-        .input-group label {
-            font-size: 0.8rem !important;
-            margin-bottom: 0.35rem !important;
-        }
-
-        .input-group input {
-            padding: 0.7rem 0.9rem !important;
-            font-size: 0.95rem !important;
-        }
-
-        #auth-submit-btn {
-            padding: 0.75rem !important;
-            font-size: 0.95rem !important;
-            margin-bottom: 1rem !important;
-        }
+    /* Améliorations de lisibilité de l'écran de connexion sur smartphone */
+    .auth-card {
+        padding: 1.5rem 1.25rem !important;
+        max-width: 95% !important;
+        margin: 0 auto;
     }
-/* Toggle Switch pour la validation des acc�s */
+
+    .logo-circle.large {
+        width: 100px !important;
+        height: 100px !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .auth-card h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .auth-card .card-subtitle {
+        margin-bottom: 1.25rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    .input-group {
+        margin-bottom: 1rem !important;
+    }
+
+    .input-group label {
+        font-size: 0.8rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    .input-group input {
+        padding: 0.7rem 0.9rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    #auth-submit-btn {
+        padding: 0.75rem !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 1rem !important;
+    }
+}
+
+/* Toggle Switch pour la validation des acc�s */
 .toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
 }
+
 .toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
+
 .toggle-switch .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: .3s;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: .3s;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
+
 .toggle-switch .slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 2px;
-  background-color: #cbd5e1;
-  transition: .3s;
-  border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 2px;
+    background-color: #cbd5e1;
+    transition: .3s;
+    border-radius: 50%;
 }
-.toggle-switch input:checked + .slider {
-  background-color: rgba(34, 197, 94, 0.2);
-  border-color: rgba(34, 197, 94, 0.5);
+
+.toggle-switch input:checked+.slider {
+    background-color: rgba(6, 182, 212, 0.2);
+    border-color: rgba(6, 182, 212, 0.5);
 }
-.toggle-switch input:checked + .slider:before {
-  transform: translateX(18px);
-  background-color: #22c55e;
+
+.toggle-switch input:checked+.slider:before {
+    transform: translateX(18px);
+    background-color: #0891b2;
 }
-.toggle-switch input:disabled + .slider {
-  opacity: 0.4;
-  cursor: not-allowed;
+
+.toggle-switch input:disabled+.slider {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
