@@ -745,41 +745,46 @@
 
               <div class="status-row" id="tableau-final-status-row"></div>
 
-              <h3 class="section-title">Arbre du tableau final</h3>
-              <div class="bracket-scroll" style="margin-bottom:14px; overflow-x: auto;">
-                <div id="tableau-final-bracket" class="bracket-board" style="display: flex; gap: 20px;">
-                </div>
-              </div>
-
-              <div class="grid-tournoi">
-                <div class="card" style="padding:12px;">
-                  <h3 class="section-title">Matchs du tableau final en cours</h3>
-                  <div id="tableau-final-matchs-en-cours" class="list-stack"></div>
-
-                  <h3 class="section-title" style="margin-top:14px;">Prochains matchs</h3>
-                  <div id="tableau-final-matchs-attente" class="list-stack"></div>
-                </div>
-
-                <div class="card" style="padding:12px;">
-                  <h3 class="section-title">Résultats du tableau final</h3>
-                  <div class="table-scroll">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Tour</th>
-                          <th>Match</th>
-                          <th>Statut</th>
-                          <th>Score</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody id="tableau-final-resultats-body"></tbody>
-                    </table>
+              <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                <!-- Colonne Gauche : Arbre du tableau final -->
+                <div style="flex: 1 1 65%; min-width: 300px; max-width: 100%; overflow: hidden;">
+                  <h3 class="section-title">Arbre du tableau final</h3>
+                  <div class="bracket-scroll" style="margin-bottom:14px; overflow-x: auto;">
+                    <div id="tableau-final-bracket" class="bracket-board" style="display: flex; gap: 20px;">
+                    </div>
                   </div>
-                  <p id="tableau-final-gagnant" class="help" style="margin-top:10px;"></p>
-                  <button type="button" id="archiver-tournoi-btn" class="btn-main hidden"
-                    style="margin-top:15px; width:100%;">💾 Archiver le tournoi dans les
-                    statistiques</button>
+                </div>
+
+                <!-- Colonne Droite : Matchs et Résultats -->
+                <div style="flex: 1 1 30%; min-width: 320px; display: flex; flex-direction: column; gap: 16px;">
+                  <div class="card" style="padding:12px; margin: 0;">
+                    <h3 class="section-title">Matchs du tableau final en cours</h3>
+                    <div id="tableau-final-matchs-en-cours" class="list-stack"></div>
+
+                    <h3 class="section-title" style="margin-top:14px;">Prochains matchs</h3>
+                    <div id="tableau-final-matchs-attente" class="list-stack"></div>
+                  </div>
+
+                  <div class="card" style="padding:12px; margin: 0;">
+                    <h3 class="section-title">Résultats du tableau final</h3>
+                    <div class="table-scroll">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Tour</th>
+                            <th>Match</th>
+                            <th>Statut</th>
+                            <th>Score</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tableau-final-resultats-body"></tbody>
+                      </table>
+                    </div>
+                    <p id="tableau-final-gagnant" class="help" style="margin-top:10px;"></p>
+                    <button type="button" id="archiver-tournoi-btn" class="btn-main hidden"
+                      style="margin-top:15px; width:100%;">💾 Archiver le tournoi dans les statistiques</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1377,7 +1382,7 @@
   <script async defer crossorigin="anonymous"
     src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v17.0"></script>
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-  <script src="tournaments.js?v=2.3.2" defer></script>
+  <script src="tournaments.js?v=2.3.3" defer></script>
   <script src="app.js?v=2.3.3" defer></script>
   <script>
     // Initialisation des icônes Lucide

@@ -2310,8 +2310,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tailleBracket = puissanceDeuxSuperieureOuEgale(sortants.length);
         const totalTours = Math.log2(tailleBracket);
-        const slots = [...sortants];
-        while (slots.length < tailleBracket) slots.push(null);
+        const nbByes = tailleBracket - sortants.length;
+        
+        let finalSortants = [...sortants];
+        
+        // Si des joueurs doivent être exemptés (BYE), on force les meilleurs classés à prendre ces places
+        if (nbByes > 0 && sortantsConnusPourFinale && sortantsConnusPourFinale.length === sortants.length) {
+            const joueursPrivilegies = sortantsConnusPourFinale.slice(0, nbByes);
+            finalSortants = finalSortants.filter(j => !joueursPrivilegies.includes(j));
+            finalSortants = [...joueursPrivilegies, ...finalSortants];
+        }
+        
+        let seedOrder = [1, 2];
+        for (let currentSize = 2; currentSize < tailleBracket; currentSize *= 2) {
+            let nextMatches = [];
+            for (let i = 0; i < seedOrder.length; i++) {
+                nextMatches.push(seedOrder[i]);
+                nextMatches.push(2 * currentSize + 1 - seedOrder[i]);
+            }
+            seedOrder = nextMatches;
+        }
+        
+        const slots = [];
+        for (let i = 0; i < tailleBracket; i++) {
+            const seedIndex = seedOrder[i] - 1;
+            slots.push(finalSortants[seedIndex] || null);
+        }
 
         let idSeq = 1;
         const rounds = [];
@@ -3560,37 +3584,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return etat.classement.slice(0, qualifiesParPoule).map(l => l.joueur);
         });
 
-        if (structure === 'croise') {
-            const flat = [];
-            const nbPoules = resultsPerPoule.length;
-
-            // Si on a 2 poules et 2 qualifiés: 1A vs 2B et 1B vs 2A
-            // Ordre souhaité for appariement adjacent: [1A, 2B, 1B, 2A]
-            if (nbPoules === 2 && qualifiesParPoule === 2) {
-                return [
-                    resultsPerPoule[0][0], resultsPerPoule[1][1],
-                    resultsPerPoule[1][0], resultsPerPoule[0][1]
-                ];
-            }
-
-            // Cas général: on alterne les 1ers avec les derniers qualifiés de poules opposées
-            // C'est basique mais ça évite 1A vs 1B trop tôt.
-            const maxQualifies = Math.max(...resultsPerPoule.map(r => r.length));
-            for (let i = 0; i < maxQualifies; i++) {
-                for (let p = 0; p < nbPoules; p++) {
-                    // Pour le rang i, on prend la poule p... 
-                    // Sauf si i est impair, on pourrait décaler les poules.
-                    const poolIdx = i % 2 === 0 ? p : (nbPoules - 1 - p);
-                    if (resultsPerPoule[poolIdx] && resultsPerPoule[poolIdx][i]) {
-                        flat.push(resultsPerPoule[poolIdx][i]);
-                    }
+        // Grâce au nouveau moteur de tableau final (format ATP / Têtes de série),
+        // il suffit de fournir la liste triée par rang (tous les 1ers, puis tous les 2èmes...)
+        // L'algorithme se chargera automatiquement de croiser 1A avec 2B, 2A avec 3B, etc.
+        const flat = [];
+        const maxQualifies = Math.max(...resultsPerPoule.map(r => r.length));
+        for (let i = 0; i < maxQualifies; i++) {
+            for (let p = 0; p < resultsPerPoule.length; p++) {
+                if (resultsPerPoule[p] && resultsPerPoule[p][i]) {
+                    flat.push(resultsPerPoule[p][i]);
                 }
             }
-            return flat;
-        } else {
-            // Tirage au sort: on aplatit
-            return resultsPerPoule.flat();
         }
+        return flat;
     }
 
     // Fonction: renderActionVersFinale - rôle métier documenté for faciliter la maintenance.

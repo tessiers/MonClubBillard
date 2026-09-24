@@ -125,7 +125,7 @@ async function initAuth() {
 
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('login-email').value;
+    const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     const pseudoInput = document.getElementById('login-pseudo');
     const pseudo = pseudoInput ? pseudoInput.value.trim() : "";
@@ -140,9 +140,15 @@ async function initAuth() {
         return alert("Veuillez saisir un pseudo.");
       }
 
-      // Vérification que le membre est bien "en attente d'inscription"
+      // Vérification que le membre est bien "en attente d'inscription" ou déjà dans les profils
       const { data: importedMember, error: importCheckError } = await supabaseClient
         .from('imported_members')
+        .select('email')
+        .eq('email', email.trim().toLowerCase())
+        .maybeSingle();
+
+      const { data: existingProfile } = await supabaseClient
+        .from('profiles')
         .select('email')
         .eq('email', email.trim().toLowerCase())
         .maybeSingle();
@@ -152,7 +158,7 @@ async function initAuth() {
         return alert("Erreur lors de la vérification de votre éligibilité : " + importCheckError.message);
       }
 
-      if (!importedMember) {
+      if (!importedMember && !existingProfile) {
         toggleLoading(false);
         return alert("Création de compte refusée : Votre e-mail n'est pas en attente d'inscription dans la liste des membres. Veuillez demander à un administrateur de vous ajouter au préalable.");
       }
