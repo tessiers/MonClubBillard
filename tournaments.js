@@ -902,8 +902,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fonction: getOrdreFinalistesPourTableau - rôle métier documenté pour faciliter la maintenance.
     function getOrdreFinalistesPourTableau() {
-        if (ordreTirageFinale.length === sortantsConnusPourFinale.length) {
+        if (ordreTirageFinale.length > 0 && ordreTirageFinale.length === sortantsConnusPourFinale.length) {
             return [...ordreTirageFinale];
+        }
+        // Force le recalcul pour les poules, afin d'ignorer une éventuelle liste erronée en cache
+        if (tournoiActuel && tournoiActuel.type === 'poules') {
+            return getSortantsPoules();
         }
         return [...sortantsConnusPourFinale];
     }
